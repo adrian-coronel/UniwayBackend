@@ -1,0 +1,6 @@
+@UniwayBackend_HostAddress = http://localhost:5290
+
+GET {{UniwayBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
