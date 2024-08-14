@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
-using UniwayBackend.Models.Dtos;
 using UniwayBackend.Models.Entities;
-using UniwayBackend.Models.Payloads;
-using UniwayBackend.Models.Payloads.Auth;
+using UniwayBackend.Models.Payloads.Base.Response;
+using UniwayBackend.Models.Payloads.Core.Request;
+using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Services.interfaces;
 
 namespace UniwayBackend.Controllers

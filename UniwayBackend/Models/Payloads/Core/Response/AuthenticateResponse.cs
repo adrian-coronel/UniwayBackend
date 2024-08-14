@@ -1,7 +1,7 @@
 ﻿using UniwayBackend.Models.Dtos;
 using UniwayBackend.Models.Entities;
 
-namespace UniwayBackend.Models.Payloads.Auth
+namespace UniwayBackend.Models.Payloads.Core.Response
 {
     public class AuthenticateResponse<TEntity> where TEntity : class
     {

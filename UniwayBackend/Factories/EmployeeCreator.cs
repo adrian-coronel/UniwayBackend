@@ -2,7 +2,7 @@
 using UniwayBackend.Config;
 using UniwayBackend.Exceptions;
 using UniwayBackend.Models.Entities;
-using UniwayBackend.Models.Payloads.Auth;
+using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Repositories.Core.Implements;
 using UniwayBackend.Repositories.Core.Interfaces;
 

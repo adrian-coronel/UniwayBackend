@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Models;
 using UniwayBackend.Config;
 using UniwayBackend.Factories;
 using UniwayBackend.Helpers.Filters;
-using UniwayBackend.Models.Payloads;
+using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Repositories.Core.Implements;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.implements;
@@ -48,7 +48,19 @@ namespace UniwayBackend
             // Add swagger services 
             SwaggerConfig(services);
 
-            // Injection Dependency
+
+
+            ///// Injection Dependency
+
+            // Factories
+            // Para servicios que deben ser accesibles globalmente y mantener un estado único, como una fábrica que 
+            // crea y administra tipos específicos de objetos, AddSingleton es ideal.
+            services.AddSingleton<IUser, TechnicalCreator>();
+            services.AddSingleton<IUser, ClientCreator>();
+            services.AddSingleton<IUser, EmployeeCreator>();
+            services.AddSingleton<UserFactory>();
+            services.AddSingleton<ILoggerFactory, LoggerFactory>();
+
             services.AddScoped(typeof(UtilitariesResponse<>));
             services.AddScoped(typeof(AppSettings));
             services.AddScoped<IConfigurationLib, ConfigurationLib>();
@@ -67,14 +79,9 @@ namespace UniwayBackend
 
             services.AddScoped<IClientRepository, ClientRepository>();
 
-            // Factories
-            // Para servicios que deben ser accesibles globalmente y mantener un estado único, como una fábrica que 
-            // crea y administra tipos específicos de objetos, AddSingleton es ideal.
-            services.AddSingleton<IUser, TechnicalCreator>();
-            services.AddSingleton<IUser, ClientCreator>();
-            services.AddSingleton<IUser, EmployeeCreator>();
-            services.AddSingleton<UserFactory>();
-            services.AddSingleton<ILoggerFactory, LoggerFactory>();
+            services.AddScoped<IWorkshopTechnicalProfessionRepository, WorkshopTechnicalProfessionRepository>();
+            services.AddScoped<IWorkshopTechnicalProfessionService, WorkshopTechnicalProfessionService>();
+            
             
             
 

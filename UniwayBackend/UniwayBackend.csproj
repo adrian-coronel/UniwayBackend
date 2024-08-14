@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
+    <Folder Include="Models\Payloads\Base\Request\" />
   </ItemGroup>
 
 </Project>

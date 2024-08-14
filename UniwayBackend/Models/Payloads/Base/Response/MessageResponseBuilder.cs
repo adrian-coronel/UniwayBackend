@@ -1,4 +1,4 @@
-﻿namespace UniwayBackend.Models.Payloads
+﻿namespace UniwayBackend.Models.Payloads.Base.Response
 {
     public class MessageResponseBuilder<TEntity> where TEntity : class
     {

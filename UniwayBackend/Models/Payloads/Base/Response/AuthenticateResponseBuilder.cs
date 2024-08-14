@@ -1,6 +1,7 @@
 ﻿using UniwayBackend.Models.Entities;
+using UniwayBackend.Models.Payloads.Core.Response;
 
-namespace UniwayBackend.Models.Payloads.Auth
+namespace UniwayBackend.Models.Payloads.Base.Response
 {
     public class AuthenticateResponseBuilder<TEntity> where TEntity : class
     {
@@ -8,39 +9,39 @@ namespace UniwayBackend.Models.Payloads.Auth
 
         public AuthenticateResponseBuilder()
         {
-            this.response = new AuthenticateResponse<TEntity>();
+            response = new AuthenticateResponse<TEntity>();
         }
 
         public AuthenticateResponseBuilder<TEntity> Code(int Code)
         {
-            this.response.Code = Code;
+            response.Code = Code;
             return this;
         }
         public AuthenticateResponseBuilder<TEntity> Message(string Message)
         {
-            this.response.Message = Message;
+            response.Message = Message;
             return this;
         }
         public AuthenticateResponseBuilder<TEntity> Token(string Token)
         {
-            this.response.Token = Token;
+            response.Token = Token;
             return this;
         }
         public AuthenticateResponseBuilder<TEntity> Data(TEntity? Data)
         {
-            this.response.Data = Data;
+            response.Data = Data;
             return this;
         }
 
         public AuthenticateResponseBuilder<TEntity> FunctionalErrors(List<string>? FunctionalErrors)
         {
-            this.response.FunctionalErrors = FunctionalErrors;
+            response.FunctionalErrors = FunctionalErrors;
             return this;
         }
 
         public AuthenticateResponse<TEntity> Build()
         {
-            return this.response;
+            return response;
         }
 
     }

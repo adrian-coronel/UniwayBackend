@@ -6,5 +6,6 @@ namespace UniwayBackend.Repositories.Core.Interfaces
     public interface IUserRepository : IBaseRepository<User, Guid>
     {
         Task<User?> FindByUsernameAndPassword(string Email, string Password);
+        Task<User?> FindByIdAndRoleId(Guid Id, short RoleId);
     }
 }

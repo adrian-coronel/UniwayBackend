@@ -1,6 +1,5 @@
 ﻿using UniwayBackend.Models.Entities;
-using UniwayBackend.Models.Payloads;
-using UniwayBackend.Models.Payloads.Auth;
+using UniwayBackend.Models.Payloads.Base.Response;
 
 namespace UniwayBackend.Services.interfaces
 {

@@ -1,9 +1,9 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.Authentication;
 using UniwayBackend.Config;
-using UniwayBackend.Models.Payloads.Auth;
+using UniwayBackend.Models.Payloads.Core.Response;
 
-namespace UniwayBackend.Models.Payloads
+namespace UniwayBackend.Models.Payloads.Base.Response
 {
     public class UtilitariesResponse<T> where T : class
     {
@@ -59,7 +59,7 @@ namespace UniwayBackend.Models.Payloads
                 .Code(_configuration.NotFoundCode)
                 .Message(_configuration.NotFoundMessage)
                 .Build();
-        } 
+        }
 
 
 
@@ -98,7 +98,7 @@ namespace UniwayBackend.Models.Payloads
             return new AuthenticateResponseBuilder<T>()
                 .Code(_configuration.SuccessCode)
                 .Message(_configuration.SuccessMessage)
-                .Token(token)                
+                .Token(token)
                 .Data(data)
                 .Build();
         }

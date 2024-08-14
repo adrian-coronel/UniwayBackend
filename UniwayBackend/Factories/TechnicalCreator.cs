@@ -2,7 +2,7 @@
 using System.Reflection;
 using UniwayBackend.Config;
 using UniwayBackend.Models.Entities;
-using UniwayBackend.Models.Payloads.Auth;
+using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Repositories.Base;
 using UniwayBackend.Repositories.Core.Implements;
 using UniwayBackend.Repositories.Core.Interfaces;

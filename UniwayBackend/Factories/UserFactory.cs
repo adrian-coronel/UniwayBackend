@@ -1,8 +1,4 @@
-﻿using UniwayBackend.Config;
-using UniwayBackend.Models.Entities;
-using UniwayBackend.Models.Payloads.Auth;
-
-namespace UniwayBackend.Factories
+﻿namespace UniwayBackend.Factories
 {
     public class UserFactory
     {

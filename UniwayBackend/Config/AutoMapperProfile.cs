@@ -2,8 +2,9 @@
 using AutoMapper;
 using UniwayBackend.Models.Dtos;
 using UniwayBackend.Models.Entities;
-using UniwayBackend.Models.Payloads;
-using UniwayBackend.Models.Payloads.Auth;
+using UniwayBackend.Models.Payloads.Base.Response;
+using UniwayBackend.Models.Payloads.Core.Request;
+using UniwayBackend.Models.Payloads.Core.Response;
 
 namespace UniwayBackend.Config
 {
@@ -18,6 +19,11 @@ namespace UniwayBackend.Config
             // User
             CreateMap<User, UserDto>();
             CreateMap<AuthenticateResponse<User>, AuthenticateResponse<UserDto>>();
+
+            // WorkshopTechnicalProfession
+            CreateMap<WorkshopTechnicalProfession, WorkshopTechnicalProfessionDto>().ReverseMap();
+            CreateMap<WorkshopTechnicalProfession, WorkshopTechnicalProfessionRequest>().ReverseMap();
+            CreateMap<MessageResponse<WorkshopTechnicalProfession>, MessageResponse<WorkshopTechnicalProfessionDto>>().ReverseMap();
         }
 
     }

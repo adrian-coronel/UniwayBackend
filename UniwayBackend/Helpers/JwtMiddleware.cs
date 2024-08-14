@@ -5,7 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using UniwayBackend.Config;
 using UniwayBackend.Models.Entities;
-using UniwayBackend.Models.Payloads;
+using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Services.interfaces;
 
 namespace UniwayBackend.Helpers

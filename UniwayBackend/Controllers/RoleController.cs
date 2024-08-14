@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using UniwayBackend.Helpers;
 using UniwayBackend.Models.Dtos;
 using UniwayBackend.Models.Entities;
-using UniwayBackend.Models.Payloads;
+using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Services.interfaces;
 
 namespace UniwayBackend.Controllers
@@ -69,14 +69,14 @@ namespace UniwayBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<MessageResponse<RoleDto>>> Save([FromBody] Role role)
+        public async Task<ActionResult<MessageResponse<RoleDto>>> Save([FromBody] Role Role)
         {
             MessageResponse<RoleDto> response;
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
                 
-                var result = await _service.Save(role);
+                var result = await _service.Save(Role);
 
                 response = _mapper.Map<MessageResponse<Role>, MessageResponse<RoleDto>>(result);
             }

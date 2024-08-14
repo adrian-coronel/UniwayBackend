@@ -1,8 +1,8 @@
-﻿namespace UniwayBackend.Models.Payloads
+﻿namespace UniwayBackend.Models.Payloads.Base.Response
 {
     public class MessageResponse<TEntity> where TEntity : class
     {
-        public int Code {  get; set; }
+        public int Code { get; set; }
         public string? Message { get; set; }
         public TEntity? Object { get; set; }
         public IEnumerable<TEntity>? List { get; set; }

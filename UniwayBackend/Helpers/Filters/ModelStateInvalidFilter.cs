@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using UniwayBackend.Models.Entities;
-using UniwayBackend.Models.Payloads.Auth;
+using UniwayBackend.Models.Payloads.Base.Response;
 
 namespace UniwayBackend.Helpers.Filters
 {

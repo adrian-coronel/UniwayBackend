@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using UniwayBackend.Models.Entities;
-using UniwayBackend.Models.Payloads;
-using UniwayBackend.Models.Payloads.Auth;
+using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
 

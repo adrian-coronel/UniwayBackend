@@ -8,8 +8,9 @@ using System.Text;
 using UniwayBackend.Config;
 using UniwayBackend.Factories;
 using UniwayBackend.Models.Entities;
-using UniwayBackend.Models.Payloads;
-using UniwayBackend.Models.Payloads.Auth;
+using UniwayBackend.Models.Payloads.Base.Response;
+using UniwayBackend.Models.Payloads.Core.Request;
+using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
 
