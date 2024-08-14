@@ -22,13 +22,10 @@ namespace UniwayBackend
 
         public void ConfigureServices(IServiceCollection services)
         {
-            IConfigurationRoot config = new ConfigurationBuilder().Build();
-
             // Injection Dependency
-            services.Configure<AppSettings>(config.GetSection("AppSettings"));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             RegisterServices(services);
-            
         }
 
 
