@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using AutoMapper;
-using UniwayBackend.Models.Dtos;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
@@ -13,17 +12,17 @@ namespace UniwayBackend.Config
         public AutoMapperProfile()
         {
             // Role
-            CreateMap<Role, RoleDto>();
-            CreateMap<MessageResponse<Role>, MessageResponse<RoleDto>>();
+            CreateMap<Role, RoleResponse>();
+            CreateMap<MessageResponse<Role>, MessageResponse<RoleResponse>>();
 
             // User
-            CreateMap<User, UserDto>();
-            CreateMap<AuthenticateResponse<User>, AuthenticateResponse<UserDto>>();
+            CreateMap<User, UserResponse>();
+            CreateMap<AuthenticateResponse<User>, AuthenticateResponse<UserResponse>>();
 
             // WorkshopTechnicalProfession
-            CreateMap<WorkshopTechnicalProfession, WorkshopTechnicalProfessionDto>().ReverseMap();
+            CreateMap<WorkshopTechnicalProfession, WorkshopTechnicalProfessionResponse>().ReverseMap();
             CreateMap<WorkshopTechnicalProfession, WorkshopTechnicalProfessionRequest>().ReverseMap();
-            CreateMap<MessageResponse<WorkshopTechnicalProfession>, MessageResponse<WorkshopTechnicalProfessionDto>>().ReverseMap();
+            CreateMap<MessageResponse<WorkshopTechnicalProfession>, MessageResponse<WorkshopTechnicalProfessionResponse>>().ReverseMap();
         }
 
     }

@@ -1,14 +1,14 @@
 ﻿using UniwayBackend.Models.Entities;
 
-namespace UniwayBackend.Models.Dtos
+namespace UniwayBackend.Models.Payloads.Core.Response
 {
-    public class UserDto
+    public class UserResponse
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public virtual RoleDto Role { get; set; }
+        public virtual RoleResponse Role { get; set; }
     }
 }

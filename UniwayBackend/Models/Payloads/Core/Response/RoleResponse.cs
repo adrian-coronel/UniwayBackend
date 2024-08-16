@@ -1,6 +1,6 @@
-﻿namespace UniwayBackend.Models.Dtos
+﻿namespace UniwayBackend.Models.Payloads.Core.Response
 {
-    public class RoleDto
+    public class RoleResponse
     {
         public short Id { get; set; }
         public required string Name { get; set; }

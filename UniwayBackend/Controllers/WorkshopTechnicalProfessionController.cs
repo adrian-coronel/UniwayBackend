@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
-using UniwayBackend.Models.Dtos;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
+using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Services.interfaces;
 
 namespace UniwayBackend.Controllers
@@ -26,9 +26,9 @@ namespace UniwayBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<MessageResponse<WorkshopTechnicalProfessionDto>>> Save([FromBody] WorkshopTechnicalProfessionRequest Request)
+        public async Task<ActionResult<MessageResponse<WorkshopTechnicalProfessionResponse>>> Save([FromBody] WorkshopTechnicalProfessionRequest Request)
         {
-            MessageResponse<WorkshopTechnicalProfessionDto> response;
+            MessageResponse<WorkshopTechnicalProfessionResponse> response;
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
@@ -37,12 +37,12 @@ namespace UniwayBackend.Controllers
 
                 var result = await _service.Save(request);
 
-                response = _mapper.Map<MessageResponse<WorkshopTechnicalProfession>, MessageResponse<WorkshopTechnicalProfessionDto>>(result);
+                response = _mapper.Map<MessageResponse<WorkshopTechnicalProfession>, MessageResponse<WorkshopTechnicalProfessionResponse>>(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                response = new MessageResponseBuilder<WorkshopTechnicalProfessionDto>()
+                response = new MessageResponseBuilder<WorkshopTechnicalProfessionResponse>()
                     .Code(500).Message(ex.Message).Build();
             }
             return StatusCode(response.Code, response);

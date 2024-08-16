@@ -1,6 +1,6 @@
-﻿namespace UniwayBackend.Models.Dtos
+﻿namespace UniwayBackend.Models.Payloads.Core.Response
 {
-    public class WorkshopTechnicalProfessionDto
+    public class WorkshopTechnicalProfessionResponse
     {
         public int Id { get; set; }
         public int WorkshopId { get; set; }

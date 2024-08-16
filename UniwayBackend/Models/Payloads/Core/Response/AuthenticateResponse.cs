@@ -1,5 +1,4 @@
-﻿using UniwayBackend.Models.Dtos;
-using UniwayBackend.Models.Entities;
+﻿
 
 namespace UniwayBackend.Models.Payloads.Core.Response
 {
