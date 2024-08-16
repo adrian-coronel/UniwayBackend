@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Metrics;
 using UniwayBackend.Models.Entities;
 
 namespace UniwayBackend.Context
@@ -211,6 +212,15 @@ namespace UniwayBackend.Context
                     .WithMany()
                     .HasForeignKey(tp => tp.UserTechnicalId);
             });
+
+
+            // Configuro que entidades quiero que vengan por defecto Habilitadas
+            modelBuilder.Entity<User>().HasQueryFilter(x => x.Enabled);
+            modelBuilder.Entity<Client>().HasQueryFilter(x => x.Enabled);
+            modelBuilder.Entity<Technical>().HasQueryFilter(x => x.Enabled);
+            modelBuilder.Entity<UserTechnical>().HasQueryFilter(x => x.Enabled);
+            modelBuilder.Entity<WorkshopTechnicalProfession>().HasQueryFilter(x => x.Enabled);
+
 
             base.OnModelCreating(modelBuilder);
         }

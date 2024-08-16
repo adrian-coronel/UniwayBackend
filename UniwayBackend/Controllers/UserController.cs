@@ -45,5 +45,26 @@ namespace UniwayBackend.Controllers
             }
             return StatusCode(response.Code, response);
         }
+
+        [HttpDelete("DisableProfile/{UserId}/{RoleId}")]
+        public async Task<ActionResult<MessageResponse<UserResponse>>> DisableProfile(Guid UserId, int RoleId)
+        {
+            MessageResponse<UserResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var result = await _service.Delete(UserId, RoleId);
+
+                response = _mapper.Map<MessageResponse<User>, MessageResponse<UserResponse>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<UserResponse>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return StatusCode(response.Code, response);
+        }
     }
 }

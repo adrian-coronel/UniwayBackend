@@ -8,5 +8,6 @@ namespace UniwayBackend.Factories
         int GetRoleId();
         Task<User> Create(RegisterRequest request);
         Task<User> Edit(ProfileRequest request);
+        Task<User> Delete(Guid UserId);
     }
 }

@@ -9,5 +9,6 @@ namespace UniwayBackend.Services.interfaces
         Task<IEnumerable<User>> GetAll();
         Task<MessageResponse<User>> GetById(Guid Id);
         Task<MessageResponse<User>> Update(ProfileRequest request);
+        Task<MessageResponse<User>> Delete(Guid userId, int roleId);
     }
 }

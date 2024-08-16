@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Azure.Core;
+using System.Reflection;
 using UniwayBackend.Factories;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
@@ -23,6 +24,8 @@ namespace UniwayBackend.Services.implements
             _utilitaries = utilitaries;
             _userFactory = userFactory;
         }
+
+        
 
         public Task<IEnumerable<User>> GetAll()
         {
@@ -58,6 +61,27 @@ namespace UniwayBackend.Services.implements
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
                 User? user = await _userFactory.GetUser(request.RoleId).Edit(request);
+
+                if (user is null) return _utilitaries.setResponseBaseForInternalServerError();
+
+                return _utilitaries.setResponseBaseForObject(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
+
+        public async Task<MessageResponse<User>> Delete(Guid userId, int roleId)
+        {
+            MessageResponse<User> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                User? user = await _userFactory.GetUser(roleId).Delete(userId);
 
                 if (user is null) return _utilitaries.setResponseBaseForInternalServerError();
 

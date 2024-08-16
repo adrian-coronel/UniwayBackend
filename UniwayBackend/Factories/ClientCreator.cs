@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Azure.Core;
+using Microsoft.Extensions.Logging;
 using System.Reflection;
 using UniwayBackend.Config;
 using UniwayBackend.Exceptions;
@@ -23,6 +24,11 @@ namespace UniwayBackend.Factories
             _logger = loggerFactory.CreateLogger<ClientCreator>();
             _userRepository = new UserRepository();
             _clientRepository = new ClientRepository();
+        }
+
+        public int GetRoleId()
+        {
+            return this.RoleId;
         }
 
         public async Task<User> Create(RegisterRequest request)
@@ -94,9 +100,28 @@ namespace UniwayBackend.Factories
             }
         }
 
-        public int GetRoleId()
+        public async Task<User> Delete(Guid UserId)
         {
-            return this.RoleId;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                User? user = await _userRepository.FindById(UserId);
+
+                if (user is null)
+                    throw new NotFoundException($"No se encontró el usuario con ID {UserId} e ID de rol {GetRoleId()}");
+
+                user.Enabled = false;
+
+                return await _userRepository.UpdateAndReturn(user);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
     }
 }

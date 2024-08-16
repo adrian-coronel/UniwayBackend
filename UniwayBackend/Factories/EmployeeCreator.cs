@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Azure.Core;
+using System.Reflection;
 using UniwayBackend.Config;
 using UniwayBackend.Exceptions;
 using UniwayBackend.Models.Entities;
@@ -21,6 +22,11 @@ namespace UniwayBackend.Factories
             _logger = loggerFactory.CreateLogger<EmployeeCreator>();
             _userTechnicalRepository = new UserTechnicalRepository();
             _userRepository = new UserRepository();
+        }
+
+        public int GetRoleId()
+        {
+            return this.RoleId;
         }
 
         public async Task<User> Create(RegisterRequest request)
@@ -100,9 +106,32 @@ namespace UniwayBackend.Factories
             }
         }
 
-        public int GetRoleId()
+
+        public async Task<User> Delete(Guid UserId)
         {
-            return this.RoleId;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                UserTechnical? userTechnical = await _userTechnicalRepository.FindByUserIdAndRoleId(UserId, GetRoleId());
+
+                if (userTechnical is null)
+                    throw new NotFoundException($"No se encontró el usuario con ID {UserId} e ID de rol {GetRoleId()}");
+
+                userTechnical.User.Enabled = false;
+                userTechnical.Enabled = false;
+
+                userTechnical = await _userTechnicalRepository.UpdateAndReturn(userTechnical);
+
+                return userTechnical.User;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
+
+        
     }
 }
