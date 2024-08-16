@@ -60,7 +60,13 @@ namespace UniwayBackend.Models.Payloads.Base.Response
                 .Message(_configuration.NotFoundMessage)
                 .Build();
         }
-
+        public AuthenticateResponse<T> setResponseBaseForInternalErrorAuth(string message)
+        {
+            return new AuthenticateResponseBuilder<T>()
+                .Code(_configuration.InternalServerErrorCode)
+                .Message(message)
+                .Build();
+        }
 
 
         // DATA

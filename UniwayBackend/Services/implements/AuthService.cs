@@ -61,6 +61,12 @@ namespace UniwayBackend.Services.implements
             AuthenticateResponse<User> response;
             try
             {
+                User? user = await _repository
+                    .FindByUsernameAndPassword(request.Email, request.Password);
+
+                if (user is not null) 
+                    return _utilitaries.setResponseBaseForInternalErrorAuth("No se puede crear un nuevo perfil con un email ya registrado");
+
                 User userSaved = await _factory.GetUser(request.RoleId).Create(request);
 
                 string token = await _jwtService.GenerateJwtToken(userSaved);
