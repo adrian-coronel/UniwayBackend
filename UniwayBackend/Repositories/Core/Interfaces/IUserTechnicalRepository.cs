@@ -9,7 +9,7 @@ namespace UniwayBackend.Repositories.Core.Interfaces
         Task<bool> ExistsTechnicalByDni(string Dni);
 
         Task<bool> ExistsUserTypeWithTechnicalByDni(short RoleId, string Dni);
-
+        Task<UserTechnical?> FindByUserIdAndRoleId(Guid userId, int roleId);
         Task<Technical?> FindTechnicalByDni(string Dni);
 
     }

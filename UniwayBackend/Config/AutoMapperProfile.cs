@@ -12,12 +12,13 @@ namespace UniwayBackend.Config
         public AutoMapperProfile()
         {
             // Role
-            CreateMap<Role, RoleResponse>();
-            CreateMap<MessageResponse<Role>, MessageResponse<RoleResponse>>();
+            CreateMap<Role, RoleResponse>().ReverseMap();
+            CreateMap<MessageResponse<Role>, MessageResponse<RoleResponse>>().ReverseMap();
 
             // User
-            CreateMap<User, UserResponse>();
-            CreateMap<AuthenticateResponse<User>, AuthenticateResponse<UserResponse>>();
+            CreateMap<User, UserResponse>().ReverseMap();
+            CreateMap<MessageResponse<User>, MessageResponse<UserResponse>>().ReverseMap();
+            CreateMap<AuthenticateResponse<User>, AuthenticateResponse<UserResponse>>().ReverseMap();
 
             // WorkshopTechnicalProfession
             CreateMap<WorkshopTechnicalProfession, WorkshopTechnicalProfessionResponse>().ReverseMap();

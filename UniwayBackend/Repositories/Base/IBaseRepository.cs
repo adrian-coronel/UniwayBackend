@@ -1,4 +1,6 @@
-﻿namespace UniwayBackend.Repositories.Base
+﻿using UniwayBackend.Models.Entities;
+
+namespace UniwayBackend.Repositories.Base
 {
     public interface IBaseRepository<TEntity, Key>
     {

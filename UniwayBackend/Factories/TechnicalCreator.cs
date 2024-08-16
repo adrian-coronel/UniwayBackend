@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Reflection;
 using UniwayBackend.Config;
+using UniwayBackend.Exceptions;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Repositories.Base;
@@ -13,10 +14,10 @@ namespace UniwayBackend.Factories
     {
         private readonly int RoleId = Constants.Roles.TECHNICAL_ID;
 
-        private readonly ILogger<TechnicalCreator> _logger; 
+        private readonly ILogger<TechnicalCreator> _logger;
         private readonly IUserRepository _userRepository;
         private readonly ITechnicalRepository _technicalRepository;
-        private readonly IBaseRepository<UserTechnical, int> _userTechnicalRepository;
+        private readonly IUserTechnicalRepository _userTechnicalRepository;
         public TechnicalCreator(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<TechnicalCreator>();
@@ -78,9 +79,39 @@ namespace UniwayBackend.Factories
             }
         }
 
+        public async Task<User> Edit(ProfileRequest request)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                UserTechnical? userTechnical = await _userTechnicalRepository.FindByUserIdAndRoleId(request.UserId, request.RoleId);
+
+                if (userTechnical is null)
+                    throw new NotFoundException($"No se encontró el usuario con ID {request.UserId} e ID de rol {request.RoleId}");
+
+                userTechnical.User.Password = !string.IsNullOrEmpty(request.Password) ? request.Password : userTechnical.User.Password;
+                userTechnical.Technical.Name = !string.IsNullOrEmpty(request.Name) ? request.Name : userTechnical.Technical.Name;
+                userTechnical.Technical.FatherLastname = !string.IsNullOrEmpty(request.FatherLastname) ? request.FatherLastname : userTechnical.Technical.FatherLastname;
+                userTechnical.Technical.MotherLastname = !string.IsNullOrEmpty(request.MotherLastname) ? request.MotherLastname : userTechnical.Technical.MotherLastname;
+                userTechnical.Technical.BirthDate = request.BirthDate.HasValue ? request.BirthDate.Value : userTechnical.Technical.BirthDate;
+                userTechnical.Technical.Lat = request.Lat;
+                userTechnical.Technical.Lng = request.Lng;
+
+                userTechnical = await _userTechnicalRepository.UpdateAndReturn(userTechnical);
+
+                return userTechnical.User;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
         public int GetRoleId()
         {
             return this.RoleId;
         }
+
     }
 }

@@ -70,6 +70,36 @@ namespace UniwayBackend.Factories
             }
         }
 
+        public async Task<User> Edit(ProfileRequest request)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                UserTechnical? userTechnical = await _userTechnicalRepository.FindByUserIdAndRoleId(request.UserId, request.RoleId);
+
+                if (userTechnical is null)
+                    throw new NotFoundException($"No se encontró el usuario con ID {request.UserId} e ID de rol {request.RoleId}");
+
+                userTechnical.User.Password = !string.IsNullOrEmpty(request.Password) ? request.Password : userTechnical.User.Password;
+                userTechnical.Technical.Name = !string.IsNullOrEmpty(request.Name) ? request.Name : userTechnical.Technical.Name;
+                userTechnical.Technical.FatherLastname = !string.IsNullOrEmpty(request.FatherLastname) ? request.FatherLastname : userTechnical.Technical.FatherLastname;
+                userTechnical.Technical.MotherLastname = !string.IsNullOrEmpty(request.MotherLastname) ? request.MotherLastname : userTechnical.Technical.MotherLastname;
+                userTechnical.Technical.BirthDate = request.BirthDate.HasValue ? request.BirthDate.Value : userTechnical.Technical.BirthDate;
+                userTechnical.Technical.Lat = request.Lat;
+                userTechnical.Technical.Lng = request.Lng;
+
+                userTechnical = await _userTechnicalRepository.UpdateAndReturn(userTechnical);
+
+                return userTechnical.User;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
+        }
+
         public int GetRoleId()
         {
             return this.RoleId;

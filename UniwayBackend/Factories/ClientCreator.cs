@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Reflection;
 using UniwayBackend.Config;
+using UniwayBackend.Exceptions;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Repositories.Base;
@@ -63,6 +64,34 @@ namespace UniwayBackend.Factories
                 throw;
             }
             
+        }
+
+        public async Task<User> Edit(ProfileRequest request)
+        {
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                Client? client = await _clientRepository.FindByUserId(request.UserId);
+
+                if (client is null)
+                    throw new NotFoundException($"No se encontró el usuario con ID {request.UserId} e ID de rol {request.RoleId}");
+
+                client.User.Password = !string.IsNullOrEmpty(request.Password) ? request.Password : client.User.Password;
+                client.Name = !string.IsNullOrEmpty(request.Name) ? request.Name : client.Name;
+                client.FatherLastname = !string.IsNullOrEmpty(request.FatherLastname) ? request.FatherLastname : client.FatherLastname;
+                client.MotherLastname = !string.IsNullOrEmpty(request.MotherLastname) ? request.MotherLastname : client.MotherLastname;
+                client.BirthDate = request.BirthDate.HasValue ? request.BirthDate.Value : client.BirthDate;
+
+                client = await _clientRepository.UpdateAndReturn(client);
+
+                return client.User;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
 
         public int GetRoleId()
