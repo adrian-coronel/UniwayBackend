@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using NetTopologySuite.Geometries;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UniwayBackend.Models.Entities
@@ -9,9 +10,9 @@ namespace UniwayBackend.Models.Entities
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public decimal Lat { get; set; }
-        public decimal Lng { get; set; }
+        public Point? Location { get; set; }
         public int TechnicalProfessionAvailabilityId { get; set; }
+        public bool WorkingStatus { get; set; }
 
         public virtual TechnicalProfessionAvailability TechnicalProfessionAvailability { get; set; }
 

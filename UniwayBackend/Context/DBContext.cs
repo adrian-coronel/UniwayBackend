@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Metrics;
 using UniwayBackend.Models.Entities;
+using UniwayBackend.Models.Payloads.Core.Response;
 
 namespace UniwayBackend.Context
 {
@@ -101,10 +102,8 @@ namespace UniwayBackend.Context
                     .HasMaxLength(8); // Correspondencia con VARCHAR(8)
                 technical.Property(t => t.BirthDate)
                     .IsRequired();
-                technical.Property(t => t.Lat)
-                    .HasColumnType("decimal(15, 10)"); // Correspondencia con DECIMAL(15,10)
-                technical.Property(t => t.Lng)
-                    .HasColumnType("decimal(15, 10)"); // Correspondencia con DECIMAL(15,10)
+                technical.Property(t => t.Location)
+                    .HasColumnType("geography");
                 technical.Property(t => t.Enabled)
                     .IsRequired();
 

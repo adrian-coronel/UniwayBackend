@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using UniwayBackend.Factories;
+using NetTopologySuite.Geometries;
 
 namespace UniwayBackend.Models.Entities
 {
@@ -12,9 +12,8 @@ namespace UniwayBackend.Models.Entities
         public required string MotherLastname { get; set; }
         public required string Dni { get; set; }
         public required DateTime BirthDate { get; set; }
-        public decimal? Lat { get; set; }
-        public decimal? Lng { get; set; }
-        //public required bool WorkingStatus { get; set; }
+        public Point? Location { get; set; }
+        public bool WorkingStatus { get; set; }
         public required bool Enabled { get; set; }
 
     }

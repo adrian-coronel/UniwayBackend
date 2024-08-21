@@ -92,8 +92,6 @@ namespace UniwayBackend.Factories
                 userTechnical.Technical.FatherLastname = !string.IsNullOrEmpty(request.FatherLastname) ? request.FatherLastname : userTechnical.Technical.FatherLastname;
                 userTechnical.Technical.MotherLastname = !string.IsNullOrEmpty(request.MotherLastname) ? request.MotherLastname : userTechnical.Technical.MotherLastname;
                 userTechnical.Technical.BirthDate = request.BirthDate.HasValue ? request.BirthDate.Value : userTechnical.Technical.BirthDate;
-                userTechnical.Technical.Lat = request.Lat;
-                userTechnical.Technical.Lng = request.Lng;
 
                 userTechnical = await _userTechnicalRepository.UpdateAndReturn(userTechnical);
 
