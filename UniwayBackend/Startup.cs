@@ -81,6 +81,10 @@ namespace UniwayBackend
 
             services.AddScoped<IWorkshopTechnicalProfessionRepository, WorkshopTechnicalProfessionRepository>();
             services.AddScoped<IWorkshopTechnicalProfessionService, WorkshopTechnicalProfessionService>();
+
+            services.AddScoped<IWorkshopRepository, WorkshopRepository>();
+
+            services.AddScoped<ILocationService, LocationService>();
             
             
             

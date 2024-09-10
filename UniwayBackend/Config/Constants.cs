@@ -41,5 +41,20 @@
             public const byte ACTIVE_BYTE = 1;
         }
 
+        public static class Availabilities
+        {
+            public const short AT_HOME_ID = 1;
+            public const short IN_WORKSHOP_ID = 2;
+            public const short BOTH_ID = 0;
+        }
+
+        public static class StateRequests
+        {
+            public const int PENDING = 1;
+            public const int IN_PROCESS = 2;
+            public const int CLOSED = 3;
+            public const int CANCELED = 4;
+            public const int CLOSURE_REQUEST = 5;
+        }
     }
 }

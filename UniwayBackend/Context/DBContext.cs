@@ -12,14 +12,16 @@ namespace UniwayBackend.Context
         // DbSet => Para consultar y guardar instancias. Permitiendo usar Query LINQ
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<Technical> technicals { get; set; }
+        public DbSet<Technical> Technicals { get; set; }
         public DbSet<UserTechnical> UserTechnicals { get; set; }
         public DbSet<Client> clients { get; set; }
         public DbSet<Availability> Availabilities { get; set; }
         public DbSet<Experience> Experiences{ get; set; }
         public DbSet<Profession> Professions{ get; set; }
         public DbSet<WorkshopTechnicalProfession> WorkshopTechnicalProfessions { get; set; }
-
+        public DbSet<Request> Requests { get; set; }
+        public DbSet<ServiceTechnical> ServiceTechnicals{ get; set; }
+        public DbSet<TechnicalProfessionAvailability> TechnicalProfessionAvailabilities { get; set; }
 
         // Constructor de la clase DBContext que recibe opciones de configuración de DbContext
         public DBContext() { }
@@ -41,7 +43,7 @@ namespace UniwayBackend.Context
                 var connectionString = config.GetConnectionString("connUniway");
 
                 // Configura las opciones del DbContext con la cadena de conexión obtenida
-                optionsBuilder.UseSqlServer(connectionString);
+                optionsBuilder.UseSqlServer(connectionString, x => x.UseNetTopologySuite());
             }
         }
 
