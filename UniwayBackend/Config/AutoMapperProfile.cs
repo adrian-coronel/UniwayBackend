@@ -24,6 +24,10 @@ namespace UniwayBackend.Config
             CreateMap<WorkshopTechnicalProfession, WorkshopTechnicalProfessionResponse>().ReverseMap();
             CreateMap<WorkshopTechnicalProfession, WorkshopTechnicalProfessionRequest>().ReverseMap();
             CreateMap<MessageResponse<WorkshopTechnicalProfession>, MessageResponse<WorkshopTechnicalProfessionResponse>>().ReverseMap();
+
+            // Review
+            CreateMap<Review, ReviewResponse>().ReverseMap();
+            CreateMap<MessageResponse<Review>, MessageResponse<ReviewResponse>>().ReverseMap();
         }
 
     }

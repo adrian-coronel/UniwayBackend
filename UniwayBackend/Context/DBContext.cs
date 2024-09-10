@@ -22,6 +22,7 @@ namespace UniwayBackend.Context
         public DbSet<Request> Requests { get; set; }
         public DbSet<ServiceTechnical> ServiceTechnicals{ get; set; }
         public DbSet<TechnicalProfessionAvailability> TechnicalProfessionAvailabilities { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         // Constructor de la clase DBContext que recibe opciones de configuración de DbContext
         public DBContext() { }

@@ -86,6 +86,8 @@ namespace UniwayBackend
 
             services.AddScoped<ILocationService, LocationService>();
             
+            services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
             
             
 
