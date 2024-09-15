@@ -1,6 +1,8 @@
 ﻿using NetTopologySuite.Geometries;
+using System.Text.Json.Serialization;
+using UniwayBackend.Config;
 
-namespace UniwayBackend.Models.Payloads.Core.Response
+namespace UniwayBackend.Models.Payloads.Core.Response.Technical
 {
     public class TechnicalResponse
     {
@@ -10,6 +12,7 @@ namespace UniwayBackend.Models.Payloads.Core.Response
         public string MotherLastname { get; set; }
         public string Dni { get; set; }
         public DateTime BirthDate { get; set; }
+        [JsonConverter(typeof(PointConverter))]
         public Point? Location { get; set; }
         public bool WorkingStatus { get; set; }
     }

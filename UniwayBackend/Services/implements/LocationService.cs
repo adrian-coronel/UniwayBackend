@@ -2,12 +2,12 @@
 using NetTopologySuite;
 using System.Reflection;
 using UniwayBackend.Models.Payloads.Base.Response;
-using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
 using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Config;
 using UniwayBackend.Models.Entities;
+using UniwayBackend.Models.Payloads.Core.Response;
 
 namespace UniwayBackend.Services.implements
 {
@@ -48,8 +48,7 @@ namespace UniwayBackend.Services.implements
                         {
                             Id = tech.Id.ToString(),
                             Name = $"{tech.Name} {tech.FatherLastname}",
-                            Lat = tech.Location.Y,
-                            Lng = tech.Location.X,
+                            Location = tech.Location,
                             WorkingStatus = tech.WorkingStatus,
                             IsWorkshop = false,
                         }).ToList()
@@ -63,8 +62,7 @@ namespace UniwayBackend.Services.implements
                         {
                             Id = wor.Id.ToString(),
                             Name = wor.Name,
-                            Lat = wor.Location.Y,
-                            Lng = wor.Location.X,
+                            Location = wor.Location,
                             WorkingStatus = wor.WorkingStatus,
                             IsWorkshop = true,
                         }).ToList()    

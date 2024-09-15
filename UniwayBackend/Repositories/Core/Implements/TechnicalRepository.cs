@@ -44,6 +44,35 @@ namespace UniwayBackend.Repositories.Core.Implements
             }
         }
 
-
+        public async Task<Technical> FindTechnicalWithInformation(int TechnicalId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.Technicals
+                    .Include(x => x.Reviews) // Incluir Reviews
+                    .Include(x => x.UserTechnicals)
+                       .ThenInclude(x => x.TechnicalProfessions)
+                            .ThenInclude(tp => tp.Profession) // Incluir Profession
+                    .Include(x => x.UserTechnicals)
+                        .ThenInclude(ut => ut.User)
+                    .Include(x => x.UserTechnicals)
+                        .ThenInclude(ut => ut.User)
+                            .ThenInclude(u => u.Role)
+                    .Include(x => x.UserTechnicals)
+                        .ThenInclude(x => x.TechnicalProfessions)
+                            .ThenInclude(tp => tp.Experience) // Incluir Experience
+                    .Include(x => x.UserTechnicals)
+                        .ThenInclude(ut => ut.TowingCars) // Incluir TowingCars
+                    .Include(x => x.UserTechnicals)
+                        .ThenInclude(x => x.TechnicalProfessions)
+                            .ThenInclude(tp => tp.TechnicalProfessionAvailabilities)
+                                .ThenInclude(tpa => tpa.Availability)
+                    .Include(x => x.UserTechnicals)
+                        .ThenInclude(x => x.TechnicalProfessions)
+                            .ThenInclude(tp => tp.TechnicalProfessionAvailabilities)
+                                .ThenInclude(tpa => tpa.Workshops) // Incluir Workshops
+                    .FirstAsync(x => x.Id == TechnicalId);   
+            }
+        }
     }
 }

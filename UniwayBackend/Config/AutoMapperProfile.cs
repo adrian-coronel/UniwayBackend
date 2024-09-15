@@ -1,9 +1,19 @@
-﻿using System.Runtime.InteropServices;
-using AutoMapper;
+﻿using AutoMapper;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Models.Payloads.Core.Response;
+using UniwayBackend.Models.Payloads.Core.Response.Availability;
+using UniwayBackend.Models.Payloads.Core.Response.Client;
+using UniwayBackend.Models.Payloads.Core.Response.Experience;
+using UniwayBackend.Models.Payloads.Core.Response.Profession;
+using UniwayBackend.Models.Payloads.Core.Response.Review;
+using UniwayBackend.Models.Payloads.Core.Response.Technical;
+using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfession;
+using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfessionAvailability;
+using UniwayBackend.Models.Payloads.Core.Response.TowingCar;
+using UniwayBackend.Models.Payloads.Core.Response.UserTechnical;
+
 
 namespace UniwayBackend.Config
 {
@@ -27,7 +37,51 @@ namespace UniwayBackend.Config
 
             // Review
             CreateMap<Review, ReviewResponse>().ReverseMap();
+            CreateMap<Review, ReviewResponseV2>().ReverseMap();
             CreateMap<MessageResponse<Review>, MessageResponse<ReviewResponse>>().ReverseMap();
+
+            // Technical
+            CreateMap<Technical, TechnicalResponseV2>().ReverseMap();
+            CreateMap<MessageResponse<Technical>, MessageResponse<TechnicalResponseV2>>().ReverseMap();
+
+            // UserTechnical
+            CreateMap<UserTechnical, UserTechnicalResponse>().ReverseMap();
+            CreateMap<MessageResponse<UserTechnical>, MessageResponse<UserTechnicalResponse>>().ReverseMap();
+
+            // TechnicalProfession
+            CreateMap<TechnicalProfession, TechnicalProfessionResponse>().ReverseMap();
+            CreateMap<MessageResponse<TechnicalProfession>, MessageResponse<TechnicalProfessionResponse>>().ReverseMap();
+
+            // TowingCar
+            CreateMap<TowingCar, TowingCarResponse>().ReverseMap();
+            CreateMap<MessageResponse<TowingCar>, MessageResponse<TowingCarResponse>>().ReverseMap();
+
+            // Profession
+            CreateMap<Profession, ProfessionResponse>().ReverseMap();
+            CreateMap<MessageResponse<Profession>, MessageResponse<ProfessionResponse>>().ReverseMap();
+
+            // Experience
+            CreateMap<Experience, ExperienceResponse>().ReverseMap();
+            CreateMap<MessageResponse<Experience>, MessageResponse<ExperienceResponse>>().ReverseMap(); 
+            
+            // Availability
+            CreateMap<Availability, AvailabilityResponse>().ReverseMap();
+            CreateMap<MessageResponse<Availability>, MessageResponse<AvailabilityResponse>>().ReverseMap();
+
+            // TechnicalProfessionAvailability
+            CreateMap<TechnicalProfessionAvailability, TechnicalProfessionAvailabilityResponse>().ReverseMap();
+            CreateMap<MessageResponse<TechnicalProfessionAvailability>, MessageResponse<TechnicalProfessionAvailabilityResponse>>().ReverseMap();
+
+            // Workshop
+            CreateMap<Workshop, WorkshopResponse>().ReverseMap();
+            CreateMap<MessageResponse<Workshop>, MessageResponse<WorkshopResponse>>().ReverseMap();
+
+            // Client
+            CreateMap<Client, ClientResponseV2>().ReverseMap();
+            CreateMap<MessageResponse<Client>, MessageResponse<ClientResponseV2>>().ReverseMap();
+
+
+
         }
 
     }

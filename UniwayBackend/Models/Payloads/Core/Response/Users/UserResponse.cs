@@ -1,4 +1,5 @@
 ﻿using UniwayBackend.Models.Entities;
+using UniwayBackend.Models.Payloads.Core.Response;
 
 namespace UniwayBackend.Models.Payloads.Core.Response
 {

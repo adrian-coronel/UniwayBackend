@@ -88,6 +88,8 @@ namespace UniwayBackend
             
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
+
+            services.AddScoped<ITechnicalService, TechnicalService>();
             
             
 

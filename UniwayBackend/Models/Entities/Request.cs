@@ -32,5 +32,7 @@ namespace UniwayBackend.Models.Entities
         public virtual CategoryRequest CategoryRequest { get; set; }
         [ForeignKey("ServiceTechnicalId")]
         public virtual ServiceTechnical ServiceTechnical { get; set; }
+
+        public virtual List<Review> Reviews { get; set; }
     }
 }

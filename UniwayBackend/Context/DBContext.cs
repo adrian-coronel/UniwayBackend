@@ -19,6 +19,7 @@ namespace UniwayBackend.Context
         public DbSet<Experience> Experiences{ get; set; }
         public DbSet<Profession> Professions{ get; set; }
         public DbSet<WorkshopTechnicalProfession> WorkshopTechnicalProfessions { get; set; }
+        public DbSet<TechnicalProfession> TechnicalProfessions{ get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<ServiceTechnical> ServiceTechnicals{ get; set; }
         public DbSet<TechnicalProfessionAvailability> TechnicalProfessionAvailabilities { get; set; }
@@ -69,9 +70,12 @@ namespace UniwayBackend.Context
                     .HasColumnType("smallint")
                     .IsRequired();
                 user.Property(u => u.Email)
-                    .IsRequired();
+                    .IsRequired()
+                    .HasMaxLength(45);
                 user.Property(u => u.Password)
-                    .IsRequired();
+                    .IsRequired()
+                    .HasMaxLength(200);
+
                 user.Property(u => u.Enabled)
                     .IsRequired();
                 user.Property(u => u.CreatedOn);
@@ -82,6 +86,8 @@ namespace UniwayBackend.Context
                     .WithMany() // Un rol puede estar relacionado con varios usuarios
                     .HasForeignKey(u => u.RoleId);
             });
+
+           
 
             // Configuración de la entidad Technical
             modelBuilder.Entity<Technical>(technical =>
@@ -110,6 +116,18 @@ namespace UniwayBackend.Context
                 technical.Property(t => t.Enabled)
                     .IsRequired();
 
+                // Technical - UserTechnical (One-to-Many)
+                technical.HasMany(t => t.UserTechnicals)
+                    .WithOne(ut => ut.Technical)
+                    .HasForeignKey(ut => ut.TechnicalId)
+                    .OnDelete(DeleteBehavior.Cascade); // Si lo deseas en cascada
+
+                // Technical - Reviews (One-to-Many)
+                technical.HasMany(t => t.Reviews)
+                    .WithOne(r => r.Technical)
+                    .HasForeignKey(r => r.TechnicalId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
             });
 
 
@@ -132,10 +150,20 @@ namespace UniwayBackend.Context
                     .WithMany()
                     .HasForeignKey(userT => userT.UserId);
 
-                userT.HasOne(ut => ut.Technical)
-                    .WithMany()
-                    .HasForeignKey(ut => ut.TechnicalId);
+
+                // UserTechnical - TechnicalProfession (One-to-Many)
+                userT.HasMany(ut => ut.TechnicalProfessions)
+                    .WithOne(tp => tp.UserTechnical)
+                    .HasForeignKey(tp => tp.UserTechnicalId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // UserTechnical - TowingCars (One-to-Many)
+                userT.HasMany(ut => ut.TowingCars)
+                    .WithOne(tc => tc.UserTechnical)
+                    .HasForeignKey(tc => tc.UserTechnicalId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
+
 
             // Configuración de la entidad Client
             modelBuilder.Entity<Client>(client =>
@@ -163,8 +191,13 @@ namespace UniwayBackend.Context
 
                 // Definición de la relación con la entidad User
                 client.HasOne(c => c.User)
-                    .WithMany() // Un usuario puede estar relacionado con varios clientes
-                    .HasForeignKey(c => c.UserId);
+                    .WithOne()
+                    .HasForeignKey<Client>(c => c.UserId);
+
+
+                client.HasMany(c => c.Reviews)
+                    .WithOne(r => r.Client)
+                    .HasForeignKey(r => r.ClientId);
             });
 
             // Availability
@@ -211,9 +244,63 @@ namespace UniwayBackend.Context
                     .IsRequired();
 
                 techProf.HasOne(tp => tp.UserTechnical)
-                    .WithMany()
+                    .WithMany(u => u.TechnicalProfessions) // Importante especificar la relación inversa si la hemos definido
                     .HasForeignKey(tp => tp.UserTechnicalId);
+
+
+                // TechnicalProfession - Profession (Many-to-One)
+                techProf.HasOne(tp => tp.Profession)
+                    .WithMany()
+                    .HasForeignKey(tp => tp.ProfessionId);
+
+                // TechnicalProfession - Experience (Many-to-One)
+                techProf.HasOne(tp => tp.Experience)
+                    .WithMany()
+                    .HasForeignKey(tp => tp.ExperienceId);
+
+                // TechnicalProfession - TechnicalProfessionAvailability (One-to-Many)
+                techProf.HasMany(tp => tp.TechnicalProfessionAvailabilities)
+                    .WithOne(tpa => tpa.TechnicalProfession)
+                    .HasForeignKey(tpa => tpa.TechnicalProfessionId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
+
+            // Review - Request (Many-to-One)
+            modelBuilder.Entity<Review>(review =>
+            {
+                review.HasKey(r => r.Id);
+
+                review.HasOne(r => r.Request)
+                .WithMany(r => r.Reviews)
+                .HasForeignKey(r => r.RequestId);
+
+                review.HasOne(r => r.Client)
+                .WithMany(r => r.Reviews) // Importante especificar la relación inversa si la hemos definido
+                .HasForeignKey(r => r.ClientId);
+
+            });
+
+            // Review - Client (Many-to-One)
+
+            // TechnicalProfessionAvailability - Workshop (One-to-Many)
+            modelBuilder.Entity<TechnicalProfessionAvailability>()
+                .HasMany(tpa => tpa.Workshops)
+                .WithOne(w => w.TechnicalProfessionAvailability)
+                .HasForeignKey(w => w.TechnicalProfessionAvailabilityId);
+
+
+
+            modelBuilder.Entity<Workshop>()
+                .HasOne(w => w.TechnicalProfessionAvailability)
+                .WithMany(w => w.Workshops) // Importante especificar la relación inversa si la hemos definido
+                .HasForeignKey(w => w.TechnicalProfessionAvailabilityId);
+            
+
+
+            
+
+            
+
 
 
             // Configuro que entidades quiero que vengan por defecto Habilitadas

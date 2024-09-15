@@ -1,11 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using UniwayBackend.Factories;
-
-namespace UniwayBackend.Models.Entities
+﻿namespace UniwayBackend.Models.Payloads.Core.Response.Client
 {
-    [Table("Client")]
-    public class Client 
+    public class ClientResponseV2
     {
         public int Id { get; set; }
         public Guid UserId { get; set; }
@@ -15,9 +10,5 @@ namespace UniwayBackend.Models.Entities
         public required string Dni { get; set; }
         public required DateTime BirthDate { get; set; }
         public required bool Enabled { get; set; }
-
-        [NotMapped]
-        public User User { get; set; }
-        public virtual List<Review> Reviews { get; set; }
     }
 }

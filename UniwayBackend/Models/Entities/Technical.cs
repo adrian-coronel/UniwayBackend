@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using NetTopologySuite.Geometries;
 
 namespace UniwayBackend.Models.Entities
@@ -16,5 +17,10 @@ namespace UniwayBackend.Models.Entities
         public bool WorkingStatus { get; set; }
         public required bool Enabled { get; set; }
 
+
+
+        // Inverse Relations
+        public virtual List<Review> Reviews { get; set; } = new List<Review>();
+        public virtual List<UserTechnical> UserTechnicals { get; set; } = new List<UserTechnical>();
     }
 }
