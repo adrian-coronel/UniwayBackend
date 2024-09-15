@@ -4,10 +4,12 @@ using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Availability;
+using UniwayBackend.Models.Payloads.Core.Response.CategoryService;
 using UniwayBackend.Models.Payloads.Core.Response.Client;
 using UniwayBackend.Models.Payloads.Core.Response.Experience;
 using UniwayBackend.Models.Payloads.Core.Response.Profession;
 using UniwayBackend.Models.Payloads.Core.Response.Review;
+using UniwayBackend.Models.Payloads.Core.Response.ServiceTechnical;
 using UniwayBackend.Models.Payloads.Core.Response.Technical;
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfession;
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfessionAvailability;
@@ -80,8 +82,13 @@ namespace UniwayBackend.Config
             CreateMap<Client, ClientResponseV2>().ReverseMap();
             CreateMap<MessageResponse<Client>, MessageResponse<ClientResponseV2>>().ReverseMap();
 
+            // CategoryService
+            CreateMap<CategoryService, CategoryServiceResponse>().ReverseMap();
+            CreateMap<MessageResponse<CategoryService>, MessageResponse<CategoryServiceResponse>>().ReverseMap();
 
-
+            // ServicesTechnical
+            CreateMap<ServiceTechnical, ServiceTechnicalResponse>().ReverseMap();
+            CreateMap<MessageResponse<ServiceTechnicalResponse>, MessageResponse<ServiceTechnicalResponse>>().ReverseMap();
         }
 
     }

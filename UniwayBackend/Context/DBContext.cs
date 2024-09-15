@@ -23,6 +23,7 @@ namespace UniwayBackend.Context
         public DbSet<Request> Requests { get; set; }
         public DbSet<ServiceTechnical> ServiceTechnicals{ get; set; }
         public DbSet<TechnicalProfessionAvailability> TechnicalProfessionAvailabilities { get; set; }
+        public DbSet<CategoryService> CategoryServices { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
         // Constructor de la clase DBContext que recibe opciones de configuración de DbContext
@@ -294,9 +295,13 @@ namespace UniwayBackend.Context
                 .HasOne(w => w.TechnicalProfessionAvailability)
                 .WithMany(w => w.Workshops) // Importante especificar la relación inversa si la hemos definido
                 .HasForeignKey(w => w.TechnicalProfessionAvailabilityId);
-            
 
 
+            // CategoryService
+            modelBuilder.Entity<CategoryService>()
+                .HasMany(x => x.ServiceTechnicals)
+                .WithOne(x => x.CategoryService)
+                .HasForeignKey(x => x.CategoryServiceId);
             
 
             

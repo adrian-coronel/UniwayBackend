@@ -91,6 +91,8 @@ namespace UniwayBackend
 
             services.AddScoped<ITechnicalService, TechnicalService>();
             
+            services.AddScoped<ICategoryServiceRepository, CategoryServiceRepository>();
+            services.AddScoped<ICategoryServiceService, CategoryServiceService>();
             
 
         }
