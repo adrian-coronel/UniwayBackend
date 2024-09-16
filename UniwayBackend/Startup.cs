@@ -93,7 +93,9 @@ namespace UniwayBackend
             
             services.AddScoped<ICategoryServiceRepository, CategoryServiceRepository>();
             services.AddScoped<ICategoryServiceService, CategoryServiceService>();
-            
+
+            services.AddScoped<IStateRequestService, StateRequestService>();
+            services.AddScoped<ICategoryRequestService, CategoryRequestService>();            
 
         }
 

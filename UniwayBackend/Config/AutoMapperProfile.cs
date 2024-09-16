@@ -2,14 +2,18 @@
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
+using UniwayBackend.Models.Payloads.Core.Request.Request;
 using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Availability;
+using UniwayBackend.Models.Payloads.Core.Response.CategoryRequest;
 using UniwayBackend.Models.Payloads.Core.Response.CategoryService;
 using UniwayBackend.Models.Payloads.Core.Response.Client;
 using UniwayBackend.Models.Payloads.Core.Response.Experience;
 using UniwayBackend.Models.Payloads.Core.Response.Profession;
+using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Models.Payloads.Core.Response.Review;
 using UniwayBackend.Models.Payloads.Core.Response.ServiceTechnical;
+using UniwayBackend.Models.Payloads.Core.Response.StateRequest;
 using UniwayBackend.Models.Payloads.Core.Response.Technical;
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfession;
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfessionAvailability;
@@ -89,6 +93,18 @@ namespace UniwayBackend.Config
             // ServicesTechnical
             CreateMap<ServiceTechnical, ServiceTechnicalResponse>().ReverseMap();
             CreateMap<MessageResponse<ServiceTechnicalResponse>, MessageResponse<ServiceTechnicalResponse>>().ReverseMap();
+
+            // StateRequest
+            CreateMap<StateRequest, StateRequestResponse>().ReverseMap();
+            CreateMap<MessageResponse<StateRequest>, MessageResponse<StateRequestResponse>>().ReverseMap();
+
+            // CategoryRequest
+            CreateMap<CategoryRequest, CategoryRequestResponse>().ReverseMap();
+            CreateMap<MessageResponse<CategoryRequest>, MessageResponse<CategoryRequestResponse>>().ReverseMap();
+
+            // Request
+            CreateMap<Request, RequestRequest>().ReverseMap();
+            CreateMap<MessageResponse<Request>, MessageResponse<RequestResponse>>().ReverseMap();
         }
 
     }

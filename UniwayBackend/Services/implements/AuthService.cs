@@ -39,6 +39,8 @@ namespace UniwayBackend.Services.implements
             AuthenticateResponse<User> response;
             try
             {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
                 User? user = await _repository
                     .FindByUsernameAndPassword(AuthRequest.Email, AuthRequest.Password);
 
@@ -50,7 +52,7 @@ namespace UniwayBackend.Services.implements
             }
             catch (Exception ex)
             {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+                _logger.LogError(ex.Message);
                 response = _utilitaries.setResponseBaseForAuthException(ex);
             }
             return response;
@@ -61,6 +63,8 @@ namespace UniwayBackend.Services.implements
             AuthenticateResponse<User> response;
             try
             {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
                 User? user = await _repository
                     .FindByUsernameAndPassword(request.Email, request.Password);
 
@@ -76,7 +80,7 @@ namespace UniwayBackend.Services.implements
             }
             catch (Exception ex)
             {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+                _logger.LogError(ex.Message);
                 response = _utilitaries.setResponseBaseForAuthException(ex);
             }
             return response;
