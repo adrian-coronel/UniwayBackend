@@ -1,4 +1,8 @@
-﻿namespace UniwayBackend.Models.Payloads.Core.Response.Request
+﻿using NetTopologySuite.Geometries;
+using System.Text.Json.Serialization;
+using UniwayBackend.Config;
+
+namespace UniwayBackend.Models.Payloads.Core.Response.Request
 {
     public class RequestResponse
     {
@@ -10,8 +14,8 @@
         public int ServiceTechnicalId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public double Lat { get; set; }
-        public double Lng { get; set; }
+        [JsonConverter(typeof(PointConverter))]
+        public Point? Location { get; set; }
         public DateTime? ProposedAssistanceDate { get; set; }
         public DateTime? AnsweredOn { get; set; }
         public DateTime? ResolvedOn { get; set; }

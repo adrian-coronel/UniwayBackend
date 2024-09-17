@@ -7,6 +7,7 @@ namespace UniwayBackend.Repositories.Base
         Task<List<TEntity>> FindAll();
         Task<TEntity?> FindById(Key Id);
         Task<bool> Insert(TEntity entity);
+        Task<List<TEntity>> InsertAll(List<TEntity> entities);
         Task<TEntity> InsertAndReturn(TEntity entity);
         Task<bool> Update(TEntity entity);
         Task<TEntity> UpdateAndReturn(TEntity entity);

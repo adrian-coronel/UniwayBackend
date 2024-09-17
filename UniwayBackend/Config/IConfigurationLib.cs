@@ -2,6 +2,7 @@
 {
     public interface IConfigurationLib
     {
+
         int SuccessCode { get; } // 200
         string SuccessMessage { get; }
 

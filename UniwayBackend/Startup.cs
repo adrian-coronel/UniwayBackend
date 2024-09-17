@@ -3,7 +3,9 @@ using Microsoft.OpenApi.Models;
 using UniwayBackend.Config;
 using UniwayBackend.Factories;
 using UniwayBackend.Helpers.Filters;
+using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
+using UniwayBackend.Repositories.Base;
 using UniwayBackend.Repositories.Core.Implements;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.implements;
@@ -95,7 +97,20 @@ namespace UniwayBackend
             services.AddScoped<ICategoryServiceService, CategoryServiceService>();
 
             services.AddScoped<IStateRequestService, StateRequestService>();
-            services.AddScoped<ICategoryRequestService, CategoryRequestService>();            
+            services.AddScoped<ICategoryRequestService, CategoryRequestService>();
+
+            services.AddScoped<IImagesProblemRequestService, ImagesProblemRequestService>();
+
+            services.AddScoped<IRequestService, RequestService>();
+            services.AddScoped<IRequestRepository, RequestRepository>();
+
+            services.AddScoped<IStorageService, StorageService>();
+
+            services.AddScoped<IBaseRepository<StateRequest, short>, BaseRepository<StateRequest, short>>();
+            services.AddScoped<IBaseRepository<CategoryRequest, short>, BaseRepository<CategoryRequest, short>>();
+            services.AddScoped<IBaseRepository<ImagesProblemRequest, int>, BaseRepository<ImagesProblemRequest, int>>();
+
+
 
         }
 

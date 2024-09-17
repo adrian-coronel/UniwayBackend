@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using NetTopologySuite.Geometries;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
@@ -103,7 +104,9 @@ namespace UniwayBackend.Config
             CreateMap<MessageResponse<CategoryRequest>, MessageResponse<CategoryRequestResponse>>().ReverseMap();
 
             // Request
-            CreateMap<Request, RequestRequest>().ReverseMap();
+            CreateMap<RequestRequest, Request>()
+                .ForMember(dest => dest.Location, opt => opt.MapFrom( src => new Point(src.Lng, src.Lat) { SRID = 4326 } ));
+            CreateMap<Request, RequestResponse>().ReverseMap();
             CreateMap<MessageResponse<Request>, MessageResponse<RequestResponse>>().ReverseMap();
         }
 

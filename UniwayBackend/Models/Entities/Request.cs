@@ -34,5 +34,6 @@ namespace UniwayBackend.Models.Entities
         public virtual ServiceTechnical ServiceTechnical { get; set; }
 
         public virtual List<Review> Reviews { get; set; }
+        public virtual List<ImagesProblemRequest> ImagesProblemRequests { get; set; }
     }
 }

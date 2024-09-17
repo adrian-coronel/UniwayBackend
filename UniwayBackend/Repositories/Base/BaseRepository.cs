@@ -76,5 +76,18 @@ namespace UniwayBackend.Repositories.Base
                 return false;
             }
         }
+
+        public async Task<List<TEntity>> InsertAll(List<TEntity> entities)
+        {
+            using (DBContext context = new DBContext())
+            {
+                await context.Set<TEntity>().AddRangeAsync(entities);
+
+                await context.SaveChangesAsync();
+
+                return entities;
+            }
+        }
+
     }
 }

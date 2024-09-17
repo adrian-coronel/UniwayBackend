@@ -2,6 +2,11 @@
 {
     public static class Constants
     {
+        public static readonly string[] VALID_CONTENT_TYPES = new string[] { "image/jpeg", "image/png", "image/jpg" };
+        public static short MAX_FILES = 5;
+        public static int MAX_MB = 10; // 10 MB en bytes
+
+
         public static class Roles
         {
  
@@ -56,5 +61,7 @@
             public const int CANCELED = 4;
             public const int CLOSURE_REQUEST = 5;
         }
+
+        
     }
 }
