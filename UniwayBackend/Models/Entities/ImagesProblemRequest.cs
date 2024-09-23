@@ -15,8 +15,6 @@ namespace UniwayBackend.Models.Entities
         public string OriginalName { get; set; }
         public string ExtensionType { get; set; }
         public string ContentType { get; set; }
-        public string FakeName { get; set; }
-        public string FakeExtensionType { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
         

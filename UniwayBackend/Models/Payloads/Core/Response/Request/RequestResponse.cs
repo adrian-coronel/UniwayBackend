@@ -1,6 +1,7 @@
 ﻿using NetTopologySuite.Geometries;
 using System.Text.Json.Serialization;
 using UniwayBackend.Config;
+using UniwayBackend.Models.Payloads.Core.Response.ImageProblem;
 
 namespace UniwayBackend.Models.Payloads.Core.Response.Request
 {
@@ -20,5 +21,7 @@ namespace UniwayBackend.Models.Payloads.Core.Response.Request
         public DateTime? AnsweredOn { get; set; }
         public DateTime? ResolvedOn { get; set; }
         public bool IsResponse { get; set; }
+
+        public List<ImagesProblemRequestResponse> ImagesProblemRequests { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using UniwayBackend.Models.Payloads.Core.Response.CategoryRequest;
 using UniwayBackend.Models.Payloads.Core.Response.CategoryService;
 using UniwayBackend.Models.Payloads.Core.Response.Client;
 using UniwayBackend.Models.Payloads.Core.Response.Experience;
+using UniwayBackend.Models.Payloads.Core.Response.ImageProblem;
 using UniwayBackend.Models.Payloads.Core.Response.Profession;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Models.Payloads.Core.Response.Review;
@@ -107,6 +108,7 @@ namespace UniwayBackend.Config
             CreateMap<RequestRequest, Request>()
                 .ForMember(dest => dest.Location, opt => opt.MapFrom( src => new Point(src.Lng, src.Lat) { SRID = 4326 } ));
             CreateMap<Request, RequestResponse>().ReverseMap();
+            CreateMap<ImagesProblemRequest, ImagesProblemRequestResponse>().ReverseMap();
             CreateMap<MessageResponse<Request>, MessageResponse<RequestResponse>>().ReverseMap();
         }
 

@@ -2,7 +2,6 @@
 {
     public class RequestRequest
     {
-        public int Id { get; set; }
         public short StateRequestId { get; set; }
         public short CategoryRequestId { get; set; }
         public int ClientId { get; set; }

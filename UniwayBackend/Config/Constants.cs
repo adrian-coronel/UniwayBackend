@@ -3,10 +3,23 @@
     public static class Constants
     {
         public static readonly string[] VALID_CONTENT_TYPES = new string[] { "image/jpeg", "image/png", "image/jpg" };
+        public static readonly Dictionary<string, string> VALID_TYPES = new Dictionary<string, string>
+        {
+            { ".jpeg", "image/jpeg" },
+            { ".jpg", "image/jpeg" },
+            { ".png", "image/png" }
+        };
         public static short MAX_FILES = 5;
         public static int MAX_MB = 10; // 10 MB en bytes
 
-
+        public static class StateRequestConfig
+        {
+            public const int PENDING = 1;
+            public const int IN_PROCESS = 2;
+            public const int CANCELED = 4;
+            public const int CLOSED = 3;
+            public const int CLOSURE_REQUEST = 5;
+        }
         public static class Roles
         {
  

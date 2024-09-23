@@ -50,7 +50,7 @@ namespace UniwayBackend.Controllers
                 {
                     var currentDate = DateTime.UtcNow;
 
-                    List<ImageResponse> images = await _storageService.SaveFilesAsync(request.Files,currentDate.ToString("yyyy-mm-dd"));
+                    List<ImageResponse> images = await _storageService.SaveFilesAsync(request.Files,currentDate.ToString("yyyy-MM-dd"));
 
                     List<ImagesProblemRequest> imagesProblemMapped = images.Select(x => new ImagesProblemRequest
                     {
@@ -59,8 +59,6 @@ namespace UniwayBackend.Controllers
                         OriginalName = x.OriginalName,
                         ExtensionType = x.ExtensionType,
                         ContentType = x.ContentType,
-                        FakeName = x.FakeName,
-                        FakeExtensionType = x.FakeExtensionType,
                         CreatedOn = DateTime.UtcNow,
                     }).ToList();
 

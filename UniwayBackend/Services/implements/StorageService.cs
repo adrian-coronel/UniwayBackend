@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using UniwayBackend.Config;
 using UniwayBackend.Models.Payloads.Core.Response.Storage;
 using UniwayBackend.Services.interfaces;
 
@@ -14,6 +15,31 @@ namespace UniwayBackend.Services.implements
             _storageRoot = configuration["Storage:RootPath"] ?? "Uploads";
         }
 
+        public async Task<ImageGetResponse?> GetFileAsync(string folder, string fileName)
+        {
+            var filePath = Path.Combine(_storageRoot, folder, fileName);
+            var contentType = GetContentType(Path.GetExtension(fileName));
+
+            // Si el archivo no existe o el contenido no es valido
+            if (!File.Exists(filePath) || contentType == null) return null;
+
+            var fileContents = await File.ReadAllBytesAsync(filePath);
+            
+            return new ImageGetResponse
+            {
+                FileContent = fileContents,
+                ContentType = contentType,
+                FileName = fileName
+            };
+        }
+
+        private string? GetContentType(string fileExtension)
+        {
+            return Constants.VALID_TYPES.ContainsKey(fileExtension)
+                ? Constants.VALID_TYPES[fileExtension]
+                : null;
+        }
+
         // Función para guardar un solo archivo
         public async Task<ImageResponse> SaveFileAsync(IFormFile file, string folder)
         {
@@ -25,8 +51,11 @@ namespace UniwayBackend.Services.implements
                 Directory.CreateDirectory(folderPath);
             }
 
-            // Crear nombre hasheado y cambiar la extensión a .wtz
-            var uniqueFileName = GenerateHashedFileName(Path.GetFileNameWithoutExtension(file.FileName), ".wtz");
+            // Generar un nombre de archivo único
+            string fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{DateTime.Now:yyyyMMddHHmmss}";
+            string fileExtension = Path.GetExtension(file.FileName);
+            string uniqueFileName = $"{fileName}{fileExtension}";
+
             var fullPath = Path.Combine(folderPath, uniqueFileName);
 
             // Guardar el archivo
@@ -39,11 +68,9 @@ namespace UniwayBackend.Services.implements
             return new ImageResponse
             {
                 Url = Path.Combine(folder, uniqueFileName),
-                OriginalName = Path.GetFileNameWithoutExtension(file.FileName),
-                ExtensionType = Path.GetExtension(file.FileName),
+                OriginalName = fileName,
+                ExtensionType = fileExtension,
                 ContentType = file.ContentType,
-                FakeName = Path.GetFileNameWithoutExtension(uniqueFileName),
-                FakeExtensionType = Path.GetExtension(uniqueFileName)
             };
         }
 
@@ -75,16 +102,7 @@ namespace UniwayBackend.Services.implements
             await Task.CompletedTask;
         }
 
-        // Método para generar un nombre hasheado para los archivos
-        private string GenerateHashedFileName(string originalFileName, string extension)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(originalFileName + DateTime.Now.Ticks));
-                var hashedFileName = BitConverter.ToString(hash).Replace("-", "").ToLower();
-                return hashedFileName + extension; // Cambiar la extensión a .wtz
-            }
-        }
+        
 
     }
 }
