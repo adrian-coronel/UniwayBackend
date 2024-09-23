@@ -33,10 +33,9 @@ namespace UniwayBackend.Repositories.Core.Implements
                         context.TechnicalProfessionAvailabilities
                             .Any(tpa => tpa.AvailabilityId == Constants.Availabilities.AT_HOME_ID &&
                                         tpa.TechnicalProfession.UserTechnicalId == x.Id) &&
-                        // Excluye técnicos con solicitudes activas (no cerradas o en proceso de cierre)
+                        // Excluye técnicos con solicitudes en proceso
                         !(context.Requests
-                            .Any(r => r.StateRequestId != Constants.StateRequests.CLOSED &&
-                                      r.StateRequestId != Constants.StateRequests.CLOSURE_REQUEST &&
+                            .Any(r => r.StateRequestId == Constants.StateRequests.IN_PROCESS &&
                                       r.TechnicalProfessionAvailability.TechnicalProfession.UserTechnicalId == x.Id))
                     )
                     .Select(x => x.Technical)
