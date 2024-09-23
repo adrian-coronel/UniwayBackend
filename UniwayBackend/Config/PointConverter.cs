@@ -57,9 +57,9 @@ namespace UniwayBackend.Config
 
             writer.WriteStartObject();
             writer.WritePropertyName("lng");
-            writer.WriteNumberValue(value.X);
-            writer.WritePropertyName("lat");
             writer.WriteNumberValue(value.Y);
+            writer.WritePropertyName("lat");
+            writer.WriteNumberValue(value.X);
             writer.WriteEndObject();
         }
     }
