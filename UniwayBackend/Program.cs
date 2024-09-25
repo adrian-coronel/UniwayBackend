@@ -5,6 +5,7 @@ using UniwayBackend.Config;
 using UniwayBackend.Factories;
 using UniwayBackend.Helpers;
 using UniwayBackend.Helpers.Filters;
+using UniwayBackend.Hubs;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads;
 using UniwayBackend.Repositories.Base;
@@ -34,5 +35,11 @@ app.UseAuthorization();
 
 app.UseMiddleware<JwtMiddleware>(); // Agregamos nuestro MIDDLEWARE de JWT
 app.MapControllers();
+
+app.UseEndpoints(endp =>
+{
+    endp.MapHub<NotificationHub>("/notificationHub");
+});
+
 
 app.Run();

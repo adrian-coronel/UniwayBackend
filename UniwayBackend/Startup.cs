@@ -50,7 +50,9 @@ namespace UniwayBackend
             // Add swagger services 
             SwaggerConfig(services);
 
-
+            // SignalR
+            services.AddSignalR();
+            
 
             ///// Injection Dependency
 

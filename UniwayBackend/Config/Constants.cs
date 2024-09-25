@@ -75,6 +75,9 @@
             public const int CLOSURE_REQUEST = 5;
         }
 
-        
+        public static class TypesMethodsConnection
+        {
+            public const string RECEIVE_NOTIFICATION_REQUESTS = "ReceiveNotificationRequests";
+        }
     }
 }
