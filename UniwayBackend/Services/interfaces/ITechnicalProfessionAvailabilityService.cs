@@ -7,5 +7,6 @@ namespace UniwayBackend.Services.interfaces
     {
         //Task<MessageResponse<TechnicalProfessionAvailability>> GetAllTechnicalLocations(int RangeDistance);
         Task<MessageResponse<TechnicalProfessionAvailability>> GetByTechnicalAndAvailability(int TechnicalId, short AvailabilityId);
+        Task<MessageResponse<TechnicalProfessionAvailability>> GetByAvailabilityAndLocation(double lat, double lng, short AvailabilityId = 0, int distance = 5000);
     }
 }

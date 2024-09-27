@@ -23,7 +23,14 @@ namespace UniwayBackend.Services.implements
         {
 
             await _hubContext.Clients.User(UserId)
-                .SendAsync("ReceiveNotificationRequests",
+                .SendAsync(Constants.TypesMethodsConnection.RECEIVE_NOTIFICATION_REQUESTS,
+                           JsonSerializer.Serialize(notification));
+        }
+
+        public async Task SendSomeNotificationAsync(List<string> UsersId, NotificationResponse notification)
+        {
+            await _hubContext.Clients.Users(UsersId)
+                .SendAsync(Constants.TypesMethodsConnection.RECEIVE_NOTIFICATION_REQUESTS,
                            JsonSerializer.Serialize(notification));
         }
     }

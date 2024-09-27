@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NetTopologySuite.Geometries;
 using System.Reflection;
 using UniwayBackend.Config;
+using UniwayBackend.Factories;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request.Request;
@@ -125,6 +127,24 @@ namespace UniwayBackend.Controllers
                 }
 
                 response = _mapper.Map<MessageResponse<RequestResponse>>(result);
+
+                var referenceLocation = new Point(request.Lng, request.Lat) { SRID = 4326 };
+
+                // Notificar a todos
+                var NearbyUsers = await _userRepository
+                    .FindByAvailabilityAndLocation(referenceLocation,request.AvailabilityId.Value,request.Distance.Value);
+
+                if (NearbyUsers.Count > 0)
+                {
+                    List<string> ids = NearbyUsers.Select(x => x.Id.ToString()).ToList();
+
+                    await _notificationService.SendSomeNotificationAsync(ids, new NotificationResponse
+                    {
+                        Type = Constants.TypesConnectionSignalR.SOLICITUDE,
+                        Message = "Notification success",
+                        Data = response.Object
+                    });
+                }
             }
             catch (Exception ex)
             {

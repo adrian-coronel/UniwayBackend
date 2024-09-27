@@ -11,6 +11,7 @@
         public int? ServiceTechnicalId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public int? Distance { get; set; }
         public double Lat { get; set; }
         public double Lng { get; set; }
         public DateTime? ProposedAssistanceDate { get; set; }
