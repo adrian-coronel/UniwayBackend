@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using UniwayBackend.Config;
 using UniwayBackend.Factories;
 using UniwayBackend.Helpers.Filters;
@@ -17,6 +21,7 @@ namespace UniwayBackend
     {
 
         public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration) 
         { 
             Configuration = configuration;
@@ -47,12 +52,15 @@ namespace UniwayBackend
             // AutoMapper
             services.AddAutoMapper(typeof(AutoMapperProfile));
 
+            // Configre JwtAuthentication
+            JwtConfig(services);
+
             // Add swagger services 
             SwaggerConfig(services);
 
             // SignalR
             services.AddSignalR();
-            
+            services.AddSingleton<IUserIdProvider, UserIdJwtProvider>();
 
             ///// Injection Dependency
 
@@ -112,8 +120,57 @@ namespace UniwayBackend
             services.AddScoped<IBaseRepository<CategoryRequest, short>, BaseRepository<CategoryRequest, short>>();
             services.AddScoped<IBaseRepository<ImagesProblemRequest, int>, BaseRepository<ImagesProblemRequest, int>>();
 
+            services.AddScoped<ITechnicalProfessionAvailabilityRepository, TechnicalProfessionAvailabilityRepository>();
+            services.AddScoped<ITechnicalProfessionAvailabilityService, TechnicalProfessionAvailabilityService>();
+
+            services.AddScoped<INotificationService, NotificationService>();
 
 
+        }
+
+        private static void JwtConfig(IServiceCollection services)
+        {
+            var secretKey = services.BuildServiceProvider()
+                                  .GetRequiredService<IConfiguration>()
+                                  .GetValue<string>("AppSettings:Secret"); 
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+               options.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateIssuer = false, // Verifica que el emisor (Issuer) del token sea válido.
+                   ValidateAudience = false, // Verifica que la audiencia (Audience) del token sea correcta.
+                   ValidateLifetime = true, // Verifica que el token no esté expirado.
+                   ValidateIssuerSigningKey = true, // Verifica que el token fue firmado con una clave válida.
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
+                   //ValidIssuer = "https://localhost:44300",
+                   //ValidAudience = "https://localhost:5500",
+                   ClockSkew = TimeSpan.Zero // Para evitar retrasos en la expiración del token
+               };
+
+               // Permitir el uso de JWT en SignalR
+               options.Events = new JwtBearerEvents
+               {
+                   OnMessageReceived = context =>
+                   {
+                       var accessToken = context.Request.Query["access_token"];
+
+                       // Si la solicitud es para el hub de SignalR
+                       var path = context.HttpContext.Request.Path;
+                       if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notificationHub"))
+                       {
+                           // Asigna el token al contexto
+                           context.Token = accessToken;
+                       }
+                       return Task.CompletedTask;
+                   }
+               };
+           });
         }
 
         private static void SwaggerConfig(IServiceCollection services)

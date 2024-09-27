@@ -1,37 +1,28 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
+using UniwayBackend.Config;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 
 namespace UniwayBackend.Hubs
 {
     public class NotificationHub : Hub
     {
-
-        // Mapa para userId a ConnectionId
-        private static readonly Dictionary<Guid, string> _userConnections = new(); 
-
         public override async Task OnConnectedAsync()
         {
-            // Este método se llama cuando un cliente se conecta
+            // Aquí puedes realizar alguna lógica adicional si lo necesitas
             await base.OnConnectedAsync();
         }
 
-        public async Task RegisterUser(Guid userId)
+        // Este metodo puede ser llamado desde 
+        public async Task SendNotificationAsync(string UserId, object? obj)
         {
-            // Asocia el mechanicId con el ConnectionId actual
-            var connectionId = Context.ConnectionId;
 
-            // Almacena la relación en un diccionario
-            _userConnections[userId] = connectionId;            
-        }
-
-        public async Task SendNotificationAsync(string MethodName, Guid userId, string message)
-        {
-            if (_userConnections.TryGetValue(userId, out var connectionId))
+            if (!string.IsNullOrEmpty(UserId))
             {
-                // Envía la notificación solo al cliente que corresponde al mechanicId
-                await Clients.Client(connectionId).SendAsync(MethodName, message);
+                // Enviar notificación directamente al usuario autenticado
+                await Clients.User(UserId).SendAsync(Constants.TypesMethodsConnection.RECEIVE_NOTIFICATION_REQUESTS, obj);
             }
         }
-
     }
+
 }

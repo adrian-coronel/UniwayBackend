@@ -20,5 +20,14 @@ namespace UniwayBackend.Repositories.Core.Implements
         //            .ToListAsync();
         //    }
         //}
+        public async Task<TechnicalProfessionAvailability?> FindByTechnicalAndAvailability(int technicalId, short availabilityId)
+        {
+            using (var context = new DBContext())
+            {
+                return await context.Set<TechnicalProfessionAvailability>()
+                    .FirstOrDefaultAsync(x => x.AvailabilityId == availabilityId 
+                                           && x.TechnicalProfession.UserTechnical.TechnicalId == technicalId);
+            }
+        }
     }
 }

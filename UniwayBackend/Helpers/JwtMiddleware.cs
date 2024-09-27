@@ -10,6 +10,9 @@ using UniwayBackend.Services.interfaces;
 
 namespace UniwayBackend.Helpers
 {
+    /// <summary>
+    /// EN DESHUSO
+    /// </summary>
     public class JwtMiddleware
     {
 

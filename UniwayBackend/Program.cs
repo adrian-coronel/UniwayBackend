@@ -16,11 +16,28 @@ using UniwayBackend.Services.interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuración CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.WithOrigins("http://127.0.0.1:5500")
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                   .AllowCredentials();
+        });
+});
+
+
+
 // Add services to the container.
 var startup = new Startup(builder.Configuration);
 startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
+
+app.UseCors("AllowAllOrigins");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -31,9 +48,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<JwtMiddleware>(); // Agregamos nuestro MIDDLEWARE de JWT
+//app.UseMiddleware<JwtMiddleware>(); // Agregamos nuestro MIDDLEWARE de JWT
 app.MapControllers();
 
 app.UseEndpoints(endp =>

@@ -14,5 +14,6 @@ namespace UniwayBackend.Models.Entities
         public DateTime? UpdatedOn { get; set; }
 
         public Role Role { get; set; }
+        public virtual List<UserTechnical> UserTechnicals { get; set; }
     }
 }

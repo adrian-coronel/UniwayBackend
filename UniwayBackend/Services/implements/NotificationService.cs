@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
+using System.Text.Json;
 using UniwayBackend.Config;
 using UniwayBackend.Hubs;
 using UniwayBackend.Models.Payloads.Core.Response.Notification;
@@ -17,13 +19,12 @@ namespace UniwayBackend.Services.implements
         }
 
 
-        public async Task SendNotificationAsync(Guid UserId, NotificationResponse notification)
+        public async Task SendNotificationAsync(string UserId, NotificationResponse notification)
         {
-            await _hubContext.Clients.User(UserId.ToString())
-                .SendAsync(Constants.TypesMethodsConnection.RECEIVE_NOTIFICATION_REQUESTS,
-                           UserId,
-                           notification
-                );
+
+            await _hubContext.Clients.User(UserId)
+                .SendAsync("ReceiveNotificationRequests",
+                           JsonSerializer.Serialize(notification));
         }
     }
 }

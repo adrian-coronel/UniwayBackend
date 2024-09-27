@@ -20,6 +20,27 @@ namespace UniwayBackend.Services.implements
             _utilitaries = utilitaries;
         }
 
+        public async Task<MessageResponse<TechnicalProfessionAvailability>> GetByTechnicalAndAvailability(int TechnicalId, short AvailabilityId)
+        {
+            MessageResponse<TechnicalProfessionAvailability> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                TechnicalProfessionAvailability? technicalAvailability = await _repository.FindByTechnicalAndAvailability(TechnicalId, AvailabilityId);
+
+                if (technicalAvailability == null) return _utilitaries.setResponseBaseForNotFount();
+
+                response = _utilitaries.setResponseBaseForObject(technicalAvailability);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
+
         //public Task<MessageResponse<TechnicalProfessionAvailability>> GetAllTechnicalLocations(int RangeDistance)
         //{
         //    MessageResponse<TechnicalProfessionAvailability> response;

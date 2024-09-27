@@ -6,5 +6,6 @@ namespace UniwayBackend.Services.interfaces
     public interface ITechnicalProfessionAvailabilityService
     {
         //Task<MessageResponse<TechnicalProfessionAvailability>> GetAllTechnicalLocations(int RangeDistance);
+        Task<MessageResponse<TechnicalProfessionAvailability>> GetByTechnicalAndAvailability(int TechnicalId, short AvailabilityId);
     }
 }

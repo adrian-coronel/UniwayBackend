@@ -3,6 +3,7 @@ using UniwayBackend.Context;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Repositories.Base;
 using UniwayBackend.Repositories.Core.Interfaces;
+using static UniwayBackend.Config.Constants;
 
 namespace UniwayBackend.Repositories.Core.Implements
 {
@@ -14,6 +15,24 @@ namespace UniwayBackend.Repositories.Core.Implements
             {
                 return await context.Set<User>()
                     .SingleOrDefaultAsync(u => u.Id == Id && u.RoleId == RoleId);
+            }
+        }
+
+        public async Task<User?> FindByTechnicalProfessionAvailabilityId(int technicalProfessionAvailabilityId)
+        {
+            using (var context = new DBContext())
+            {
+                var query = from user in context.Users
+                            join userTechnical in context.UserTechnicals 
+                                on user.Id equals userTechnical.UserId
+                            join technicalProfession in context.TechnicalProfessions 
+                                on userTechnical.Id equals technicalProfession.UserTechnicalId
+                            join technicalProfessionAvailability in context.TechnicalProfessionAvailabilities
+                                on technicalProfession.Id equals technicalProfessionAvailability.TechnicalProfessionId
+                            where technicalProfessionAvailability.Id == technicalProfessionAvailabilityId
+                            select user;
+
+                return await query.FirstOrDefaultAsync();
             }
         }
 

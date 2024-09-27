@@ -1,13 +1,10 @@
-﻿namespace UniwayBackend.Models.Payloads.Core.Request.Request
+﻿namespace UniwayBackend.Models.Payloads.Core.Response.Request
 {
-    public class RequestRequest
+    public class RequestRequestV2
     {
         public short StateRequestId { get; set; }
         public short CategoryRequestId { get; set; }
         public int ClientId { get; set; }
-        public int? TechnicalProfessionAvailabilityId { get; set; }
-        public short? AvailabilityId { get; set; }
-        public int? TechnicalId { get; set; }
         public int? ServiceTechnicalId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -18,7 +15,10 @@
         public DateTime? ResolvedOn { get; set; }
         public bool IsResponse { get; set; }
 
+
+        // Lista de mecánicos
+
         // Agregar imagenes
-        public List<IFormFile> Files { get; set; } = new List<IFormFile>();
+        public List<IFormFile> Files { get; set; }
     }
 }

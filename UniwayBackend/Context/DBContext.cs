@@ -89,6 +89,11 @@ namespace UniwayBackend.Context
                 user.HasOne(u => u.Role)
                     .WithMany() // Un rol puede estar relacionado con varios usuarios
                     .HasForeignKey(u => u.RoleId);
+
+                user.HasMany(u => u.UserTechnicals)
+                    .WithOne(ut => ut.User)
+                    .HasForeignKey(ut => ut.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
            

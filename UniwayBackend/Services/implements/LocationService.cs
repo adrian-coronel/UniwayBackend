@@ -50,6 +50,7 @@ namespace UniwayBackend.Services.implements
                             Name = $"{tech.Name} {tech.FatherLastname}",
                             Location = tech.Location,
                             WorkingStatus = tech.WorkingStatus,
+                            AvailabilityId = Constants.Availabilities.AT_HOME_ID,
                             IsWorkshop = false,
                         }).ToList()
                     );
@@ -64,6 +65,7 @@ namespace UniwayBackend.Services.implements
                             Name = wor.Name,
                             Location = wor.Location,
                             WorkingStatus = wor.WorkingStatus,
+                            AvailabilityId = Constants.Availabilities.IN_WORKSHOP_ID,
                             IsWorkshop = true,
                         }).ToList()    
                     );

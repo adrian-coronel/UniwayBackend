@@ -6,5 +6,6 @@ namespace UniwayBackend.Repositories.Core.Interfaces
     public interface ITechnicalProfessionAvailabilityRepository : IBaseRepository<TechnicalProfessionAvailability, int>
     {
         //Task<List<TechnicalProfessionAvailability>> FindAllByWorkshopStatusAndAvailability(bool WorkingStatus, short AvailabilityId);
+        Task<TechnicalProfessionAvailability> FindByTechnicalAndAvailability(int technicalId, short availabilityId);
     }
 }

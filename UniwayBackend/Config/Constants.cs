@@ -79,5 +79,10 @@
         {
             public const string RECEIVE_NOTIFICATION_REQUESTS = "ReceiveNotificationRequests";
         }
+
+        public static class TypesConnectionSignalR
+        {
+            public const string SOLICITUDE = "Solicitude";
+        }
     }
 }
