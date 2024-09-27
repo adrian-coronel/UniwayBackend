@@ -124,7 +124,7 @@ namespace UniwayBackend
             services.AddScoped<ITechnicalProfessionAvailabilityService, TechnicalProfessionAvailabilityService>();
 
             services.AddScoped<INotificationService, NotificationService>();
-
+            services.AddScoped<ITechnicalProfessionAvailabilityRequestRepository, TechnicalProfessionAvailabilityRequestRepository>();
 
         }
 

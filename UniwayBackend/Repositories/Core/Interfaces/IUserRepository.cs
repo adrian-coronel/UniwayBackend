@@ -10,5 +10,7 @@ namespace UniwayBackend.Repositories.Core.Interfaces
         Task<User?> FindByIdAndRoleId(Guid Id, short RoleId);
         Task<User?> FindByTechnicalProfessionAvailabilityId(int TechnicalProfessionAvailabilityId);
         Task<List<User>> FindByAvailabilityAndLocation(Point point, short availabilityId = 0, int distance = 0);
+        Task<List<User>> FindByListTechnicalProfessionAvailabilityId(List<int> techProfAvailabilities);
+
     }
 }

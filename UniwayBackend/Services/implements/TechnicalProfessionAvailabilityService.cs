@@ -22,16 +22,14 @@ namespace UniwayBackend.Services.implements
             _utilitaries = utilitaries;
         }
 
-        public async Task<MessageResponse<TechnicalProfessionAvailability>> GetByAvailabilityAndLocation(double lat, double lng, short AvailabilityId = 0, int distance = 5000)
+        public async Task<MessageResponse<TechnicalProfessionAvailability>> GetByAvailabilityAndLocation(Point point, short AvailabilityId = 0, int distance = 5000)
         {
             MessageResponse<TechnicalProfessionAvailability> response;
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
-                
-                var referenceLocation = new Point(lng, lat) { SRID = 4326 };
 
-                var technicalAvailabilities = await _repository.FindByAvailabilityAndLocation(AvailabilityId, referenceLocation, distance);
+                var technicalAvailabilities = await _repository.FindByAvailabilityAndLocation(point, AvailabilityId, distance);
 
                 response = _utilitaries.setResponseBaseForList(technicalAvailabilities);
             }

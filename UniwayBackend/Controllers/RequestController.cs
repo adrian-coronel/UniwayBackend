@@ -26,6 +26,7 @@ namespace UniwayBackend.Controllers
         private readonly IStorageService _storageService;
         private readonly IUserRepository _userRepository;
         private readonly INotificationService _notificationService;
+        private readonly ITechnicalProfessionAvailabilityRequestRepository _techProfAvaiRequestRepostiory;
         private readonly IMapper _mapper;
 
         public RequestController(ILogger<RequestController> logger,
@@ -35,6 +36,7 @@ namespace UniwayBackend.Controllers
                                  IStorageService storageService,
                                  IUserRepository userRepository,
                                  INotificationService notificationService,
+                                 ITechnicalProfessionAvailabilityRequestRepository techProfAvaiRequestRepostiory,
                                  IMapper mapper)
         {
             _logger = logger;
@@ -44,6 +46,7 @@ namespace UniwayBackend.Controllers
             _storageService = storageService;
             _userRepository = userRepository;
             _notificationService = notificationService;
+            _techProfAvaiRequestRepostiory = techProfAvaiRequestRepostiory;
             _mapper = mapper;
         }
 
@@ -109,35 +112,48 @@ namespace UniwayBackend.Controllers
         public async Task<ActionResult<MessageResponse<RequestResponse>>> SaveRequestForMany([FromForm] RequestRequest request)
         {
             MessageResponse<RequestResponse> response;
+
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
+                // Validar la solicitud
                 var validResult = ValidateRequest(request);
                 if (validResult != null) return validResult;
 
+                // Mapear y guardar la entidad de solicitud
                 Request requestEntity = _mapper.Map<Request>(request);
-
-                // Insertar solicitud
                 var result = await _service.Save(requestEntity);
 
+                // Guardar imágenes si hay archivos
                 if (request.Files.Count > 0)
                 {
                     result.Object!.ImagesProblemRequests = await SaveImages(request, result.Object.Id);
                 }
 
                 response = _mapper.Map<MessageResponse<RequestResponse>>(result);
-
                 var referenceLocation = new Point(request.Lng, request.Lat) { SRID = 4326 };
 
-                // Notificar a todos
-                var NearbyUsers = await _userRepository
-                    .FindByAvailabilityAndLocation(referenceLocation,request.AvailabilityId.Value,request.Distance.Value);
+                // Notificar a técnicos disponibles
+                var tpas = await _techProfAvailabilityService.GetByAvailabilityAndLocation(referenceLocation, request.AvailabilityId.Value, request.Distance.Value);
 
-                if (NearbyUsers.Count > 0)
+                if (tpas.List != null && tpas.List.Any())
                 {
-                    List<string> ids = NearbyUsers.Select(x => x.Id.ToString()).ToList();
+                    // Relacionar la solicitud a técnicos cercanos
+                    var requestToTech = tpas.List.Select(x => new TechnicalProfessionAvailabilityRequest
+                    {
+                        TechnicalProfessionAvailabilityId = x.Id,
+                        RequestId = result.Object!.Id
+                    }).ToList();
 
+                    await _techProfAvaiRequestRepostiory.InsertAll(requestToTech);
+
+                    // Obtener usuarios cercanos
+                    List<int> IdsTechProfAvai = tpas.List.Select(x => x.Id).ToList();
+                    List<User> nearbyUsers = await _userRepository.FindByListTechnicalProfessionAvailabilityId(IdsTechProfAvai);
+
+                    // Enviar notificaciones
+                    List<string> ids = nearbyUsers.Select(x => x.Id.ToString()).ToList();
                     await _notificationService.SendSomeNotificationAsync(ids, new NotificationResponse
                     {
                         Type = Constants.TypesConnectionSignalR.SOLICITUDE,
@@ -151,8 +167,10 @@ namespace UniwayBackend.Controllers
                 response = new MessageResponseBuilder<RequestResponse>()
                     .Code(500).Message(ex.Message).Build();
             }
+
             return StatusCode(response.Code, response);
         }
+
 
 
         private async Task<List<ImagesProblemRequest>> SaveImages(RequestRequest request, int RequestId)

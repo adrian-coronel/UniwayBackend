@@ -16,27 +16,27 @@ namespace UniwayBackend.Repositories.Core.Implements
             using (var context = new DBContext())
             {
                 return await context.Set<TechnicalProfessionAvailability>()
-                    .Where(x => (x.AvailabilityId == availabilityId || availabilityId == Constants.Availabilities.BOTH_ID)
-                             &&
-                             (
-                                 (
-                                      availabilityId == Constants.Availabilities.AT_HOME_ID || availabilityId == Constants.Availabilities.BOTH_ID &&
-                                      x.TechnicalProfession.UserTechnical.Technical.Location != null &&
-                                      x.TechnicalProfession.UserTechnical.Technical.Location.Distance(point) <= distance &&
-                                      x.TechnicalProfession.UserTechnical.Technical.WorkingStatus == Constants.State.ACTIVE_BOOL &&
-
-                                      !(context.Requests
-                                        .Any(r => r.TechnicalProfessionAvailability.Id == x.Id && 
-                                                  r.StateRequestId == Constants.StateRequests.IN_PROCESS)
-                                       )
-                                 )
-                                 ||
-                                 (
-                                      availabilityId == Constants.Availabilities.IN_WORKSHOP_ID || availabilityId == Constants.Availabilities.BOTH_ID &&
-                                      x.Workshops.Any(w => w.Location != null && w.Location.Distance(point) <= distance) &&
-                                      x.TechnicalProfession.UserTechnical.Technical.WorkingStatus == Constants.State.ACTIVE_BOOL
-                                 )
-                             )
+                    .Where(x =>
+                        (
+                            // Condiciones para AT_HOME o BOTH
+                            (availabilityId == Constants.Availabilities.AT_HOME_ID || availabilityId == Constants.Availabilities.BOTH_ID)
+                            &&
+                            x.TechnicalProfession.UserTechnical.Technical.Location != null
+                            && x.TechnicalProfession.UserTechnical.Technical.Location.Distance(point) <= distance
+                            && x.TechnicalProfession.UserTechnical.Technical.WorkingStatus == Constants.State.ACTIVE_BOOL
+                            && !(context.Requests
+                                   .Any(r => r.TechnicalProfessionAvailability.Id == x.Id
+                                             && r.StateRequestId == Constants.StateRequests.IN_PROCESS)
+                               )
+                        )
+                        ||
+                        (
+                            // Condiciones para IN_WORKSHOP o BOTH
+                            (availabilityId == Constants.Availabilities.IN_WORKSHOP_ID || availabilityId == Constants.Availabilities.BOTH_ID)
+                            &&
+                            x.Workshops.Any(w => w.Location != null && w.Location.Distance(point) <= distance)
+                            && x.TechnicalProfession.UserTechnical.Technical.WorkingStatus == Constants.State.ACTIVE_BOOL
+                        )
                     )
                     .Select(x => x.TechnicalProfession.UserTechnical.User)
                     .ToListAsync();
@@ -44,6 +44,19 @@ namespace UniwayBackend.Repositories.Core.Implements
 
             }
         }
+
+        public async Task<List<User>> FindByListTechnicalProfessionAvailabilityId(List<int> techProfAvailabilities)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.TechnicalProfessionAvailabilities
+                    .Where(tpa => techProfAvailabilities.Contains(tpa.Id)) // Filtra por los IDs proporcionados
+                    .Select(tpa => tpa.TechnicalProfession.UserTechnical.User) // Selecciona el usuario relacionado
+                    .Distinct() // Elimina posibles duplicados
+                    .ToListAsync(); // Ejecuta la consulta y retorna la lista
+            }
+        }
+
 
         public async Task<User?> FindByIdAndRoleId(Guid Id, short RoleId)
         {

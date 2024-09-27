@@ -23,6 +23,7 @@ namespace UniwayBackend.Context
         public DbSet<Request> Requests { get; set; }
         public DbSet<ServiceTechnical> ServiceTechnicals{ get; set; }
         public DbSet<TechnicalProfessionAvailability> TechnicalProfessionAvailabilities { get; set; }
+        public DbSet<TechnicalProfessionAvailabilityRequest> TechnicalProfessionAvailabilityRequests { get; set; }
         public DbSet<CategoryService> CategoryServices { get; set; }
         public DbSet<ImagesProblemRequest> ImagesProblemRequests { get; set; }
         public DbSet<CategoryRequest> CategoryRequests { get; set; }

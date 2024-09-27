@@ -8,6 +8,6 @@ namespace UniwayBackend.Repositories.Core.Interfaces
     {
         //Task<List<TechnicalProfessionAvailability>> FindAllByWorkshopStatusAndAvailability(bool WorkingStatus, short AvailabilityId);
         Task<TechnicalProfessionAvailability> FindByTechnicalAndAvailability(int technicalId, short availabilityId);
-        Task<List<TechnicalProfessionAvailability>> FindByAvailabilityAndLocation(short availabilityId, Point point, int distance);
+        Task<List<TechnicalProfessionAvailability>> FindByAvailabilityAndLocation(Point point, short availabilityId = 0, int distance = 5000);
     }
 }
