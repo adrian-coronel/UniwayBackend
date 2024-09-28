@@ -50,8 +50,8 @@ namespace UniwayBackend.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("SaveRequestForOne")]
-        public async Task<ActionResult<MessageResponse<RequestResponse>>> SaveRequestForOne([FromForm] RequestRequest request)
+        [HttpPost("RequestByTechnicalProfessionAvailabilityId")]
+        public async Task<ActionResult<MessageResponse<RequestResponse>>> SaveRequestForOne1([FromForm] RequestRequest request)
         {
             MessageResponse<RequestResponse> response;
             try
@@ -59,33 +59,25 @@ namespace UniwayBackend.Controllers
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
                 // Validations
-                var validResult = ValidateRequest(request);
+                var validResult = ValidateImages(request.Files);
                 if (validResult != null) return validResult;
                 
-                // Buscar TechnicalAvailabilityId
-                if (request.TechnicalId != null && request.AvailabilityId != null && request.TechnicalProfessionAvailabilityId == null)
-                {
-                    var techAvai = await _techProfAvailabilityService
-                        .GetByTechnicalAndAvailability(request.TechnicalId.Value ,request.AvailabilityId.Value);
-                    
-                    if (techAvai.Object != null) request.TechnicalProfessionAvailabilityId = techAvai.Object!.Id;
-                }
-
                 Request requestEntity = _mapper.Map<Request>(request);
 
                 // Insertar solicitud
                 var result = await _service.Save(requestEntity);
 
+                // Guardar imagenes
                 if (request.Files.Count > 0)
                 {
-                    result.Object!.ImagesProblemRequests = await SaveImages(request, result.Object.Id);
+                    result.Object!.ImagesProblemRequests = await SaveImages(request.Files, result.Object.Id);
                 }
 
-
+                // Mapeamos la solicitud a un tipo respuesta
                 response = _mapper.Map<MessageResponse<RequestResponse>>(result);
-                
+
                 // Notificar a un usuario
-                if (response.Object!.TechnicalProfessionAvailabilityId != null)
+                if (response.Object!.TechnicalProfessionAvailabilityId != null && response.Code == 200)
                 {
                     var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(response.Object!.TechnicalProfessionAvailabilityId.Value);
 
@@ -97,6 +89,65 @@ namespace UniwayBackend.Controllers
                             Data = response.Object
                         });
                 }
+
+            }
+            catch (Exception ex)
+            {
+                response = new MessageResponseBuilder<RequestResponse>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return StatusCode(response.Code, response);
+        }
+
+        [HttpPost("RequestByTechnicalIdAndAvailabilityId")]
+        public async Task<ActionResult<MessageResponse<RequestResponse>>> SaveRequestForOne2([FromForm] RequestRequestV3 request)
+        {
+            MessageResponse<RequestResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                // Validations
+                var validResult = ValidateImages(request.Files);
+                if (validResult != null) return validResult;
+
+                Request requestEntity = _mapper.Map<Request>(request);
+
+                // Buscar TechnicalAvailabilityId
+                var techAvai = await _techProfAvailabilityService
+                    .GetByTechnicalAndAvailability(request.TechnicalId, request.AvailabilityId);
+
+                if (techAvai.Object == null)
+                    return new MessageResponseBuilder<RequestResponse>()
+                        .Code(404).Message("No se encontro el técnico con la disponibilidad especificada").Build();
+                
+                // Asíganamos el tecnico con su disponibilidad a la solicitud
+                requestEntity.TechnicalProfessionAvailabilityId = techAvai.Object!.Id;                
+
+                // Insertar solicitud
+                var result = await _service.Save(requestEntity);
+
+                // Guardar imagenes
+                if (request.Files.Count > 0)
+                    result.Object!.ImagesProblemRequests = await SaveImages(request.Files, result.Object.Id);
+
+                // Mapeamos la solicitud a un tipo respuesta
+                response = _mapper.Map<MessageResponse<RequestResponse>>(result);
+
+                // Notificar a un usuario
+                if (response.Object!.TechnicalProfessionAvailabilityId != null && response.Code == 200)
+                {
+                    var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(response.Object!.TechnicalProfessionAvailabilityId.Value);
+
+                    if (user != null)
+                        await _notificationService.SendNotificationAsync(user.Id.ToString(), new NotificationResponse
+                        {
+                            Type = Constants.TypesConnectionSignalR.SOLICITUDE,
+                            Message = "Notification success",
+                            Data = response.Object
+                        });
+                }
+
             }
             catch (Exception ex)
             {
@@ -109,7 +160,7 @@ namespace UniwayBackend.Controllers
 
         // SE BUSCA LOS CERCANOS EN EL BACKEND
         [HttpPost("SaveRequestForMany")]
-        public async Task<ActionResult<MessageResponse<RequestResponse>>> SaveRequestForMany([FromForm] RequestRequest request)
+        public async Task<ActionResult<MessageResponse<RequestResponse>>> SaveRequestForMany([FromForm] RequestManyRequestV4 request)
         {
             MessageResponse<RequestResponse> response;
 
@@ -117,8 +168,8 @@ namespace UniwayBackend.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
-                // Validar la solicitud
-                var validResult = ValidateRequest(request);
+                // Validar imagenes si es que se pasan
+                var validResult = ValidateImages(request.Files);
                 if (validResult != null) return validResult;
 
                 // Mapear y guardar la entidad de solicitud
@@ -126,30 +177,29 @@ namespace UniwayBackend.Controllers
                 var result = await _service.Save(requestEntity);
 
                 // Guardar imágenes si hay archivos
-                if (request.Files.Count > 0)
-                {
-                    result.Object!.ImagesProblemRequests = await SaveImages(request, result.Object.Id);
-                }
-
+                if (request.Files.Count > 0)                
+                    result.Object!.ImagesProblemRequests = await SaveImages(request.Files, result.Object.Id);
+                
+                // Mapeamos la solicitud a un tipo respuesta
                 response = _mapper.Map<MessageResponse<RequestResponse>>(result);
+
+                // Buscar tecnicos disponibles
                 var referenceLocation = new Point(request.Lng, request.Lat) { SRID = 4326 };
+                var techAvailabilities = await _techProfAvailabilityService.GetByAvailabilityAndLocation(referenceLocation, request.AvailabilityId, request.Distance);
 
-                // Notificar a técnicos disponibles
-                var tpas = await _techProfAvailabilityService.GetByAvailabilityAndLocation(referenceLocation, request.AvailabilityId.Value, request.Distance.Value);
-
-                if (tpas.List != null && tpas.List.Any())
+                // Si se encontraron técnicos disponibles
+                if (techAvailabilities.List != null && techAvailabilities.List.Any() && response.Code == 200)
                 {
-                    // Relacionar la solicitud a técnicos cercanos
-                    var requestToTech = tpas.List.Select(x => new TechnicalProfessionAvailabilityRequest
+                    // Guardar la relación de la solicitud a técnicos cercanos
+                    var requestToTech = techAvailabilities.List.Select(x => new TechnicalProfessionAvailabilityRequest
                     {
                         TechnicalProfessionAvailabilityId = x.Id,
                         RequestId = result.Object!.Id
                     }).ToList();
+                    await _techProfAvaiRequestRepostiory.InsertAll(requestToTech);                    
 
-                    await _techProfAvaiRequestRepostiory.InsertAll(requestToTech);
-
-                    // Obtener usuarios cercanos
-                    List<int> IdsTechProfAvai = tpas.List.Select(x => x.Id).ToList();
+                    // Obtener el Id de los técnicos relacionados para notificar
+                    List<int> IdsTechProfAvai = techAvailabilities.List.Select(x => x.Id).ToList();
                     List<User> nearbyUsers = await _userRepository.FindByListTechnicalProfessionAvailabilityId(IdsTechProfAvai);
 
                     // Enviar notificaciones
@@ -173,12 +223,14 @@ namespace UniwayBackend.Controllers
 
 
 
-        private async Task<List<ImagesProblemRequest>> SaveImages(RequestRequest request, int RequestId)
+        private async Task<List<ImagesProblemRequest>> SaveImages(List<IFormFile> files, int RequestId)
         {
             var currentDate = DateTime.UtcNow;
 
-            List<ImageResponse> images = await _storageService.SaveFilesAsync(request.Files, currentDate.ToString("yyyy-MM-dd"));
+            // Guardamos las imagenes 
+            List<ImageResponse> images = await _storageService.SaveFilesAsync(files, currentDate.ToString("yyyy-MM-dd"));
 
+            // Guardamos los datos y ubicación de las imgenes en BD
             List<ImagesProblemRequest> imagesProblemMapped = images.Select(x => new ImagesProblemRequest
             {
                 RequestId = RequestId,
@@ -188,36 +240,28 @@ namespace UniwayBackend.Controllers
                 ContentType = x.ContentType,
                 CreatedOn = DateTime.UtcNow,
             }).ToList();
-
             var imagesProblem = await _imagesService.SaveAll(imagesProblemMapped);
 
             return imagesProblem.List!.ToList();
         }
 
 
-        private MessageResponse<RequestResponse>? ValidateRequest(RequestRequest request)
+        private MessageResponse<RequestResponse>? ValidateImages(List<IFormFile> Files)
         {
-            if (request.Files != null)
+            if (Files != null)
             {
-                if (request.Files.Count > Constants.MAX_FILES)
+                if (Files.Count > Constants.MAX_FILES)
                     return new MessageResponseBuilder<RequestResponse>()
                     .Code(400).Message($"La cantidad de archivos excede el limite(${Constants.MAX_FILES})").Build();
 
-                if (request.Files.Any(x => !Constants.VALID_CONTENT_TYPES.Contains(x.ContentType)))
+                if (Files.Any(x => !Constants.VALID_CONTENT_TYPES.Contains(x.ContentType)))
                     return new MessageResponseBuilder<RequestResponse>()
                     .Code(400).Message($"Imagenes con tipo de contenido no valido").Build();
 
-                if (request.Files.Any(x => x.Length > (Constants.MAX_MB * 1024 * 1024)))
+                if (Files.Any(x => x.Length > (Constants.MAX_MB * 1024 * 1024)))
                     return new MessageResponseBuilder<RequestResponse>()
                     .Code(400).Message($"Uno de los archivos excedió el tamaño maximo de ${Constants.MAX_MB}MB").Build();
             }
-            // Se debe pasar TechnicalProfessionAvailabilityId o TechnicalId y AvailabilityId
-            if (request.TechnicalProfessionAvailabilityId == null && (request.TechnicalId == null || request.AvailabilityId == null))
-            {
-                return new MessageResponseBuilder<RequestResponse>()
-                    .Code(400).Message($"Debe ingresar TechnicalProfessionAvailabilityId o TechnicalId y AvailabilityId").Build();
-            }
-
             return null;
         }
     }
