@@ -78,11 +78,13 @@
         public static class TypesMethodsConnection
         {
             public const string RECEIVE_NOTIFICATION_REQUESTS = "ReceiveNotificationRequests";
+            public const string RECEIVE_NOTIFICATION_TECH_RESP = "ReceiveNotificationTechnicalResponse";
         }
 
         public static class TypesConnectionSignalR
         {
             public const string SOLICITUDE = "Solicitude";
+            public const string RESPONSE = "Response";
         }
     }
 }

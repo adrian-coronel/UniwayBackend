@@ -16,19 +16,22 @@ namespace UniwayBackend.Context
         public DbSet<UserTechnical> UserTechnicals { get; set; }
         public DbSet<Client> clients { get; set; }
         public DbSet<Availability> Availabilities { get; set; }
-        public DbSet<Experience> Experiences{ get; set; }
-        public DbSet<Profession> Professions{ get; set; }
+        public DbSet<Experience> Experiences { get; set; }
+        public DbSet<Profession> Professions { get; set; }
         public DbSet<WorkshopTechnicalProfession> WorkshopTechnicalProfessions { get; set; }
-        public DbSet<TechnicalProfession> TechnicalProfessions{ get; set; }
+        public DbSet<TechnicalProfession> TechnicalProfessions { get; set; }
         public DbSet<Request> Requests { get; set; }
-        public DbSet<ServiceTechnical> ServiceTechnicals{ get; set; }
+        public DbSet<ServiceTechnical> ServiceTechnicals { get; set; }
         public DbSet<TechnicalProfessionAvailability> TechnicalProfessionAvailabilities { get; set; }
         public DbSet<TechnicalProfessionAvailabilityRequest> TechnicalProfessionAvailabilityRequests { get; set; }
         public DbSet<CategoryService> CategoryServices { get; set; }
         public DbSet<ImagesProblemRequest> ImagesProblemRequests { get; set; }
         public DbSet<CategoryRequest> CategoryRequests { get; set; }
         public DbSet<StateRequest> StateRequest { get; set; }
-        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Review> Reviews { get; set; } 
+        public DbSet<TechnicalResponse> TechnicalResponses { get; set; }
+        public DbSet<Material> Materials { get; set; }
+         
 
         // Constructor de la clase DBContext que recibe opciones de configuración de DbContext
         public DBContext() { }
@@ -311,8 +314,12 @@ namespace UniwayBackend.Context
                 .HasMany(x => x.ServiceTechnicals)
                 .WithOne(x => x.CategoryService)
                 .HasForeignKey(x => x.CategoryServiceId);
-            
 
+            // TechnicalResponse
+            modelBuilder.Entity<TechnicalResponse>()
+                .HasMany(x => x.Materials)
+                .WithOne(m => m.TechnicalResponse)
+                .HasForeignKey(m => m.TechnicalResponseId);
             
 
 

@@ -82,7 +82,7 @@ namespace UniwayBackend.Controllers
                     var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(response.Object!.TechnicalProfessionAvailabilityId.Value);
 
                     if (user != null)
-                        await _notificationService.SendNotificationAsync(user.Id.ToString(), new NotificationResponse
+                        await _notificationService.SendNotificationWithRequestAsync(user.Id.ToString(), new NotificationResponse
                         {
                             Type = Constants.TypesConnectionSignalR.SOLICITUDE,
                             Message = "Notification success",
@@ -140,7 +140,7 @@ namespace UniwayBackend.Controllers
                     var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(response.Object!.TechnicalProfessionAvailabilityId.Value);
 
                     if (user != null)
-                        await _notificationService.SendNotificationAsync(user.Id.ToString(), new NotificationResponse
+                        await _notificationService.SendNotificationWithRequestAsync(user.Id.ToString(), new NotificationResponse
                         {
                             Type = Constants.TypesConnectionSignalR.SOLICITUDE,
                             Message = "Notification success",
@@ -204,7 +204,7 @@ namespace UniwayBackend.Controllers
 
                     // Enviar notificaciones
                     List<string> ids = nearbyUsers.Select(x => x.Id.ToString()).ToList();
-                    await _notificationService.SendSomeNotificationAsync(ids, new NotificationResponse
+                    await _notificationService.SendSomeNotificationWithRequestAsync(ids, new NotificationResponse
                     {
                         Type = Constants.TypesConnectionSignalR.SOLICITUDE,
                         Message = "Notification success",

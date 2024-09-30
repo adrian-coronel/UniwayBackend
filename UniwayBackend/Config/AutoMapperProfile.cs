@@ -3,7 +3,9 @@ using NetTopologySuite.Geometries;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
+using UniwayBackend.Models.Payloads.Core.Request.Material;
 using UniwayBackend.Models.Payloads.Core.Request.Request;
+using UniwayBackend.Models.Payloads.Core.Request.TechnicalResponse;
 using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Availability;
 using UniwayBackend.Models.Payloads.Core.Response.CategoryRequest;
@@ -11,6 +13,7 @@ using UniwayBackend.Models.Payloads.Core.Response.CategoryService;
 using UniwayBackend.Models.Payloads.Core.Response.Client;
 using UniwayBackend.Models.Payloads.Core.Response.Experience;
 using UniwayBackend.Models.Payloads.Core.Response.ImageProblem;
+using UniwayBackend.Models.Payloads.Core.Response.Material;
 using UniwayBackend.Models.Payloads.Core.Response.Profession;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Models.Payloads.Core.Response.Review;
@@ -19,6 +22,7 @@ using UniwayBackend.Models.Payloads.Core.Response.StateRequest;
 using UniwayBackend.Models.Payloads.Core.Response.Technical;
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfession;
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfessionAvailability;
+using UniwayBackend.Models.Payloads.Core.Response.TechnicalResponse;
 using UniwayBackend.Models.Payloads.Core.Response.TowingCar;
 using UniwayBackend.Models.Payloads.Core.Response.UserTechnical;
 
@@ -110,6 +114,14 @@ namespace UniwayBackend.Config
             CreateMap<Request, RequestResponse>().ReverseMap();
             CreateMap<ImagesProblemRequest, ImagesProblemRequestResponse>().ReverseMap();
             CreateMap<MessageResponse<Request>, MessageResponse<RequestResponse>>().ReverseMap();
+
+            // TechnicalResponse
+            CreateMap<Models.Entities.TechnicalResponse, TechnicalResponseResponseV2> ().ReverseMap();
+            CreateMap<MessageResponse<Models.Entities.TechnicalResponse>, MessageResponse<TechnicalResponseResponseV2>>().ReverseMap();
+            CreateMap<Models.Entities.TechnicalResponse, TechnicalResponseRequest>().ReverseMap();
+            CreateMap<Material, MaterialResponse>().ReverseMap();
+            CreateMap<Material, MaterialRequest>().ReverseMap();
+
         }
 
     }

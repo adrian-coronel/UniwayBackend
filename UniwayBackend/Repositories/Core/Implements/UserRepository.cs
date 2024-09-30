@@ -93,5 +93,16 @@ namespace UniwayBackend.Repositories.Core.Implements
                     .SingleOrDefaultAsync(u => u.Email == Email && u.Password == Password);
             }
         }
+
+        public async Task<User?> FindByRequestId(int RequestId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.Set<Request>()
+                    .Where(x => x.Id == RequestId)
+                    .Select(x => x.Client.User)
+                    .FirstOrDefaultAsync();
+            }
+        }
     }
 }

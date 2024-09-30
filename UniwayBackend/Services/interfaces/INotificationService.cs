@@ -4,7 +4,8 @@ namespace UniwayBackend.Services.interfaces
 {
     public interface INotificationService
     {
-        Task SendNotificationAsync(string UserId, NotificationResponse message);
-        Task SendSomeNotificationAsync(List<string> UsersId, NotificationResponse message);
+        Task SendNotificationWithTechnicalResponseAsync(string UserId, NotificationResponse notification);
+        Task SendNotificationWithRequestAsync(string UserId, NotificationResponse notification);
+        Task SendSomeNotificationWithRequestAsync(List<string> UsersId, NotificationResponse notification);
     }
 }

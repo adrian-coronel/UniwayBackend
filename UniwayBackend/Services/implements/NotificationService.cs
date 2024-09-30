@@ -19,7 +19,7 @@ namespace UniwayBackend.Services.implements
         }
 
 
-        public async Task SendNotificationAsync(string UserId, NotificationResponse notification)
+        public async Task SendNotificationWithRequestAsync(string UserId, NotificationResponse notification)
         {
 
             await _hubContext.Clients.User(UserId)
@@ -27,10 +27,17 @@ namespace UniwayBackend.Services.implements
                            JsonSerializer.Serialize(notification));
         }
 
-        public async Task SendSomeNotificationAsync(List<string> UsersId, NotificationResponse notification)
+
+        public async Task SendSomeNotificationWithRequestAsync(List<string> UsersId, NotificationResponse notification)
         {
             await _hubContext.Clients.Users(UsersId)
                 .SendAsync(Constants.TypesMethodsConnection.RECEIVE_NOTIFICATION_REQUESTS,
+                           JsonSerializer.Serialize(notification));
+        }
+        public async Task SendNotificationWithTechnicalResponseAsync(string UserId, NotificationResponse notification)
+        {
+            await _hubContext.Clients.User(UserId)
+                .SendAsync(Constants.TypesMethodsConnection.RECEIVE_NOTIFICATION_TECH_RESP,
                            JsonSerializer.Serialize(notification));
         }
     }

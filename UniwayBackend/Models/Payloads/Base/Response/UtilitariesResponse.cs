@@ -52,6 +52,13 @@ namespace UniwayBackend.Models.Payloads.Base.Response
                 .Message(_configuration.InternalServerErrorMessage)
                 .Build();
         }
+        public MessageResponse<T> setResponseBaseForBadRequest(string message = null)
+        {
+            return new MessageResponseBuilder<T>()
+                .Code(_configuration.BadRequestCode)
+                .Message(message ?? _configuration.BadRequestMessage)
+                .Build();
+        }
 
         public AuthenticateResponse<T> setResponseBaseForNotFoundAuthenticate()
         {
@@ -67,6 +74,7 @@ namespace UniwayBackend.Models.Payloads.Base.Response
                 .Message(message)
                 .Build();
         }
+        
 
 
         // DATA
