@@ -1,4 +1,5 @@
-﻿using NetTopologySuite.Geometries;
+﻿
+using NetTopologySuite.Geometries;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -57,9 +58,9 @@ namespace UniwayBackend.Config
 
             writer.WriteStartObject();
             writer.WritePropertyName("lng");
-            writer.WriteNumberValue(value.Y);
-            writer.WritePropertyName("lat");
             writer.WriteNumberValue(value.X);
+            writer.WritePropertyName("lat");
+            writer.WriteNumberValue(value.Y);
             writer.WriteEndObject();
         }
     }
