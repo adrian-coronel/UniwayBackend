@@ -111,6 +111,12 @@ namespace UniwayBackend.Config
             // Request
             CreateMap<RequestRequest, Request>()
                 .ForMember(dest => dest.Location, opt => opt.MapFrom( src => new Point(src.Lng, src.Lat) { SRID = 4326 } ));
+            CreateMap<RequestRequestV2, Request>()
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => new Point(src.Lng, src.Lat) { SRID = 4326 }));
+            CreateMap<RequestRequestV3, Request>()
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => new Point(src.Lng, src.Lat) { SRID = 4326 }));
+            CreateMap<RequestManyRequestV4, Request>()
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => new Point(src.Lng, src.Lat) { SRID = 4326 }));
             CreateMap<Request, RequestResponse>().ReverseMap();
             CreateMap<ImagesProblemRequest, ImagesProblemRequestResponse>().ReverseMap();
             CreateMap<MessageResponse<Request>, MessageResponse<RequestResponse>>().ReverseMap();
