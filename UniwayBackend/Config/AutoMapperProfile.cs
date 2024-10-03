@@ -121,6 +121,8 @@ namespace UniwayBackend.Config
             CreateMap<ImagesProblemRequest, ImagesProblemRequestResponse>().ReverseMap();
             CreateMap<MessageResponse<Request>, MessageResponse<RequestResponse>>().ReverseMap();
 
+            // Location
+
             // TechnicalResponse
             CreateMap<Models.Entities.TechnicalResponse, TechnicalResponseResponseV2> ().ReverseMap();
             CreateMap<MessageResponse<Models.Entities.TechnicalResponse>, MessageResponse<TechnicalResponseResponseV2>>().ReverseMap();

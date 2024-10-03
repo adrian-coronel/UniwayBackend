@@ -17,5 +17,29 @@ namespace UniwayBackend.Repositories.Core.Implements
                     .ToListAsync();
             }
         }
+
+        public async Task<List<ServiceTechnical>> FindFiveByTechnicalId(int TechnicalId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.ServiceTechnicals
+                    .Where(st => st.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.TechnicalId == TechnicalId)
+                    .Take(5)
+                    .ToListAsync();
+
+            }
+        }
+
+        public async Task<List<ServiceTechnical>> FindFiveByWorkshopId(int WorkshopId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.ServiceTechnicals
+                    .Where(st => st.TechnicalProfessionAvailability.Workshops.Any(x => x.Id == WorkshopId))
+                    .Take(5)
+                    .ToListAsync();
+
+            }
+        }
     }
 }

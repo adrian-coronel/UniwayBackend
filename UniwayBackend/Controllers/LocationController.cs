@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Models.Payloads.Core.Response;
+using UniwayBackend.Models.Payloads.Core.Response.Location;
 using UniwayBackend.Services.interfaces;
 
 namespace UniwayBackend.Controllers
@@ -44,7 +45,24 @@ namespace UniwayBackend.Controllers
             return StatusCode(response.Code, response);
         }
 
-        
+        [HttpPost("GetAllByAvailabilityWithServices")]
+        public async Task<ActionResult<MessageResponse<LocationResponseV2>>> GetAllWithServices(LocationRequest request)
+        {
+            MessageResponse<LocationResponseV2> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                response = await _service.GetAllByAvailabilityWithServices(request);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<LocationResponseV2>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return StatusCode(response.Code, response);
+        }
 
     }
 }
