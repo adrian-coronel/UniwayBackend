@@ -5,6 +5,7 @@ namespace UniwayBackend.Services.interfaces
 {
     public interface IServiceTechnicalService
     {
-        Task<MessageResponse<ServiceTechnical>> GetByTechnicalAvailabilityId(int TechnicalAvailabilityId);
+        Task<List<ServiceTechnical>> GetByTechnicaIdAndAvailabilityId(int technicalId, short availabilityId);
+        
     }
 }

@@ -7,6 +7,7 @@ namespace UniwayBackend.Repositories.Core.Interfaces
     {
         Task<List<ServiceTechnical>> FindAllByTechnicalProfessionAvailabilityId(int TechnicalProfessionAvailabilityId);
         Task<List<ServiceTechnical>> FindFiveByTechnicalId(int TechnicalId);
+        Task<List<ServiceTechnical>> FindByTechnicalIdAndAvailabilityId(int TechnicalId, short AvailabilityId);
         Task<List<ServiceTechnical>> FindFiveByWorkshopId(int WorkshopId);
     }
 }

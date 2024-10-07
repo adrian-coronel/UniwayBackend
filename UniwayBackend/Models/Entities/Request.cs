@@ -20,6 +20,8 @@ namespace UniwayBackend.Models.Entities
         public DateTime? ProposedAssistanceDate { get; set; }
         public DateTime? AnsweredOn { get; set; }
         public DateTime? ResolvedOn { get; set; }
+        public DateTime? FromShow { get; set; }
+        public DateTime? ToShow { get; set; }
         public bool IsResponse { get; set; }
 
         [ForeignKey("TechnicalProfessionAvailabilityId")]

@@ -18,6 +18,19 @@ namespace UniwayBackend.Repositories.Core.Implements
             }
         }
 
+        public async Task<List<ServiceTechnical>> FindByTechnicalIdAndAvailabilityId(int TechnicalId, short AvailabilityId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.ServiceTechnicals
+                    .Where(st => st.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.TechnicalId == TechnicalId &&
+                                 (AvailabilityId == 0 || st.TechnicalProfessionAvailability.AvailabilityId == AvailabilityId)
+                          )
+                    .ToListAsync();
+
+            }
+        }
+
         public async Task<List<ServiceTechnical>> FindFiveByTechnicalId(int TechnicalId)
         {
             using (DBContext context = new DBContext())

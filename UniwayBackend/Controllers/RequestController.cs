@@ -222,6 +222,62 @@ namespace UniwayBackend.Controllers
         }
 
 
+        [HttpPost("SaveScheduleRequest")]
+        public async Task<ActionResult<MessageResponse<RequestResponse>>> SaveScheduleRequest([FromForm] RequestManyRequestV5 request)
+        {
+            MessageResponse<RequestResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                // Mapear y guardar la entidad de solicitud
+                Request requestEntity = _mapper.Map<Request>(request);
+                var result = await _service.Save(requestEntity);
+
+                // Mapeamos la solicitud a un tipo respuesta
+                response = _mapper.Map<MessageResponse<RequestResponse>>(result);
+
+                // Buscar tecnicos/talleres disponibles
+                var referenceLocation = new Point(request.Lng, request.Lat) { SRID = 4326 };
+                var techAvailabilities = await _techProfAvailabilityService.GetByAvailabilityAndLocation(referenceLocation, request.AvailabilityId, request.Distance);
+
+                // Si se encontraron técnicos/talleres disponibles
+                if (techAvailabilities.List != null && techAvailabilities.List.Any() && response.Code == 200)
+                {
+                    // Guardar la relación de la solicitud a técnicos cercanos
+                    var requestToTech = techAvailabilities.List.Select(x => new TechnicalProfessionAvailabilityRequest
+                    {
+                        TechnicalProfessionAvailabilityId = x.Id,
+                        RequestId = result.Object!.Id
+                    }).ToList();
+                    await _techProfAvaiRequestRepostiory.InsertAll(requestToTech);
+
+                    // Obtener el Id de los técnicos relacionados para notificar
+                    List<int> IdsTechProfAvai = techAvailabilities.List.Select(x => x.Id).ToList();
+                    List<User> nearbyUsers = await _userRepository.FindByListTechnicalProfessionAvailabilityId(IdsTechProfAvai);
+
+                    // Enviar notificaciones
+                    List<string> ids = nearbyUsers.Select(x => x.Id.ToString()).ToList();
+                    await _notificationService.SendSomeNotificationWithRequestAsync(ids, new NotificationResponse
+                    {
+                        Type = Constants.TypesConnectionSignalR.SOLICITUDE,
+                        Message = "Notification success",
+                        Data = response.Object
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                response = new MessageResponseBuilder<RequestResponse>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+
+            return StatusCode(response.Code, response);
+        }
+
+
+
+
 
         private async Task<List<ImagesProblemRequest>> SaveImages(List<IFormFile> files, int RequestId)
         {
