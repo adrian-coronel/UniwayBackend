@@ -1,4 +1,6 @@
 ﻿using NetTopologySuite.Geometries;
+using System.Text.Json.Serialization;
+using UniwayBackend.Config;
 
 namespace UniwayBackend.Models.Entities
 {

@@ -31,7 +31,7 @@ namespace UniwayBackend.Repositories.Core.Implements
         {
             using (DBContext context = new DBContext())
             {
-                var technicalIdParameter = new SqlParameter("@WorkshopId", WorkshopId);
+                var workshopIdParameter = new SqlParameter("@WorkshopId", WorkshopId);
                 var workingStatusParameter = new SqlParameter("@WorkingStatus", WorkingStatus);
                 var distanceParameter = new SqlParameter("@Distance", Distance);
                 var LatitudeParameter = new SqlParameter("@Lat", Lat);
@@ -39,7 +39,7 @@ namespace UniwayBackend.Repositories.Core.Implements
 
                 List<UserRequest> result = await context.UserRequests
                     .FromSqlRaw("EXEC sp_updateWorkingStatusForWorkshop @WorkshopId, @WorkingStatus, @Distance, @Lat, @Lng",
-                      WorkshopId, WorkingStatus, Distance, Lat, Lng)
+                      workshopIdParameter, workingStatusParameter, distanceParameter, LatitudeParameter, LongitudeParameter)
                     .ToListAsync();
 
                 return result;

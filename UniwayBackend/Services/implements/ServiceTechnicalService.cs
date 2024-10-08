@@ -23,7 +23,7 @@ namespace UniwayBackend.Services.implements
             _utilitaries = utilitaries;
         }
 
-        public async Task<List<ServiceTechnical>> GetByTechnicaIdAndAvailabilityId(int technicalId, short availabilityId)
+        public async Task<MessageResponse<ServiceTechnical>> GetByTechnicaIdAndAvailabilityId(int technicalId, short availabilityId)
         {
             MessageResponse<ServiceTechnical> response;
             try

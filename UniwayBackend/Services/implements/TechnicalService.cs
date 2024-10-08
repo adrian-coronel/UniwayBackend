@@ -1,10 +1,12 @@
-﻿using NetTopologySuite.Geometries;
+﻿using AutoMapper;
+using NetTopologySuite.Geometries;
 using System.Reflection;
 using UniwayBackend.Config;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request.Technical;
 using UniwayBackend.Models.Payloads.Core.Response.Notification;
+using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
 
@@ -15,16 +17,19 @@ namespace UniwayBackend.Services.implements
 
         private readonly ILogger<TechnicalService> _logger;
         private readonly ITechnicalRepository _repository;
+        private readonly IMapper _mapper;
         private readonly INotificationService _notificationService;
         private readonly UtilitariesResponse<Technical> _utilitaries;
 
         public TechnicalService(ILogger<TechnicalService> logger,
                                 ITechnicalRepository repository,
+                                IMapper mapper,
                                 INotificationService notificationService,
                                 UtilitariesResponse<Technical> utilitaries)
         {
             _logger = logger;
             _repository = repository;
+            _mapper = mapper;
             _notificationService = notificationService;
             _utilitaries = utilitaries;
         }
@@ -64,24 +69,8 @@ namespace UniwayBackend.Services.implements
                 // Si se encontrarón solicitudes para el técnico notificarlas
                 foreach (var userRequest in userRequests)
                 {
-                    var requestEntity = new Request
-                    {
-                        Id = userRequest.RequestId,
-                        StateRequestId = userRequest.StateRequestId,
-                        CategoryRequestId = userRequest.CategoryRequestId,
-                        ClientId = userRequest.ClientId,
-                        TechnicalProfessionAvailabilityId = userRequest.TechnicalProfessionAvailabilityId,
-                        ServiceTechnicalId = userRequest.ServiceTechnicalId,
-                        Title = userRequest.Title,
-                        Description = userRequest.Description,
-                        Location = userRequest.Location,
-                        ProposedAssistanceDate = userRequest.ProposedAssistanceDate,
-                        AnsweredOn = userRequest.AnsweredOn,
-                        ResolvedOn = userRequest.ResolvedOn,
-                        FromShow = userRequest.FromShow,
-                        ToShow = userRequest.ToShow,
-                        IsResponse = userRequest.IsResponse
-                    };
+
+                    RequestResponse requestMap = _mapper.Map<RequestResponse>(userRequest);
 
                     await _notificationService.SendNotificationWithRequestAsync(
                         userRequest.UserId.ToString(),
@@ -89,7 +78,7 @@ namespace UniwayBackend.Services.implements
                         {
                             Type = Constants.TypesConnectionSignalR.SOLICITUDE,
                             Message = "Notification success",
-                            Data = requestEntity,
+                            Data = requestMap,
                         }
                     );
                 }

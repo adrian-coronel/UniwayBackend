@@ -54,7 +54,9 @@ namespace UniwayBackend.Config
 
             // Technical
             CreateMap<Technical, TechnicalResponseV2>().ReverseMap();
+            CreateMap<Technical, Models.Payloads.Core.Response.Technical.TechnicalResponse>().ReverseMap();
             CreateMap<MessageResponse<Technical>, MessageResponse<TechnicalResponseV2>>().ReverseMap();
+            CreateMap<MessageResponse<Technical>, MessageResponse<Models.Payloads.Core.Response.Technical.TechnicalResponse>>().ReverseMap();
 
             // UserTechnical
             CreateMap<UserTechnical, UserTechnicalResponse>().ReverseMap();
@@ -120,6 +122,8 @@ namespace UniwayBackend.Config
             CreateMap<RequestManyRequestV5, Request>()
                 .ForMember(dest => dest.Location, opt => opt.MapFrom(src => new Point(src.Lng, src.Lat) { SRID = 4326 }));
             CreateMap<Request, RequestResponse>().ReverseMap();
+            CreateMap<UserRequest, RequestResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.RequestId));
             CreateMap<ImagesProblemRequest, ImagesProblemRequestResponse>().ReverseMap();
             CreateMap<MessageResponse<Request>, MessageResponse<RequestResponse>>().ReverseMap();
 

@@ -322,6 +322,7 @@ namespace UniwayBackend.Context
                 .WithOne(m => m.TechnicalResponse)
                 .HasForeignKey(m => m.TechnicalResponseId);
 
+            modelBuilder.Entity<UserRequest>().HasNoKey();
 
             // Configuro que entidades quiero que vengan por defecto Habilitadas
             modelBuilder.Entity<User>().HasQueryFilter(x => x.Enabled);

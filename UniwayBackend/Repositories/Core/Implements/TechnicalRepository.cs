@@ -87,7 +87,7 @@ namespace UniwayBackend.Repositories.Core.Implements
 
                 List<UserRequest> result = await context.UserRequests
                     .FromSqlRaw("EXEC sp_updateWorkingStatusForTechnical @TechnicalId, @WorkingStatus, @Distance, @Lat, @Lng",
-                      TechnicalId, WorkingStatus, Distance, Lat, Lng)
+                      technicalIdParameter, workingStatusParameter, distanceParameter, LatitudeParameter, LongitudeParameter)
                     .ToListAsync();
 
                 return result;

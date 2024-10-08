@@ -35,7 +35,7 @@ namespace UniwayBackend.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
-                var result = await _service.UpdateWorkshopStatus(request.WorkshopId, request.WorkingStatus);
+                var result = await _service.UpdateWorkshopStatus(request);
 
                 response = _mapper.Map<MessageResponse<WorkshopResponse>>(result);
             }
