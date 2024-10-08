@@ -1,27 +1,26 @@
-﻿using NetTopologySuite.Geometries;
-using System.Reflection;
+﻿using System.Reflection;
 using UniwayBackend.Config;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
-using UniwayBackend.Models.Payloads.Core.Request.Technical;
+using UniwayBackend.Models.Payloads.Core.Request.Workshop;
 using UniwayBackend.Models.Payloads.Core.Response.Notification;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
 
 namespace UniwayBackend.Services.implements
 {
-    public class TechnicalService : ITechnicalService
+    public class WorkshopService : IWorkshopService
     {
 
-        private readonly ILogger<TechnicalService> _logger;
-        private readonly ITechnicalRepository _repository;
+        private readonly ILogger<WorkshopService> _logger;
+        private readonly IWorkshopRepository _repository;
         private readonly INotificationService _notificationService;
-        private readonly UtilitariesResponse<Technical> _utilitaries;
+        private readonly UtilitariesResponse<Workshop> _utilitaries;
 
-        public TechnicalService(ILogger<TechnicalService> logger,
-                                ITechnicalRepository repository,
-                                INotificationService notificationService,
-                                UtilitariesResponse<Technical> utilitaries)
+        public WorkshopService(ILogger<WorkshopService> logger,
+                               IWorkshopRepository repository,
+                               INotificationService notificationService,
+                               UtilitariesResponse<Workshop> utilitaries)
         {
             _logger = logger;
             _repository = repository;
@@ -29,37 +28,17 @@ namespace UniwayBackend.Services.implements
             _utilitaries = utilitaries;
         }
 
-        public async Task<MessageResponse<Technical>> GetInformation(int TechnicalId)
+        public async Task<MessageResponse<Workshop>> UpdateWorkshopStatus(WorkshopRequestV1 request)
         {
-            MessageResponse<Technical> response;
+            MessageResponse<Workshop> response;
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
-                var result = await _repository.FindTechnicalWithInformation(TechnicalId);
+                var workshop = await _repository.ExistById(request.WorkshopId);
+                if (workshop == null) return _utilitaries.setResponseBaseNotFoundForUpdate();
 
-                response = _utilitaries.setResponseBaseForObject(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                response = _utilitaries.setResponseBaseForException(ex);
-            }
-            return response;
-        }
-
-        public async Task<MessageResponse<Technical>> UpdateWorkinStatus(TechnicalRequestV1 request)
-        {
-            MessageResponse<Technical> response;
-            try
-            {
-                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
-
-                bool existTechnical = await _repository.ExistById(request.TechnicalId);
-
-                if (!existTechnical) return _utilitaries.setResponseBaseNotFoundForUpdate();
-
-                List<UserRequest> userRequests = await _repository.UpdateWorkingStatus(request.TechnicalId,request.WorkingStatus,request.Lat,request.Lng, request.Distance.Value);
+                List<UserRequest> userRequests = await _repository.UpdateWorkingStatus(request.WorkshopId, request.WorkingStatus, request.Lat, request.Lng, request.Distance.Value);
 
                 // Si se encontrarón solicitudes para el técnico notificarlas
                 foreach (var userRequest in userRequests)

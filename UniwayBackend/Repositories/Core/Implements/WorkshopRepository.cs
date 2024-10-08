@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using UniwayBackend.Config;
 using UniwayBackend.Context;
@@ -23,6 +24,25 @@ namespace UniwayBackend.Repositories.Core.Implements
                                 && !x.Location.IsEmpty && x.Location != null
                                 && x.Location.Distance(referenceLocation) <= distanceRadius)
                     .ToListAsync();
+            }
+        }
+
+        public async Task<List<UserRequest>> UpdateWorkingStatus(int WorkshopId, bool WorkingStatus, double Lat, double Lng, int Distance = 5000)
+        {
+            using (DBContext context = new DBContext())
+            {
+                var technicalIdParameter = new SqlParameter("@WorkshopId", WorkshopId);
+                var workingStatusParameter = new SqlParameter("@WorkingStatus", WorkingStatus);
+                var distanceParameter = new SqlParameter("@Distance", Distance);
+                var LatitudeParameter = new SqlParameter("@Lat", Lat);
+                var LongitudeParameter = new SqlParameter("@Lng", Lng);
+
+                List<UserRequest> result = await context.UserRequests
+                    .FromSqlRaw("EXEC sp_updateWorkingStatusForWorkshop @WorkshopId, @WorkingStatus, @Distance, @Lat, @Lng",
+                      WorkshopId, WorkingStatus, Distance, Lat, Lng)
+                    .ToListAsync();
+
+                return result;
             }
         }
     }

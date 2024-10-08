@@ -89,5 +89,12 @@ namespace UniwayBackend.Repositories.Base
             }
         }
 
+        public async Task<bool> ExistById(Key Id)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.Set<TEntity>().FindAsync(Id) != null;
+            }
+        }
     }
 }

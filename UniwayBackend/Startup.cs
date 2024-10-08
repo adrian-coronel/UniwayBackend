@@ -130,7 +130,7 @@ namespace UniwayBackend
             services.AddScoped<ITechnicalResponseService, TechnicalResponseService>();
 
             services.AddScoped<IServiceTechnicalRepository, ServiceTechnicalRepository>();
-
+            services.AddScoped<IWorkshopService, WorkshopService>();
         }
 
         private static void JwtConfig(IServiceCollection services)

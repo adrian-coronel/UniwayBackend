@@ -5,6 +5,7 @@ namespace UniwayBackend.Repositories.Base
     public interface IBaseRepository<TEntity, Key>
     {
         Task<List<TEntity>> FindAll();
+        Task<bool> ExistById(Key Id);
         Task<TEntity?> FindById(Key Id);
         Task<bool> Insert(TEntity entity);
         Task<List<TEntity>> InsertAll(List<TEntity> entities);

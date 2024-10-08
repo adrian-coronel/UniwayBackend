@@ -31,6 +31,7 @@ namespace UniwayBackend.Context
         public DbSet<Review> Reviews { get; set; } 
         public DbSet<TechnicalResponse> TechnicalResponses { get; set; }
         public DbSet<Material> Materials { get; set; }
+        public virtual DbSet<UserRequest> UserRequests { get; set; }
          
 
         // Constructor de la clase DBContext que recibe opciones de configuración de DbContext
@@ -320,8 +321,6 @@ namespace UniwayBackend.Context
                 .HasMany(x => x.Materials)
                 .WithOne(m => m.TechnicalResponse)
                 .HasForeignKey(m => m.TechnicalResponseId);
-            
-
 
 
             // Configuro que entidades quiero que vengan por defecto Habilitadas
