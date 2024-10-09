@@ -17,6 +17,9 @@ namespace UniwayBackend.Models.Entities
         public string ContentType { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
+
+        [ForeignKey("RequestId")]
+        public virtual Request Request { get; set; }
         
     }
 }

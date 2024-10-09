@@ -24,6 +24,6 @@ namespace UniwayBackend.Models.Payloads.Core.Request.Request
         public bool IsResponse { get; set; }
 
         // Agregar imagenes
-        //public List<IFormFile> Files { get; set; } = new List<IFormFile>();
+        public List<IFormFile> Files { get; set; } = new List<IFormFile>();
     }
 }

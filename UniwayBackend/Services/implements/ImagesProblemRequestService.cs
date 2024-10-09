@@ -2,17 +2,20 @@
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Repositories.Base;
+using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
 
 namespace UniwayBackend.Services.implements
 {
     public class ImagesProblemRequestService : IImagesProblemRequestService
     {
-        private readonly IBaseRepository<ImagesProblemRequest, int> _repository;
+        private readonly IImagesProblemRequestRepository _repository;
         private readonly ILogger<ImagesProblemRequestService> _logger;
         private readonly UtilitariesResponse<ImagesProblemRequest> _utilitaries;
 
-        public ImagesProblemRequestService(IBaseRepository<ImagesProblemRequest, int> repository, ILogger<ImagesProblemRequestService> logger, UtilitariesResponse<ImagesProblemRequest> utilitaries)
+        public ImagesProblemRequestService(IImagesProblemRequestRepository repository,
+                                           ILogger<ImagesProblemRequestService> logger,
+                                           UtilitariesResponse<ImagesProblemRequest> utilitaries)
         {
             _repository = repository;
             _logger = logger;

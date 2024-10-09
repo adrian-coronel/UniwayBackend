@@ -50,8 +50,29 @@ namespace UniwayBackend.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("GetRequestPending/{UserId}")]
+        public async Task<ActionResult<MessageResponse<RequestResponse>>> GetRequestPending(Guid UserId)
+        {
+            MessageResponse<RequestResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var result = await _service.GetRequestPendingInTrayByUserId(UserId);
+
+                response = _mapper.Map<MessageResponse<RequestResponse>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<RequestResponse>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return response;
+        }
+
         [HttpPost("RequestByTechnicalProfessionAvailabilityId")]
-        public async Task<ActionResult<MessageResponse<RequestResponse>>> SaveRequestForOne1([FromForm] RequestRequest request)
+        public async Task<ActionResult<MessageResponse<RequestResponse>>> SaveRequestForOne([FromForm] RequestRequest request)
         {
             MessageResponse<RequestResponse> response;
             try
@@ -233,6 +254,10 @@ namespace UniwayBackend.Controllers
                 // Mapear y guardar la entidad de solicitud
                 Request requestEntity = _mapper.Map<Request>(request);
                 var result = await _service.Save(requestEntity);
+
+                // Guardar imágenes si hay archivos
+                if (request.Files.Count > 0)
+                    result.Object!.ImagesProblemRequests = await SaveImages(request.Files, result.Object.Id);
 
                 // Mapeamos la solicitud a un tipo respuesta
                 response = _mapper.Map<MessageResponse<RequestResponse>>(result);

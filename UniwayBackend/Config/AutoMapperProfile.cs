@@ -22,6 +22,7 @@ using UniwayBackend.Models.Payloads.Core.Response.StateRequest;
 using UniwayBackend.Models.Payloads.Core.Response.Technical;
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfession;
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfessionAvailability;
+using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfessionAvailabilityRequest;
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalResponse;
 using UniwayBackend.Models.Payloads.Core.Response.TowingCar;
 using UniwayBackend.Models.Payloads.Core.Response.UserTechnical;
@@ -76,8 +77,8 @@ namespace UniwayBackend.Config
 
             // Experience
             CreateMap<Experience, ExperienceResponse>().ReverseMap();
-            CreateMap<MessageResponse<Experience>, MessageResponse<ExperienceResponse>>().ReverseMap(); 
-            
+            CreateMap<MessageResponse<Experience>, MessageResponse<ExperienceResponse>>().ReverseMap();
+
             // Availability
             CreateMap<Availability, AvailabilityResponse>().ReverseMap();
             CreateMap<MessageResponse<Availability>, MessageResponse<AvailabilityResponse>>().ReverseMap();
@@ -112,7 +113,7 @@ namespace UniwayBackend.Config
 
             // Request
             CreateMap<RequestRequest, Request>()
-                .ForMember(dest => dest.Location, opt => opt.MapFrom( src => new Point(src.Lng, src.Lat) { SRID = 4326 } ));
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => new Point(src.Lng, src.Lat) { SRID = 4326 }));
             CreateMap<RequestRequestV2, Request>()
                 .ForMember(dest => dest.Location, opt => opt.MapFrom(src => new Point(src.Lng, src.Lat) { SRID = 4326 }));
             CreateMap<RequestRequestV3, Request>()
@@ -136,6 +137,9 @@ namespace UniwayBackend.Config
             CreateMap<Material, MaterialResponse>().ReverseMap();
             CreateMap<Material, MaterialRequest>().ReverseMap();
 
+            // TechnicalProfessionAvailabilityRequest
+            CreateMap<TechnicalProfessionAvailabilityRequestResponse, TechnicalProfessionAvailabilityRequestResponseV2>().ReverseMap();
+            CreateMap<MessageResponse<TechnicalProfessionAvailabilityRequestResponse>, MessageResponse<TechnicalProfessionAvailabilityRequestResponseV2>>().ReverseMap();
         }
 
     }

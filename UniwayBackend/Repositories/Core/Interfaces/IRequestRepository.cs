@@ -5,5 +5,6 @@ namespace UniwayBackend.Repositories.Core.Interfaces
 {
     public interface IRequestRepository : IBaseRepository<Request, int>
     {
+        Task<List<Request>> FindAllPendingByUserId(Guid UserId);
     }
 }

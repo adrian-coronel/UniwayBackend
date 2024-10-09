@@ -4,6 +4,7 @@ using UniwayBackend.Config;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request.Workshop;
+using UniwayBackend.Models.Payloads.Core.Response.ImageProblem;
 using UniwayBackend.Models.Payloads.Core.Response.Notification;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Repositories.Core.Interfaces;
@@ -18,18 +19,21 @@ namespace UniwayBackend.Services.implements
         private readonly IMapper _mapper;
         private readonly IWorkshopRepository _repository;
         private readonly INotificationService _notificationService;
+        private readonly IImagesProblemRequestRepository _imagesProblemRepository;
         private readonly UtilitariesResponse<Workshop> _utilitaries;
 
         public WorkshopService(ILogger<WorkshopService> logger,
                                IMapper mapper,
                                IWorkshopRepository repository,
                                INotificationService notificationService,
+                               IImagesProblemRequestRepository imagesProblemRepository,
                                UtilitariesResponse<Workshop> utilitaries)
         {
             _logger = logger;
             _mapper = mapper;
             _repository = repository;
             _notificationService = notificationService;
+            _imagesProblemRepository = imagesProblemRepository;
             _utilitaries = utilitaries;
         }
 
@@ -49,6 +53,10 @@ namespace UniwayBackend.Services.implements
                 foreach (var userRequest in userRequests)
                 {
                     RequestResponse requestMap = _mapper.Map<RequestResponse>(userRequest);
+
+                    // Bsucar las imagenes de la solicitud
+                    List<ImagesProblemRequest> images = await _imagesProblemRepository.FindAllByRequestId(requestMap.Id);
+                    requestMap.ImagesProblemRequests = _mapper.Map<List<ImagesProblemRequestResponse>>(images);
 
                     await _notificationService.SendNotificationWithRequestAsync(
                         userRequest.UserId.ToString(),

@@ -5,6 +5,7 @@ using UniwayBackend.Config;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request.Technical;
+using UniwayBackend.Models.Payloads.Core.Response.ImageProblem;
 using UniwayBackend.Models.Payloads.Core.Response.Notification;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Repositories.Core.Interfaces;
@@ -17,20 +18,26 @@ namespace UniwayBackend.Services.implements
 
         private readonly ILogger<TechnicalService> _logger;
         private readonly ITechnicalRepository _repository;
-        private readonly IMapper _mapper;
+        private readonly IImagesProblemRequestRepository _imagesProblemRepository;
         private readonly INotificationService _notificationService;
+        private readonly IStorageService _storageService;
+        private readonly IMapper _mapper;
         private readonly UtilitariesResponse<Technical> _utilitaries;
 
         public TechnicalService(ILogger<TechnicalService> logger,
                                 ITechnicalRepository repository,
-                                IMapper mapper,
+                                IImagesProblemRequestRepository imagesProblemRepository,
                                 INotificationService notificationService,
+                                IStorageService storageService,
+                                IMapper mapper,
                                 UtilitariesResponse<Technical> utilitaries)
         {
             _logger = logger;
             _repository = repository;
-            _mapper = mapper;
+            _imagesProblemRepository = imagesProblemRepository;
             _notificationService = notificationService;
+            _storageService = storageService;
+            _mapper = mapper;
             _utilitaries = utilitaries;
         }
 
@@ -71,6 +78,10 @@ namespace UniwayBackend.Services.implements
                 {
 
                     RequestResponse requestMap = _mapper.Map<RequestResponse>(userRequest);
+
+                    // Bsucar las imagenes de la solicitud
+                    List<ImagesProblemRequest> images = await _imagesProblemRepository.FindAllByRequestId(requestMap.Id);
+                    requestMap.ImagesProblemRequests = _mapper.Map<List<ImagesProblemRequestResponse>>(images);
 
                     await _notificationService.SendNotificationWithRequestAsync(
                         userRequest.UserId.ToString(),

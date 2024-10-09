@@ -294,13 +294,28 @@ namespace UniwayBackend.Context
 
             });
 
+            modelBuilder.Entity<Request>(request =>
+            {
+                request.HasKey(r => r.Id);
+
+                request.HasMany(r => r.ImagesProblemRequests)
+                    .WithOne(ipr => ipr.Request)
+                    .HasForeignKey(r => r.RequestId);
+            });
             // Review - Client (Many-to-One)
 
             // TechnicalProfessionAvailability - Workshop (One-to-Many)
-            modelBuilder.Entity<TechnicalProfessionAvailability>()
-                .HasMany(tpa => tpa.Workshops)
-                .WithOne(w => w.TechnicalProfessionAvailability)
-                .HasForeignKey(w => w.TechnicalProfessionAvailabilityId);
+            modelBuilder.Entity<TechnicalProfessionAvailability>(tpa =>
+            {
+                tpa.HasMany(tpa => tpa.Workshops)
+                    .WithOne(w => w.TechnicalProfessionAvailability)
+                    .HasForeignKey(w => w.TechnicalProfessionAvailabilityId);
+
+                tpa.HasOne(tpa => tpa.Availability)
+                    .WithMany()
+                    .HasForeignKey(tpa => tpa.AvailabilityId);
+            });
+                
 
 
 
@@ -321,6 +336,10 @@ namespace UniwayBackend.Context
                 .HasMany(x => x.Materials)
                 .WithOne(m => m.TechnicalResponse)
                 .HasForeignKey(m => m.TechnicalResponseId);
+
+            //// TechnicalProfessionAvailabilityRequest
+            //modelBuilder.Entity<TechnicalProfessionAvailabilityRequest>()
+            //    .Has
 
             modelBuilder.Entity<UserRequest>().HasNoKey();
 
