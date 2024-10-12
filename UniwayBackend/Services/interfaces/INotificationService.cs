@@ -7,5 +7,7 @@ namespace UniwayBackend.Services.interfaces
         Task SendNotificationWithTechnicalResponseAsync(string UserId, NotificationResponse notification);
         Task SendNotificationWithRequestAsync(string UserId, NotificationResponse notification);
         Task SendSomeNotificationWithRequestAsync(List<string> UsersId, NotificationResponse notification);
+        Task SendSomeNotificationChangeStateRequestAsync(List<string> UsersId, NotificationResponse notification);
+        Task SendNotificationChangeStateRequestAsync(string UserId, NotificationResponse notification);
     }
 }

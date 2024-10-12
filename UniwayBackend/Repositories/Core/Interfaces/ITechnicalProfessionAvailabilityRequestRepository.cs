@@ -6,6 +6,8 @@ namespace UniwayBackend.Repositories.Core.Interfaces
 {
     public interface ITechnicalProfessionAvailabilityRequestRepository : IBaseRepository<TechnicalProfessionAvailabilityRequest, int>
     {
+        Task<List<TechnicalProfessionAvailabilityRequest>> FindAllPendingByRequestId(int RequestId, short stateRequestId);
+        Task<bool> DeleteRange(List<TechnicalProfessionAvailabilityRequest> techRequests);
         Task<List<TechnicalProfessionAvailabilityRequestResponse>> FindAllPendingByUserId(Guid UserId);
     }
 }

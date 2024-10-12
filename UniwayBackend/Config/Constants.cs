@@ -68,17 +68,37 @@
 
         public static class StateRequests
         {
-            public const int PENDING = 1;
-            public const int IN_PROCESS = 2;
-            public const int CLOSED = 3;
-            public const int CANCELED = 4;
-            public const int CLOSURE_REQUEST = 5;
+            public const short PENDING = 1;
+            public const short IN_PROCESS = 2;
+            public const short CLOSED = 3;
+            public const short CANCELED = 4;
+            public const short CLOSURE_REQUEST = 5;
+
+            public static string GetName(short stateRequestId)
+            {
+                switch (stateRequestId)
+                {
+                    case PENDING:
+                        return "Pendiente";
+                    case IN_PROCESS:
+                        return "En proceso";
+                    case CANCELED:
+                        return "Cancelado";
+                    case CLOSED:
+                        return "Culminado";
+                    case CLOSURE_REQUEST:
+                        return "Solicitud de culminado";
+                    default:
+                        return "No se encontro el estado de la solicitud";
+                }
+            }
         }
 
         public static class TypesMethodsConnection
         {
             public const string RECEIVE_NOTIFICATION_REQUESTS = "ReceiveNotificationRequests";
             public const string RECEIVE_NOTIFICATION_TECH_RESP = "ReceiveNotificationTechnicalResponse";
+            public const string RECEIVE_NOTIFICATION_CHANGE_STATE_REQUEST = "ReceiveNotificationWhenChangeStateRequest";
         }
 
         public static class TypesConnectionSignalR

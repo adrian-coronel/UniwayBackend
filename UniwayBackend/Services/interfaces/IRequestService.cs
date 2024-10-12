@@ -7,5 +7,6 @@ namespace UniwayBackend.Services.interfaces
     {
         Task<MessageResponse<Request>> GetRequestPendingInTrayByUserId(Guid userId);
         Task<MessageResponse<Request>> Save(Request request);
+        Task<MessageResponse<Request>> UpdateStateRequestByRequestId(int requestId, short stateRequestId, int technicalProfessionAvailabilityId = 0);
     }
 }

@@ -9,6 +9,7 @@ using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request.Request;
 using UniwayBackend.Models.Payloads.Core.Response.Notification;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
+using UniwayBackend.Models.Payloads.Core.Response.StateRequest;
 using UniwayBackend.Models.Payloads.Core.Response.Storage;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
@@ -300,8 +301,32 @@ namespace UniwayBackend.Controllers
             return StatusCode(response.Code, response);
         }
 
+        /// <summary>
+        /// TechnicalProfessionAvailabilityId se deberá pasar como null cuando la solicitud tenga un tecnico/taller especificado
+        /// TechnicalProfessionAvailabilityId se no se deberá pasar como null cuando el cliente esta aceptando la respuesta de un tecnico/taller
+        [HttpPut("UpdateStateRequest")]
+        public async Task<ActionResult<MessageResponse<RequestResponse>>> UpdateStateRequest([FromBody] StateRequestRequestV1 request)
+        {
+            MessageResponse<RequestResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
+                var result = await _service.UpdateStateRequestByRequestId(
+                    request.RequestId, 
+                    request.StateRequestId, 
+                    request.TechnicalProfessionAvailabilityId ?? 0);
 
+                response = _mapper.Map<MessageResponse<RequestResponse>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<RequestResponse>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return response;
+        }
 
 
         private async Task<List<ImagesProblemRequest>> SaveImages(List<IFormFile> files, int RequestId)
