@@ -8,5 +8,6 @@ namespace UniwayBackend.Services.interfaces
     {
         Task<MessageResponse<Technical>> GetInformation(int TechnicalId);
         Task<MessageResponse<Technical>> UpdateWorkinStatus(TechnicalRequestV1 request);
+        Task<MessageResponse<Technical>> GetInformationByUser(Guid UserId);
     }
 }

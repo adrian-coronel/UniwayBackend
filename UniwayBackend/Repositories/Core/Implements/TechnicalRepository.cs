@@ -76,6 +76,36 @@ namespace UniwayBackend.Repositories.Core.Implements
             }
         }
 
+        public async Task<Technical> FindTechnicalWithInformationByUser(Guid userId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                var technical = await context.Technicals
+                    .Include(t => t.Reviews) // Incluir Reviews
+                    .Include(t => t.UserTechnicals)
+                        .ThenInclude(ut => ut.TechnicalProfessions)
+                            .ThenInclude(tp => tp.Profession) // Incluir Profession
+                    .Include(t => t.UserTechnicals)
+                        .ThenInclude(ut => ut.TechnicalProfessions)
+                            .ThenInclude(tp => tp.Experience) // Incluir Experience
+                    .Include(t => t.UserTechnicals)
+                        .ThenInclude(ut => ut.TechnicalProfessions)
+                            .ThenInclude(tp => tp.TechnicalProfessionAvailabilities)
+                                .ThenInclude(tpa => tpa.Availability) // Incluir Availability
+                    .Include(t => t.UserTechnicals)
+                        .ThenInclude(ut => ut.TechnicalProfessions)
+                            .ThenInclude(tp => tp.TechnicalProfessionAvailabilities)
+                                .ThenInclude(tpa => tpa.Workshops) // Incluir Workshops
+                    .Include(t => t.UserTechnicals)
+                        .ThenInclude(ut => ut.User)
+                            .ThenInclude(u => u.Role) // Incluir Role
+                    .FirstOrDefaultAsync(t => t.UserTechnicals.Any(ut => ut.UserId == userId));
+
+                return technical;
+            }
+        }
+
+
         public async Task<List<UserRequest>> UpdateWorkingStatus(int TechnicalId, bool WorkingStatus, double Lat, double Lng, int Distance = 5000)
         {
             using (DBContext context = new DBContext())

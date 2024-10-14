@@ -45,6 +45,27 @@ namespace UniwayBackend.Controllers
             return response;
         }
 
+        [HttpGet("GetInformationByUser/{UserId}")]
+        public async Task<ActionResult<MessageResponse<TechnicalResponseV2>>> GetInformationByUser(Guid UserId)
+        {
+            MessageResponse<TechnicalResponseV2> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var result = await _service.GetInformationByUser(UserId);
+
+                response = _mapper.Map<MessageResponse<Technical>, MessageResponse<TechnicalResponseV2>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<TechnicalResponseV2>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return response;
+        }
+
         [HttpPut("UpdateWorkingStatus")]
         public async Task<ActionResult<MessageResponse<Models.Payloads.Core.Response.Technical.TechnicalResponse>>> UpdateWorkingStatus([FromBody] TechnicalRequestV1 request)
         {

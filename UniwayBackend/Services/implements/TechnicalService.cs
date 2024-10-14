@@ -60,6 +60,25 @@ namespace UniwayBackend.Services.implements
             return response;
         }
 
+        public async Task<MessageResponse<Technical>> GetInformationByUser(Guid UserId)
+        {
+            MessageResponse<Technical> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var result = await _repository.FindTechnicalWithInformationByUser(UserId);
+
+                response = _utilitaries.setResponseBaseForObject(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
+
         public async Task<MessageResponse<Technical>> UpdateWorkinStatus(TechnicalRequestV1 request)
         {
             MessageResponse<Technical> response;
