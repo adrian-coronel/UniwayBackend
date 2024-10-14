@@ -48,7 +48,7 @@ namespace UniwayBackend.Repositories.Core.Implements
         {
             using (DBContext context = new DBContext())
             {
-                return await context.Technicals
+                var s =  await context.Technicals
                     .Include(x => x.Reviews) // Incluir Reviews
                     .Include(x => x.UserTechnicals)
                        .ThenInclude(x => x.TechnicalProfessions)
@@ -71,7 +71,8 @@ namespace UniwayBackend.Repositories.Core.Implements
                         .ThenInclude(x => x.TechnicalProfessions)
                             .ThenInclude(tp => tp.TechnicalProfessionAvailabilities)
                                 .ThenInclude(tpa => tpa.Workshops) // Incluir Workshops
-                    .FirstAsync(x => x.Id == TechnicalId);   
+                    .FirstAsync(x => x.Id == TechnicalId);
+                return s;
             }
         }
 

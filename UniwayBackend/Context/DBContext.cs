@@ -161,7 +161,7 @@ namespace UniwayBackend.Context
 
                 // Relations
                 userT.HasOne(ut => ut.User)
-                    .WithMany()
+                    .WithMany(u => u.UserTechnicals)
                     .HasForeignKey(userT => userT.UserId);
 
 
@@ -176,6 +176,11 @@ namespace UniwayBackend.Context
                     .WithOne(tc => tc.UserTechnical)
                     .HasForeignKey(tc => tc.UserTechnicalId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+                userT.HasOne(ut => ut.Technical)
+                    .WithMany(t => t.UserTechnicals)
+                    .HasForeignKey(ut => ut.TechnicalId);
+                    
             });
 
 
