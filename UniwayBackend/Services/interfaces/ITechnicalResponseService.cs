@@ -5,6 +5,7 @@ namespace UniwayBackend.Services.interfaces
 {
     public interface ITechnicalResponseService
     {
+        Task<MessageResponse<TechnicalResponse>> GetAllByRequestId(int RequestId);
         Task<MessageResponse<TechnicalResponse>> Save(TechnicalResponse technicalResponse);
     }
 }

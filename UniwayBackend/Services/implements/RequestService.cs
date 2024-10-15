@@ -37,6 +37,25 @@ namespace UniwayBackend.Services.implements
             _utilitaries = utilitaries;
         }
 
+        public async Task<MessageResponse<Request>> GetRequestPendingForClientAndStateRequest(int clientId, short? StateRequestId)
+        {
+            MessageResponse<Request> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var requests = await _repository.FindAllPendingByClientIdAndStateRequestId(clientId, StateRequestId ?? 0);
+
+                response = _utilitaries.setResponseBaseForList(requests);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
+
         public async Task<MessageResponse<Request>> GetRequestPendingInTrayByUserId(Guid userId)
         {
             MessageResponse<Request> response;

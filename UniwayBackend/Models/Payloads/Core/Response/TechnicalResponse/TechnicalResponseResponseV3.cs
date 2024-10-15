@@ -1,10 +1,9 @@
-﻿
-
-using UniwayBackend.Models.Payloads.Core.Response.Material;
+﻿using UniwayBackend.Models.Payloads.Core.Response.Material;
+using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfessionAvailability;
 
 namespace UniwayBackend.Models.Payloads.Core.Response.TechnicalResponse
 {
-    public class TechnicalResponseResponseV2
+    public class TechnicalResponseResponseV3
     {
         public int Id { get; set; }
         public int RequestId { get; set; }
@@ -20,5 +19,6 @@ namespace UniwayBackend.Models.Payloads.Core.Response.TechnicalResponse
 
         // Relations
         public virtual List<MaterialResponse> Materials { get; set; }
+        public virtual TechnicalProfessionAvailabilityResponse TechnicalProfessionAvailability { get; set; }
     }
 }

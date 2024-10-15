@@ -31,6 +31,27 @@ namespace UniwayBackend.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("GetByRequestId/{RequestId}")]
+        public async Task<ActionResult<MessageResponse<TechnicalResponseResponseV2>>> GetByRequestId(int RequestId)
+        {
+            MessageResponse<TechnicalResponseResponseV2> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var result = await _service.GetAllByRequestId(RequestId);
+
+                response = _mapper.Map<MessageResponse<TechnicalResponseResponseV2>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return new MessageResponseBuilder<TechnicalResponseResponseV2>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return response;
+        }
+
         [HttpPost]
         public async Task<ActionResult<MessageResponse<TechnicalResponseResponseV2>>> Save(TechnicalResponseRequest request)
         {

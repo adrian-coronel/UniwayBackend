@@ -55,9 +55,9 @@ namespace UniwayBackend.Config
 
             // Technical
             CreateMap<Technical, TechnicalResponseV2>().ReverseMap();
-            CreateMap<Technical, Models.Payloads.Core.Response.Technical.TechnicalResponse>().ReverseMap();
+            CreateMap<Technical, TechnicalResponseV1>().ReverseMap();
             CreateMap<MessageResponse<Technical>, MessageResponse<TechnicalResponseV2>>().ReverseMap();
-            CreateMap<MessageResponse<Technical>, MessageResponse<Models.Payloads.Core.Response.Technical.TechnicalResponse>>().ReverseMap();
+            CreateMap<MessageResponse<Technical>, MessageResponse<TechnicalResponseV1>>().ReverseMap();
 
             // UserTechnical
             CreateMap<UserTechnical, UserTechnicalResponse>().ReverseMap();
@@ -123,10 +123,12 @@ namespace UniwayBackend.Config
             CreateMap<RequestManyRequestV5, Request>()
                 .ForMember(dest => dest.Location, opt => opt.MapFrom(src => new Point(src.Lng, src.Lat) { SRID = 4326 }));
             CreateMap<Request, RequestResponse>().ReverseMap();
+            CreateMap<Request, RequestResponseV3>().ReverseMap();
             CreateMap<UserRequest, RequestResponse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.RequestId));
             CreateMap<ImagesProblemRequest, ImagesProblemRequestResponse>().ReverseMap();
             CreateMap<MessageResponse<Request>, MessageResponse<RequestResponse>>().ReverseMap();
+            CreateMap<MessageResponse<Request>, MessageResponse<RequestResponseV3>>().ReverseMap();
 
             // Location
 
@@ -134,6 +136,7 @@ namespace UniwayBackend.Config
             CreateMap<Models.Entities.TechnicalResponse, TechnicalResponseResponseV2> ().ReverseMap();
             CreateMap<MessageResponse<Models.Entities.TechnicalResponse>, MessageResponse<TechnicalResponseResponseV2>>().ReverseMap();
             CreateMap<Models.Entities.TechnicalResponse, TechnicalResponseRequest>().ReverseMap();
+            CreateMap<Models.Entities.TechnicalResponse, TechnicalResponseResponseV3>().ReverseMap();
             CreateMap<Material, MaterialResponse>().ReverseMap();
             CreateMap<Material, MaterialRequest>().ReverseMap();
 

@@ -306,6 +306,10 @@ namespace UniwayBackend.Context
                 request.HasMany(r => r.ImagesProblemRequests)
                     .WithOne(ipr => ipr.Request)
                     .HasForeignKey(r => r.RequestId);
+
+                request.HasMany(r => r.TechnicalResponses)
+                    .WithOne(tr => tr.Request)
+                    .HasForeignKey(r => r.RequestId);
             });
             // Review - Client (Many-to-One)
 

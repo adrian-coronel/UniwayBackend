@@ -67,21 +67,21 @@ namespace UniwayBackend.Controllers
         }
 
         [HttpPut("UpdateWorkingStatus")]
-        public async Task<ActionResult<MessageResponse<Models.Payloads.Core.Response.Technical.TechnicalResponse>>> UpdateWorkingStatus([FromBody] TechnicalRequestV1 request)
+        public async Task<ActionResult<MessageResponse<TechnicalResponseV1>>> UpdateWorkingStatus([FromBody] TechnicalRequestV1 request)
         {
-            MessageResponse<Models.Payloads.Core.Response.Technical.TechnicalResponse> response;
+            MessageResponse<TechnicalResponseV1> response;
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
                 var result = await _service.UpdateWorkinStatus(request);
                 
-                response = _mapper.Map<MessageResponse<Technical>, MessageResponse<Models.Payloads.Core.Response.Technical.TechnicalResponse>>(result);
+                response = _mapper.Map<MessageResponse<Technical>, MessageResponse<TechnicalResponseV1>>(result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                response = new MessageResponseBuilder<Models.Payloads.Core.Response.Technical.TechnicalResponse>()
+                response = new MessageResponseBuilder<TechnicalResponseV1>()
                     .Code(500).Message(ex.Message).Build();
             }
             return response;

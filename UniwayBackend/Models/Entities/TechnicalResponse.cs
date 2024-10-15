@@ -10,10 +10,11 @@ namespace UniwayBackend.Models.Entities
         public int Id { get; set; }
         public int RequestId { get; set; }
         public int? TechnicalProfessionAvailabilityId { get; set; }
+        // Este campo es porque la respuesta hiba a ser de un empleado
         public int? WorkshopTechnicalProfessionId { get; set; }
         public string Title { get; set; }
         public string Description {  get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public DateTime? ProposedAssistanceDate { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }

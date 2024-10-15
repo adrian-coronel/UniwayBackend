@@ -4,7 +4,7 @@ using UniwayBackend.Config;
 
 namespace UniwayBackend.Models.Payloads.Core.Response.Technical
 {
-    public class TechnicalResponse
+    public class TechnicalResponseV1
     {
         public int Id { get; set; }
         public string Name { get; set; }

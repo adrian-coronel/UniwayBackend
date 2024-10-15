@@ -72,6 +72,27 @@ namespace UniwayBackend.Controllers
             return response;
         }
 
+        [HttpGet("GetRequestByClientAndStateRequest/{ClientId}/{StateRequestId}")]
+        public async Task<ActionResult<MessageResponse<RequestResponseV3>>> GetRequestPending(int ClientId, short StateRequestId)
+        {
+            MessageResponse<RequestResponseV3> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var result = await _service.GetRequestPendingForClientAndStateRequest(ClientId, StateRequestId);
+
+                response = _mapper.Map<MessageResponse<RequestResponseV3>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<RequestResponseV3>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return response;
+        }
+
         [HttpPost("RequestByTechnicalProfessionAvailabilityId")]
         public async Task<ActionResult<MessageResponse<RequestResponse>>> SaveRequestForOne([FromForm] RequestRequest request)
         {
