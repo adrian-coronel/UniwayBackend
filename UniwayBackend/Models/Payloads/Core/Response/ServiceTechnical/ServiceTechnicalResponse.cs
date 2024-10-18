@@ -1,4 +1,5 @@
 ﻿using UniwayBackend.Models.Payloads.Core.Response.ImagesServiceTechnical;
+using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfessionAvailability;
 
 namespace UniwayBackend.Models.Payloads.Core.Response.ServiceTechnical
 {
@@ -12,5 +13,6 @@ namespace UniwayBackend.Models.Payloads.Core.Response.ServiceTechnical
         public decimal Price { get; set; }
 
         public List<ImagesServiceTechnicalResponse> Images { get; set; }
+        public TechnicalProfessionAvailabilityResponse TechnicalProfessionAvailability { get; set; }
     }
 }

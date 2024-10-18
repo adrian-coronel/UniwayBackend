@@ -45,15 +45,15 @@ namespace UniwayBackend.Controllers
             return response;
         }
 
-        [HttpPost("GetServicesOneCategory")]
-        public async Task<ActionResult<MessageResponse<CategoryServiceResponse>>> GetServicesOneCategory([FromBody] CategoryServiceRequest request)
+        [HttpPost("GetWithServices")]
+        public async Task<ActionResult<MessageResponse<CategoryServiceResponse>>> GetWithServices([FromBody] CategoryServiceRequest request)
         {
             MessageResponse<CategoryServiceResponse> response;
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
-                var result = await _service.GetAllByIdAndTechnicalProfessionAvailabilityId(request.Id, request.TechnicalProfessionAvailabilityId); ;
+                var result = await _service.GetAllByIdAndAvailabilityId(request.Id, request.TechnicalProfessionAvailabilityId, request.AvailaiblityId);
 
                 response = _mapper.Map<MessageResponse<CategoryServiceResponse>>(result);
             }

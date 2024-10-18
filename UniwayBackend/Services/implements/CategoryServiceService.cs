@@ -21,18 +21,18 @@ namespace UniwayBackend.Services.implements
             _logger = logger;
         }
 
-        public async Task<MessageResponse<CategoryService>> GetAllByIdAndTechnicalProfessionAvailabilityId(short CategoryServiceId, int TechnicalProfessionAvailabilityId)
+        public async Task<MessageResponse<CategoryService>> GetAllByIdAndAvailabilityId(short? CategoryServiceId = null, int? TechnicalProfessionAvailabilityId = null,short ? AvailabilityId = null)
         {
             MessageResponse<CategoryService> response;
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
-                var result = await _repository.FindByIdAndTechnicalProfessionAvailabilityId(CategoryServiceId, TechnicalProfessionAvailabilityId);
+                var result = await _repository.FindByIdAndAvailabilityId(CategoryServiceId, TechnicalProfessionAvailabilityId, AvailabilityId);
 
                 if (result is null) return _utilitaries.setResponseBaseForNotFount();
 
-                response = _utilitaries.setResponseBaseForObject(result);
+                response = _utilitaries.setResponseBaseForList(result);
             }
             catch (Exception ex)
             {

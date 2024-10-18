@@ -32,5 +32,24 @@ namespace UniwayBackend.Repositories.Core.Implements
                     
             }
         }
+
+        public async Task<List<CategoryService>> FindByIdAndAvailabilityId(short? CategoryServiceId = null, int? TechnicalProfessionAvailabilityId = null, short? AvailablityId = null)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.CategoryServices
+                    .Include(x => x.ServiceTechnicals)
+                        .ThenInclude(s => s.Images)
+                    .Include(x => x.ServiceTechnicals)
+                        .ThenInclude(s => s.TechnicalProfessionAvailability)
+                            .ThenInclude(tpa => tpa.Availability)
+                    .Where(cs => (CategoryServiceId == null || cs.Id == CategoryServiceId) &&
+                                 (TechnicalProfessionAvailabilityId == null || cs.ServiceTechnicals.Any(s => s.TechnicalProfessionAvailabilityId == TechnicalProfessionAvailabilityId)) &&
+                                 (AvailablityId == null || cs.ServiceTechnicals.Any(s => s.TechnicalProfessionAvailability.AvailabilityId == AvailablityId))
+                           )
+                    .ToListAsync();
+
+            }
+        }
     }
 }

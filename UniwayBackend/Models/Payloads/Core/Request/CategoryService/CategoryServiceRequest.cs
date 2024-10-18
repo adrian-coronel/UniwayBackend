@@ -2,8 +2,9 @@
 {
     public class CategoryServiceRequest
     {
-        public short Id { get; set; }
-        public string? Name { get; set; }
-        public int TechnicalProfessionAvailabilityId { get; set; }
+        public short? Id { get; set; }
+        public short? AvailaiblityId { get; set; }
+        public int? TechnicalProfessionAvailabilityId { get; set; }
+        //public string? Name { get; set; }
     }
 }
