@@ -5,6 +5,7 @@ using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Models.Payloads.Core.Request.Material;
 using UniwayBackend.Models.Payloads.Core.Request.Request;
+using UniwayBackend.Models.Payloads.Core.Request.ServiceTechnical;
 using UniwayBackend.Models.Payloads.Core.Request.TechnicalResponse;
 using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Availability;
@@ -13,6 +14,7 @@ using UniwayBackend.Models.Payloads.Core.Response.CategoryService;
 using UniwayBackend.Models.Payloads.Core.Response.Client;
 using UniwayBackend.Models.Payloads.Core.Response.Experience;
 using UniwayBackend.Models.Payloads.Core.Response.ImageProblem;
+using UniwayBackend.Models.Payloads.Core.Response.ImagesServiceTechnical;
 using UniwayBackend.Models.Payloads.Core.Response.Material;
 using UniwayBackend.Models.Payloads.Core.Response.Profession;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
@@ -100,8 +102,8 @@ namespace UniwayBackend.Config
             CreateMap<MessageResponse<CategoryService>, MessageResponse<CategoryServiceResponse>>().ReverseMap();
 
             // ServicesTechnical
-            CreateMap<ServiceTechnical, ServiceTechnicalResponse>().ReverseMap();
-            CreateMap<MessageResponse<ServiceTechnicalResponse>, MessageResponse<ServiceTechnicalResponse>>().ReverseMap();
+            CreateMap<ServiceTechnical, ServiceTechnicalRequest>().ReverseMap();
+            CreateMap<MessageResponse<ServiceTechnicalRequest>, MessageResponse<ServiceTechnicalRequest>>().ReverseMap();
 
             // StateRequest
             CreateMap<StateRequest, StateRequestResponse>().ReverseMap();
@@ -143,6 +145,14 @@ namespace UniwayBackend.Config
             // TechnicalProfessionAvailabilityRequest
             CreateMap<TechnicalProfessionAvailabilityRequestResponse, TechnicalProfessionAvailabilityRequestResponseV2>().ReverseMap();
             CreateMap<MessageResponse<TechnicalProfessionAvailabilityRequestResponse>, MessageResponse<TechnicalProfessionAvailabilityRequestResponseV2>>().ReverseMap();
+
+            // ServiceTechnical
+            CreateMap<ServiceTechnical, ServiceTechnicalResponse>().ReverseMap();
+            CreateMap<ServiceTechnical, ServiceTechnicalResponse>().ReverseMap();
+            CreateMap<MessageResponse<ServiceTechnical>, MessageResponse<ServiceTechnicalResponse>>().ReverseMap();
+            CreateMap<ImagesServiceTechnical, ImagesServiceTechnicalResponse>().ReverseMap();
+            CreateMap<MessageResponse<ImagesServiceTechnical>, MessageResponse<ImagesServiceTechnicalResponse>>().ReverseMap();
+            CreateMap<ImagesServiceTechnical, ImagesServiceTechnicalResponse>().ReverseMap();
         }
 
     }

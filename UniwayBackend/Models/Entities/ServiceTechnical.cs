@@ -16,5 +16,7 @@ namespace UniwayBackend.Models.Entities
         public virtual TechnicalProfessionAvailability TechnicalProfessionAvailability { get; set; }
         [ForeignKey("CategoryServiceId")]
         public virtual CategoryService CategoryService { get; set; }
+
+        public virtual List<ImagesServiceTechnical> Images { get; set; }
     }
 }

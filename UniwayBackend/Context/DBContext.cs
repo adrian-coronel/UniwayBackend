@@ -32,6 +32,7 @@ namespace UniwayBackend.Context
         public DbSet<TechnicalResponse> TechnicalResponses { get; set; }
         public DbSet<Material> Materials { get; set; }
         public virtual DbSet<UserRequest> UserRequests { get; set; }
+        public DbSet<ImagesServiceTechnical> ImagesServiceTechnicals { get; set; }
          
 
         // Constructor de la clase DBContext que recibe opciones de configuración de DbContext
@@ -244,6 +245,15 @@ namespace UniwayBackend.Context
                 profession.Property(a => a.Name)
                     .HasMaxLength(50)
                     .IsRequired();
+            });
+
+            // ServiceTechnical
+            modelBuilder.Entity<ServiceTechnical>(serviceTech =>
+            {
+                serviceTech.HasKey(a => a.Id);
+                serviceTech.HasMany(s => s.Images)
+                    .WithOne()
+                    .HasForeignKey(s => s.ServiceTechnicalId);
             });
 
             // TechnicalProfession

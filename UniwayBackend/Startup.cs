@@ -137,6 +137,11 @@ namespace UniwayBackend
             services.AddScoped<ITechnicalProfessionAvailabilityRequestService, TechnicalProfessionAvailabilityRequestService>();
 
             services.AddScoped<IClientService, ClientService>();
+
+            services.AddScoped<IServiceTechnicalService, ServiceTechnicalService>();
+            services.AddScoped<IImagesServiceTechnicalService, ImagesServiceTechnicalService>();
+            services.AddScoped<IBaseRepository<ServiceTechnical, int>, BaseRepository<ServiceTechnical, int>>();
+            services.AddScoped<IBaseRepository<ImagesServiceTechnical, int>, BaseRepository<ImagesServiceTechnical, int>>();
         }
 
         private static void JwtConfig(IServiceCollection services)
