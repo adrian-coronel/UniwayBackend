@@ -5,7 +5,7 @@ namespace UniwayBackend.Services.interfaces
 {
     public interface IImagesProblemRequestService
     {
-        Task<MessageResponse<ImagesProblemRequest>> Save(ImagesProblemRequest imagesProblemRequest);
-        Task<MessageResponse<ImagesProblemRequest>> SaveAll(List<ImagesProblemRequest> imagesProblemRequests);
+        Task<MessageResponse<ImagesProblemRequest>> Save(int RequestId, IFormFile file);
+        Task<MessageResponse<ImagesProblemRequest>> SaveAll(int RequestId, List<IFormFile> files);
     }
 }

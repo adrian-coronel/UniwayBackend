@@ -106,5 +106,12 @@
             public const string SOLICITUDE = "Solicitude";
             public const string RESPONSE = "Response";
         }
+
+        public static class EntityTypes
+        {
+            public const string MECHANICAL = "Mecánico";
+            public const string WORKSHOP = "Taller";
+            public const string CLIENT = "Cliente";
+        }
     }
 }

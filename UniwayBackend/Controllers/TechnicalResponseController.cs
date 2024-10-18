@@ -9,6 +9,7 @@ using UniwayBackend.Models.Payloads.Core.Response.Notification;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
 using UniwayBackend.Config;
+using UniwayBackend.Models.Payloads.Core.Response;
 
 namespace UniwayBackend.Controllers
 {
@@ -72,6 +73,7 @@ namespace UniwayBackend.Controllers
                 if (response.Code == 200) 
                 {
                     User? user = await _userRepository.FindByRequestId(response.Object!.RequestId);
+                    DataUserResponse userSend = await _userRepository.FindTechnicalOrWorkshop(request.TechnicalProfessionAvailabilityId.Value);
 
                     // Enviar la notificacion al cliente
                     if (user != null)
@@ -79,7 +81,8 @@ namespace UniwayBackend.Controllers
                         {
                             Type = Constants.TypesConnectionSignalR.RESPONSE,
                             Message = "Notification success",
-                            Data = response.Object
+                            Data = response.Object,
+                            UserSend = userSend
                         });
                 }
             }

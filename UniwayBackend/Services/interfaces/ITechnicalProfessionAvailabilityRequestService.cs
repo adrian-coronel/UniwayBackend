@@ -6,5 +6,6 @@ namespace UniwayBackend.Services.interfaces
     public interface ITechnicalProfessionAvailabilityRequestService
     {
         Task<MessageResponse<TechnicalProfessionAvailabilityRequestResponse>> GetAllPendingByUserId(Guid UserId);
+        
     }
 }

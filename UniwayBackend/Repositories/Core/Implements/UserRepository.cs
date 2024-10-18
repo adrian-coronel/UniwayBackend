@@ -3,6 +3,7 @@ using NetTopologySuite.Geometries;
 using UniwayBackend.Config;
 using UniwayBackend.Context;
 using UniwayBackend.Models.Entities;
+using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Repositories.Base;
 using UniwayBackend.Repositories.Core.Interfaces;
 using static UniwayBackend.Config.Constants;
@@ -102,6 +103,50 @@ namespace UniwayBackend.Repositories.Core.Implements
                     .Where(x => x.Id == RequestId)
                     .Select(x => x.Client.User)
                     .FirstOrDefaultAsync();
+            }
+        }
+
+        public async Task<User?> FindByClientId(int ClientId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.clients
+                    .Where(x => x.Id == ClientId)
+                    .Select(x => x.User)
+                    .FirstAsync();
+            }
+        }
+
+        public async Task<DataUserResponse> FindTechnicalOrWorkshop(int TechProfAvaiId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                DataUserResponse response = new DataUserResponse();
+                var techProfAvai = await context.TechnicalProfessionAvailabilities.FindAsync(TechProfAvaiId);
+
+                if (techProfAvai.AvailabilityId == Constants.Availabilities.BOTH_ID)
+                {
+                    var technical = await context.TechnicalProfessionAvailabilities
+                        .Where(x => x.Id == techProfAvai.Id)
+                        .Select(x => x.TechnicalProfession.UserTechnical.Technical)
+                        .FirstAsync();
+
+                    response.EntityId = technical.Id.ToString();
+                    response.FullName = $"{technical.Name} {technical.FatherLastname} {technical.MotherLastname}";
+                    response.TypeEntity = Constants.EntityTypes.MECHANICAL;
+                }
+                if (techProfAvai.AvailabilityId == Constants.Availabilities.IN_WORKSHOP_ID)
+                {
+                    var workshop = await context.TechnicalProfessionAvailabilities
+                        .Where(x => x.Id == techProfAvai.Id)
+                        .Select(x => x.Workshops.First())
+                        .FirstAsync();
+
+                    response.EntityId = workshop.Id.ToString();
+                    response.FullName = $"{workshop.Name}";
+                    response.TypeEntity = Constants.EntityTypes.WORKSHOP;
+                }
+                return response;
             }
         }
     }

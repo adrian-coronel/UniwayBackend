@@ -7,6 +7,7 @@ using UniwayBackend.Factories;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request.Request;
+using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Notification;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Models.Payloads.Core.Response.StateRequest;
@@ -25,6 +26,7 @@ namespace UniwayBackend.Controllers
         private readonly IImagesProblemRequestService _imagesService;
         private readonly ITechnicalProfessionAvailabilityService _techProfAvailabilityService;
         private readonly IStorageService _storageService;
+        private readonly IClientRepository _clientRepository;
         private readonly IUserRepository _userRepository;
         private readonly INotificationService _notificationService;
         private readonly ITechnicalProfessionAvailabilityRequestRepository _techProfAvaiRequestRepostiory;
@@ -101,20 +103,10 @@ namespace UniwayBackend.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
-                // Validations
-                var validResult = ValidateImages(request.Files);
-                if (validResult != null) return validResult;
-                
                 Request requestEntity = _mapper.Map<Request>(request);
 
                 // Insertar solicitud
-                var result = await _service.Save(requestEntity);
-
-                // Guardar imagenes
-                if (request.Files.Count > 0)
-                {
-                    result.Object!.ImagesProblemRequests = await SaveImages(request.Files, result.Object.Id);
-                }
+                var result = await _service.Save(requestEntity, request.Files);
 
                 // Mapeamos la solicitud a un tipo respuesta
                 response = _mapper.Map<MessageResponse<RequestResponse>>(result);
@@ -129,7 +121,13 @@ namespace UniwayBackend.Controllers
                         {
                             Type = Constants.TypesConnectionSignalR.SOLICITUDE,
                             Message = "Notification success",
-                            Data = response.Object
+                            Data = response.Object,
+                            UserSend = new DataUserResponse
+                            {
+                                EntityId = requestEntity.Id.ToString(),
+                                FullName = $"{requestEntity.Client.Name} {requestEntity.Client.FatherLastname} {requestEntity.Client.MotherLastname}",
+                                TypeEntity = Constants.EntityTypes.CLIENT
+                            }
                         });
                 }
 
@@ -150,12 +148,6 @@ namespace UniwayBackend.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
-                // Validations
-                var validResult = ValidateImages(request.Files);
-                if (validResult != null) return validResult;
-
-                Request requestEntity = _mapper.Map<Request>(request);
-
                 // Buscar TechnicalAvailabilityId
                 var techAvai = await _techProfAvailabilityService
                     .GetByTechnicalAndAvailability(request.TechnicalId, request.AvailabilityId);
@@ -163,16 +155,15 @@ namespace UniwayBackend.Controllers
                 if (techAvai.Object == null)
                     return new MessageResponseBuilder<RequestResponse>()
                         .Code(404).Message("No se encontro el técnico con la disponibilidad especificada").Build();
-                
+
+
+                Request requestEntity = _mapper.Map<Request>(request);
+
                 // Asíganamos el tecnico con su disponibilidad a la solicitud
                 requestEntity.TechnicalProfessionAvailabilityId = techAvai.Object!.Id;                
 
                 // Insertar solicitud
-                var result = await _service.Save(requestEntity);
-
-                // Guardar imagenes
-                if (request.Files.Count > 0)
-                    result.Object!.ImagesProblemRequests = await SaveImages(request.Files, result.Object.Id);
+                var result = await _service.Save(requestEntity, request.Files);
 
                 // Mapeamos la solicitud a un tipo respuesta
                 response = _mapper.Map<MessageResponse<RequestResponse>>(result);
@@ -181,13 +172,19 @@ namespace UniwayBackend.Controllers
                 if (response.Object!.TechnicalProfessionAvailabilityId != null && response.Code == 200)
                 {
                     var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(response.Object!.TechnicalProfessionAvailabilityId.Value);
-
+                    var userSend = await _userRepository.FindByClientId(request.ClientId);
                     if (user != null)
                         await _notificationService.SendNotificationWithRequestAsync(user.Id.ToString(), new NotificationResponse
                         {
                             Type = Constants.TypesConnectionSignalR.SOLICITUDE,
                             Message = "Notification success",
-                            Data = response.Object
+                            Data = response.Object,
+                            UserSend = new DataUserResponse
+                            {
+                                EntityId = requestEntity.Id.ToString(),
+                                FullName = $"{requestEntity.Client.Name} {requestEntity.Client.FatherLastname} {requestEntity.Client.MotherLastname}",
+                                TypeEntity = Constants.EntityTypes.CLIENT
+                            }
                         });
                 }
 
@@ -211,18 +208,11 @@ namespace UniwayBackend.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
-                // Validar imagenes si es que se pasan
-                var validResult = ValidateImages(request.Files);
-                if (validResult != null) return validResult;
-
                 // Mapear y guardar la entidad de solicitud
                 Request requestEntity = _mapper.Map<Request>(request);
-                var result = await _service.Save(requestEntity);
 
-                // Guardar imágenes si hay archivos
-                if (request.Files.Count > 0)                
-                    result.Object!.ImagesProblemRequests = await SaveImages(request.Files, result.Object.Id);
-                
+                var result = await _service.Save(requestEntity, request.Files);
+              
                 // Mapeamos la solicitud a un tipo respuesta
                 response = _mapper.Map<MessageResponse<RequestResponse>>(result);
 
@@ -244,14 +234,20 @@ namespace UniwayBackend.Controllers
                     // Obtener el Id de los técnicos relacionados para notificar
                     List<int> IdsTechProfAvai = techAvailabilities.List.Select(x => x.Id).ToList();
                     List<User> nearbyUsers = await _userRepository.FindByListTechnicalProfessionAvailabilityId(IdsTechProfAvai);
-
+                    var userSend = await _userRepository.FindByClientId(request.ClientId);
                     // Enviar notificaciones
                     List<string> ids = nearbyUsers.Select(x => x.Id.ToString()).ToList();
                     await _notificationService.SendSomeNotificationWithRequestAsync(ids, new NotificationResponse
                     {
                         Type = Constants.TypesConnectionSignalR.SOLICITUDE,
                         Message = "Notification success",
-                        Data = response.Object
+                        Data = response.Object,
+                        UserSend = new DataUserResponse
+                        {
+                            EntityId = requestEntity.Id.ToString(),
+                            FullName = $"{requestEntity.Client.Name} {requestEntity.Client.FatherLastname} {requestEntity.Client.MotherLastname}",
+                            TypeEntity = Constants.EntityTypes.CLIENT
+                        }
                     });
                 }
             }
@@ -275,11 +271,8 @@ namespace UniwayBackend.Controllers
 
                 // Mapear y guardar la entidad de solicitud
                 Request requestEntity = _mapper.Map<Request>(request);
-                var result = await _service.Save(requestEntity);
 
-                // Guardar imágenes si hay archivos
-                if (request.Files.Count > 0)
-                    result.Object!.ImagesProblemRequests = await SaveImages(request.Files, result.Object.Id);
+                var result = await _service.Save(requestEntity, request.Files);
 
                 // Mapeamos la solicitud a un tipo respuesta
                 response = _mapper.Map<MessageResponse<RequestResponse>>(result);
@@ -302,6 +295,7 @@ namespace UniwayBackend.Controllers
                     // Obtener el Id de los técnicos relacionados para notificar
                     List<int> IdsTechProfAvai = techAvailabilities.List.Select(x => x.Id).ToList();
                     List<User> nearbyUsers = await _userRepository.FindByListTechnicalProfessionAvailabilityId(IdsTechProfAvai);
+                    var userSend = await _userRepository.FindByClientId(request.ClientId);
 
                     // Enviar notificaciones
                     List<string> ids = nearbyUsers.Select(x => x.Id.ToString()).ToList();
@@ -309,7 +303,13 @@ namespace UniwayBackend.Controllers
                     {
                         Type = Constants.TypesConnectionSignalR.SOLICITUDE,
                         Message = "Notification success",
-                        Data = response.Object
+                        Data = response.Object,
+                        UserSend = new DataUserResponse
+                        {
+                            EntityId = requestEntity.Id.ToString(),
+                            FullName = $"{requestEntity.Client.Name} {requestEntity.Client.FatherLastname} {requestEntity.Client.MotherLastname}",
+                            TypeEntity = Constants.EntityTypes.CLIENT
+                        }
                     });
                 }
             }
@@ -350,46 +350,6 @@ namespace UniwayBackend.Controllers
         }
 
 
-        private async Task<List<ImagesProblemRequest>> SaveImages(List<IFormFile> files, int RequestId)
-        {
-            var currentDate = DateTime.UtcNow;
-
-            // Guardamos las imagenes 
-            List<ImageResponse> images = await _storageService.SaveFilesAsync(files, currentDate.ToString("yyyy-MM-dd"));
-
-            // Guardamos los datos y ubicación de las imgenes en BD
-            List<ImagesProblemRequest> imagesProblemMapped = images.Select(x => new ImagesProblemRequest
-            {
-                RequestId = RequestId,
-                Url = x.Url,
-                OriginalName = x.OriginalName,
-                ExtensionType = x.ExtensionType,
-                ContentType = x.ContentType,
-                CreatedOn = DateTime.UtcNow,
-            }).ToList();
-            var imagesProblem = await _imagesService.SaveAll(imagesProblemMapped);
-
-            return imagesProblem.List!.ToList();
-        }
-
-
-        private MessageResponse<RequestResponse>? ValidateImages(List<IFormFile> Files)
-        {
-            if (Files != null)
-            {
-                if (Files.Count > Constants.MAX_FILES)
-                    return new MessageResponseBuilder<RequestResponse>()
-                    .Code(400).Message($"La cantidad de archivos excede el limite(${Constants.MAX_FILES})").Build();
-
-                if (Files.Any(x => !Constants.VALID_CONTENT_TYPES.Contains(x.ContentType)))
-                    return new MessageResponseBuilder<RequestResponse>()
-                    .Code(400).Message($"Imagenes con tipo de contenido no valido").Build();
-
-                if (Files.Any(x => x.Length > (Constants.MAX_MB * 1024 * 1024)))
-                    return new MessageResponseBuilder<RequestResponse>()
-                    .Code(400).Message($"Uno de los archivos excedió el tamaño maximo de ${Constants.MAX_MB}MB").Build();
-            }
-            return null;
-        }
+       
     }
 }
