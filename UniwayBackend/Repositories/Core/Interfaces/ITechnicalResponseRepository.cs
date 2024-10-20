@@ -5,6 +5,7 @@ namespace UniwayBackend.Repositories.Core.Interfaces
 {
     public interface ITechnicalResponseRepository : IBaseRepository<TechnicalResponse, int>
     {
-        Task<List<TechnicalResponse>> FindAllByRequestId(int RequestId);   
+        Task<List<TechnicalResponse>> FindAllByRequestId(int RequestId);
+        Task<List<TechnicalResponse>> FindAllByClientIdAndRequest(int ClientId, int RequestId);
     }
 }

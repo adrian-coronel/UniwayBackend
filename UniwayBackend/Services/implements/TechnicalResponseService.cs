@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Azure.Core;
+using System.Reflection;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Repositories.Core.Interfaces;
@@ -18,6 +19,25 @@ namespace UniwayBackend.Services.implements
             _logger = logger;
             _utilitaries = utilitaries;
             _repository = repository;
+        }
+
+        public async Task<MessageResponse<TechnicalResponse>> GetAllByClientIdAndRequestId(int ClientId, int RequestId)
+        {
+            MessageResponse<TechnicalResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var technicalResponses = await _repository.FindAllByClientIdAndRequest(ClientId, RequestId);
+
+                response = _utilitaries.setResponseBaseForList(technicalResponses);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
         }
 
         public async Task<MessageResponse<TechnicalResponse>> GetAllByRequestId(int RequestId)

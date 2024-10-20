@@ -53,6 +53,27 @@ namespace UniwayBackend.Controllers
             return response;
         }
 
+        [HttpGet("GetByClientAndRequest/{ClientId}/{RequestId}")]
+        public async Task<ActionResult<MessageResponse<TechnicalResponseResponseV2>>> GetByClientAndRequest(int ClientId, int RequestId)
+        {
+            MessageResponse<TechnicalResponseResponseV2> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var result = await _service.GetAllByClientIdAndRequestId(ClientId, RequestId);
+
+                response = _mapper.Map<MessageResponse<TechnicalResponseResponseV2>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return new MessageResponseBuilder<TechnicalResponseResponseV2>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return response;
+        }
+
         [HttpPost]
         public async Task<ActionResult<MessageResponse<TechnicalResponseResponseV2>>> Save(TechnicalResponseRequest request)
         {
