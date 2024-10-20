@@ -142,6 +142,7 @@ namespace UniwayBackend
             services.AddScoped<IImagesServiceTechnicalService, ImagesServiceTechnicalService>();
             services.AddScoped<IBaseRepository<ServiceTechnical, int>, BaseRepository<ServiceTechnical, int>>();
             services.AddScoped<IBaseRepository<ImagesServiceTechnical, int>, BaseRepository<ImagesServiceTechnical, int>>();
+            services.AddScoped<IBaseRepository<ServiceTechnicalTypeCar, int>, BaseRepository<ServiceTechnicalTypeCar, int>>();   
         }
 
         private static void JwtConfig(IServiceCollection services)

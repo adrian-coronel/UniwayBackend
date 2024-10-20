@@ -20,6 +20,7 @@ using UniwayBackend.Models.Payloads.Core.Response.Profession;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Models.Payloads.Core.Response.Review;
 using UniwayBackend.Models.Payloads.Core.Response.ServiceTechnical;
+using UniwayBackend.Models.Payloads.Core.Response.ServiceTechnicalTypeCar;
 using UniwayBackend.Models.Payloads.Core.Response.StateRequest;
 using UniwayBackend.Models.Payloads.Core.Response.Technical;
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfession;
@@ -27,6 +28,7 @@ using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfessionAvailabilit
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalProfessionAvailabilityRequest;
 using UniwayBackend.Models.Payloads.Core.Response.TechnicalResponse;
 using UniwayBackend.Models.Payloads.Core.Response.TowingCar;
+using UniwayBackend.Models.Payloads.Core.Response.TypeCar;
 using UniwayBackend.Models.Payloads.Core.Response.UserTechnical;
 
 
@@ -63,10 +65,12 @@ namespace UniwayBackend.Config
 
             // UserTechnical
             CreateMap<UserTechnical, UserTechnicalResponse>().ReverseMap();
+            CreateMap<UserTechnical, UserTechnicalResponseV2>().ReverseMap();
             CreateMap<MessageResponse<UserTechnical>, MessageResponse<UserTechnicalResponse>>().ReverseMap();
 
             // TechnicalProfession
             CreateMap<TechnicalProfession, TechnicalProfessionResponse>().ReverseMap();
+            CreateMap<TechnicalProfession, TechnicalProfessionResponseV2>().ReverseMap();
             CreateMap<MessageResponse<TechnicalProfession>, MessageResponse<TechnicalProfessionResponse>>().ReverseMap();
 
             // TowingCar
@@ -153,6 +157,11 @@ namespace UniwayBackend.Config
             CreateMap<ImagesServiceTechnical, ImagesServiceTechnicalResponse>().ReverseMap();
             CreateMap<MessageResponse<ImagesServiceTechnical>, MessageResponse<ImagesServiceTechnicalResponse>>().ReverseMap();
             CreateMap<ImagesServiceTechnical, ImagesServiceTechnicalResponse>().ReverseMap();
+
+            // ServiceTechnicalTypeCar
+            CreateMap<ServiceTechnicalTypeCar, ServiceTechnicalTypeCarResponse>().ReverseMap();
+            // TypeCar
+            CreateMap<TypeCar, TypeCarResponse>().ReverseMap();
         }
 
     }

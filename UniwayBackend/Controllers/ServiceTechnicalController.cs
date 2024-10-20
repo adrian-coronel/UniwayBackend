@@ -6,6 +6,7 @@ using UniwayBackend.Models.Payloads.Core.Response.ServiceTechnical;
 using UniwayBackend.Models.Payloads.Core.Request.ServiceTechnical;
 using UniwayBackend.Services.interfaces;
 using UniwayBackend.Models.Entities;
+using UniwayBackend.Repositories.Base;
 
 namespace UniwayBackend.Controllers
 {
@@ -15,16 +16,38 @@ namespace UniwayBackend.Controllers
     {
 
         private readonly IServiceTechnicalService _service;
+        private readonly IBaseRepository<ServiceTechnicalTypeCar, int> _serviceTechnicalTypeCarRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<ServiceTechnicalController> _logger;
 
-        public ServiceTechnicalController(IServiceTechnicalService service, IMapper mapper, ILogger<ServiceTechnicalController> logger)
+        public ServiceTechnicalController(IServiceTechnicalService service, IBaseRepository<ServiceTechnicalTypeCar, int> serviceTechnicalTypeCarRepository, IMapper mapper, ILogger<ServiceTechnicalController> logger)
         {
             _service = service;
+            _serviceTechnicalTypeCarRepository = serviceTechnicalTypeCarRepository;
             _mapper = mapper;
             _logger = logger;
         }
 
+        [HttpGet("GetById/{Id}")]
+        public async Task<ActionResult<MessageResponse<ServiceTechnicalResponse>>> GetById(int Id)
+        {
+            MessageResponse<ServiceTechnicalResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var result = await _service.GetById(Id);
+
+                response = _mapper.Map<MessageResponse<ServiceTechnicalResponse>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<ServiceTechnicalResponse>()
+                    .Code(401).Message(ex.Message).Build();
+            }
+            return response;
+        }
 
         [HttpGet("/{TechnicalId}/{AvailabilityId}")]
         public async Task<ActionResult<MessageResponse<ServiceTechnicalResponse>>> GetTechnicalAndAvailability(int TechnicalId, short AvailabilityId)
@@ -59,6 +82,13 @@ namespace UniwayBackend.Controllers
                 var imageServiceTechnical = _mapper.Map<ServiceTechnical>(request);
 
                 var result = await _service.Save(imageServiceTechnical, request.Files);
+
+                await _serviceTechnicalTypeCarRepository.Insert(new ServiceTechnicalTypeCar
+                {
+                    ServiceTechnicalId = result.Object!.Id,
+                    TypeCarId = request.TypeCarId,
+                    Price = request.Price
+                });
 
                 response = _mapper.Map<MessageResponse<ServiceTechnicalResponse>>(result);
             }

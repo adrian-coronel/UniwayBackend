@@ -13,6 +13,8 @@ namespace UniwayBackend.Repositories.Core.Implements
             using (DBContext context = new DBContext())
             {
                 return await context.ServiceTechnicals
+                    .Include(x => x.ServiceTechnicalTypeCars)
+                        .ThenInclude(x => x.TypeCar)
                     .Where(st => st.TechnicalProfessionAvailabilityId == TechnicalProfessionAvailabilityId)
                     .ToListAsync();
             }
@@ -23,6 +25,8 @@ namespace UniwayBackend.Repositories.Core.Implements
             using (DBContext context = new DBContext())
             {
                 return await context.ServiceTechnicals
+                    .Include(x => x.ServiceTechnicalTypeCars)
+                        .ThenInclude(x => x.TypeCar)
                     .Where(st => st.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.TechnicalId == TechnicalId &&
                                  (AvailabilityId == 0 || st.TechnicalProfessionAvailability.AvailabilityId == AvailabilityId)
                           )
@@ -52,6 +56,23 @@ namespace UniwayBackend.Repositories.Core.Implements
                     .Take(5)
                     .ToListAsync();
 
+            }
+        }
+
+        public async Task<ServiceTechnical?> GetByIdWithInformation(int ServiceTechnicalId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.ServiceTechnicals
+                    .Include(x => x.ServiceTechnicalTypeCars)
+                        .ThenInclude(sttc => sttc.TypeCar)
+                    .Include(x => x.TechnicalProfessionAvailability)
+                        .ThenInclude(tpa => tpa.Workshops)
+                    .Include(x => x.TechnicalProfessionAvailability)
+                        .ThenInclude(x => x.TechnicalProfession)
+                            .ThenInclude(x => x.UserTechnical)
+                                .ThenInclude(x => x.Technical)
+                    .FirstOrDefaultAsync(x => x.Id == ServiceTechnicalId);
             }
         }
     }

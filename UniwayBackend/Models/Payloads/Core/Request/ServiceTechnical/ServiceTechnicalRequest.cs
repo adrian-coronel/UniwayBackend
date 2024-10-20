@@ -4,6 +4,7 @@
     {
         public int TechnicalProfessionAvailabilityId { get; set; }
         public short CategoryServiceId { get; set; }
+        public short TypeCarId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }

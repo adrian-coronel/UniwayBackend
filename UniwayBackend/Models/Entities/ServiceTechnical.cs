@@ -10,7 +10,6 @@ namespace UniwayBackend.Models.Entities
         public short CategoryServiceId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public decimal Price { get; set; }
 
         [ForeignKey("TechnicalProfessionAvailabilityId")]
         public virtual TechnicalProfessionAvailability TechnicalProfessionAvailability { get; set; }
@@ -18,5 +17,6 @@ namespace UniwayBackend.Models.Entities
         public virtual CategoryService CategoryService { get; set; }
 
         public virtual List<ImagesServiceTechnical> Images { get; set; }
+        public virtual List<ServiceTechnicalTypeCar> ServiceTechnicalTypeCars { get; set; }
     }
 }

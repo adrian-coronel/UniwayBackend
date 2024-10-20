@@ -5,6 +5,7 @@ namespace UniwayBackend.Services.interfaces
 {
     public interface IServiceTechnicalService
     {
+        Task<MessageResponse<ServiceTechnical>> GetById(int serviceTechnicalId);
         Task<MessageResponse<ServiceTechnical>> GetByTechnicaIdAndAvailabilityId(int technicalId, short availabilityId);
         Task<MessageResponse<ServiceTechnical>> Save(ServiceTechnical serviceTechnical, List<IFormFile> Files);
 

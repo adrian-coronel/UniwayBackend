@@ -33,6 +33,9 @@ namespace UniwayBackend.Context
         public DbSet<Material> Materials { get; set; }
         public virtual DbSet<UserRequest> UserRequests { get; set; }
         public DbSet<ImagesServiceTechnical> ImagesServiceTechnicals { get; set; }
+        public DbSet<TypeCar> TypeCars { get; set; }
+        public DbSet<ServiceTechnicalTypeCar> ServiceTechnicalTypeCars {  get; set; }
+
          
 
         // Constructor de la clase DBContext que recibe opciones de configuración de DbContext
@@ -254,6 +257,18 @@ namespace UniwayBackend.Context
                 serviceTech.HasMany(s => s.Images)
                     .WithOne()
                     .HasForeignKey(s => s.ServiceTechnicalId);
+                serviceTech.HasMany(s => s.ServiceTechnicalTypeCars)
+                    .WithOne()
+                    .HasForeignKey(sttc => sttc.ServiceTechnicalId);
+            });
+
+            modelBuilder.Entity<ServiceTechnicalTypeCar>( sttp =>
+            {
+                sttp.HasKey(x => x.Id);
+
+                sttp.HasOne(x => x.TypeCar)
+                    .WithMany()
+                    .HasForeignKey(x => x.TypeCarId);
             });
 
             // TechnicalProfession

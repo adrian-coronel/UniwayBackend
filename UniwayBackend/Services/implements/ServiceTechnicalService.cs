@@ -30,6 +30,25 @@ namespace UniwayBackend.Services.implements
             _mapper = mapper;
         }
 
+        public async Task<MessageResponse<ServiceTechnical>> GetById(int serviceTechnicalId)
+        {
+            MessageResponse<ServiceTechnical> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var service = await _repository.GetByIdWithInformation(serviceTechnicalId);
+
+                response = _utilitaries.setResponseBaseForObject(service);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
+
         public async Task<MessageResponse<ServiceTechnical>> GetByTechnicaIdAndAvailabilityId(int technicalId, short availabilityId)
         {
             MessageResponse<ServiceTechnical> response;
