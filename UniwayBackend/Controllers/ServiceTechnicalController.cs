@@ -16,14 +16,12 @@ namespace UniwayBackend.Controllers
     {
 
         private readonly IServiceTechnicalService _service;
-        private readonly IBaseRepository<ServiceTechnicalTypeCar, int> _serviceTechnicalTypeCarRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<ServiceTechnicalController> _logger;
 
-        public ServiceTechnicalController(IServiceTechnicalService service, IBaseRepository<ServiceTechnicalTypeCar, int> serviceTechnicalTypeCarRepository, IMapper mapper, ILogger<ServiceTechnicalController> logger)
+        public ServiceTechnicalController(IServiceTechnicalService service, IMapper mapper, ILogger<ServiceTechnicalController> logger)
         {
             _service = service;
-            _serviceTechnicalTypeCarRepository = serviceTechnicalTypeCarRepository;
             _mapper = mapper;
             _logger = logger;
         }
@@ -82,13 +80,6 @@ namespace UniwayBackend.Controllers
                 var imageServiceTechnical = _mapper.Map<ServiceTechnical>(request);
 
                 var result = await _service.Save(imageServiceTechnical, request.Files);
-
-                await _serviceTechnicalTypeCarRepository.Insert(new ServiceTechnicalTypeCar
-                {
-                    ServiceTechnicalId = result.Object!.Id,
-                    TypeCarId = request.TypeCarId,
-                    Price = request.Price
-                });
 
                 response = _mapper.Map<MessageResponse<ServiceTechnicalResponse>>(result);
             }

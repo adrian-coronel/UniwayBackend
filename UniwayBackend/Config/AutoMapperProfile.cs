@@ -160,6 +160,7 @@ namespace UniwayBackend.Config
 
             // ServiceTechnicalTypeCar
             CreateMap<ServiceTechnicalTypeCar, ServiceTechnicalTypeCarResponse>().ReverseMap();
+            CreateMap<ServiceTechnicalTypeCar, ServiceTechnicalTypeCarRequest>().ReverseMap();
             // TypeCar
             CreateMap<TypeCar, TypeCarResponse>().ReverseMap();
         }
