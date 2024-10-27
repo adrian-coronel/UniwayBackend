@@ -8,6 +8,7 @@ using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
+using static UniwayBackend.Config.Constants;
 
 namespace UniwayBackend.Services.implements
 {
@@ -34,6 +35,25 @@ namespace UniwayBackend.Services.implements
             _clientRepository = clientRepository;
             _mapper = mapper;
             _utilitaries = utilitaries;
+        }
+
+        public async Task<MessageResponse<Request>> GetAllByUser(Guid userId)
+        {
+            MessageResponse<Request> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var requests = await _repository.FindAllPendingByUserId(userId);
+
+                response = _utilitaries.setResponseBaseForList(requests);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
         }
 
         public async Task<MessageResponse<Request>> GetRequestPendingForClientAndStateRequest(int clientId, short? StateRequestId)

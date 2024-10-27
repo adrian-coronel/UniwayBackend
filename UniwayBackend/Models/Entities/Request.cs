@@ -17,6 +17,7 @@ namespace UniwayBackend.Models.Entities
         public string Title { get; set; }
         public string Description { get; set; }
         public Point Location { get; set; }
+        public DateTime CreatedOn { get; set; }
         public DateTime? ProposedAssistanceDate { get; set; }
         public DateTime? AnsweredOn { get; set; }
         public DateTime? ResolvedOn { get; set; }

@@ -74,6 +74,9 @@ namespace UniwayBackend.Controllers
             return response;
         }
 
+        //[HttpGet("GetHistoryRequests/{UserId}")]
+        
+
         [HttpGet("GetRequestByClientAndStateRequest/{ClientId}/{StateRequestId}")]
         public async Task<ActionResult<MessageResponse<RequestResponseV3>>> GetRequestPending(int ClientId, short StateRequestId)
         {

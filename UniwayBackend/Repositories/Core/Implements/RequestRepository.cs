@@ -9,6 +9,20 @@ namespace UniwayBackend.Repositories.Core.Implements
 {
     public class RequestRepository : BaseRepository<Request, int>, IRequestRepository
     {
+        public async Task<List<Request>> FindAllByUser(Guid UserId)
+        {
+            using (DBContext context = new DBContext())
+            {
+
+                return await context.Requests
+                    .Include(x => x.StateRequest)
+                    .Include(x => x.ServiceTechnical)
+                        .ThenInclude(x => x.Images)
+                    .Where(x => x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId)
+                    .ToListAsync();
+            }
+        }
+
         public async Task<List<Request>> FindAllPendingByClientIdAndStateRequestId(int clientId, short stateRequestId = 0)
         {
             using (DBContext context = new DBContext())
