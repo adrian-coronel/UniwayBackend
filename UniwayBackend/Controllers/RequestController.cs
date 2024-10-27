@@ -14,6 +14,7 @@ using UniwayBackend.Models.Payloads.Core.Response.StateRequest;
 using UniwayBackend.Models.Payloads.Core.Response.Storage;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
+using static UniwayBackend.Config.Constants;
 
 namespace UniwayBackend.Controllers
 {
@@ -74,8 +75,24 @@ namespace UniwayBackend.Controllers
             return response;
         }
 
-        //[HttpGet("GetHistoryRequests/{UserId}")]
-        
+        [HttpGet("GetHistoryRequests/{UserId}")]
+        public async Task<ActionResult<MessageResponse<RequestHistoryResponse>>> GetHistoryRequests(Guid UserId)
+        {
+            MessageResponse<RequestHistoryResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                response = await _service.GetAllHistoryByUser(UserId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<RequestHistoryResponse>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return response;
+        }
 
         [HttpGet("GetRequestByClientAndStateRequest/{ClientId}/{StateRequestId}")]
         public async Task<ActionResult<MessageResponse<RequestResponseV3>>> GetRequestPending(int ClientId, short StateRequestId)
