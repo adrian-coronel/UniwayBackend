@@ -32,7 +32,7 @@ namespace UniwayBackend.Controllers
         }
 
         [HttpPost("SaveAll")]
-        public async Task<ActionResult<MessageResponse<ServiceTechnicalTypeCarResponse>>> SaveAll(List<ServiceTechnicalTypeCarRequest> serviceTechnicalTypeCarRequests)
+        public async Task<ActionResult<MessageResponse<ServiceTechnicalTypeCarResponse>>> SaveAll([FromBody] List<ServiceTechnicalTypeCarRequest> serviceTechnicalTypeCarRequests)
         {
             MessageResponse<ServiceTechnicalTypeCarResponse> response;
             try
