@@ -47,7 +47,7 @@ namespace UniwayBackend.Controllers
             return response;
         }
 
-        [HttpGet("/{TechnicalId}/{AvailabilityId}")]
+        [HttpGet("{TechnicalId}/{AvailabilityId}")]
         public async Task<ActionResult<MessageResponse<ServiceTechnicalResponse>>> GetTechnicalAndAvailability(int TechnicalId, short AvailabilityId)
         {
             MessageResponse<ServiceTechnicalResponse> response;
