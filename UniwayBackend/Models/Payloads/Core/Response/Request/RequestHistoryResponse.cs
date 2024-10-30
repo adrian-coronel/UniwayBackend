@@ -4,7 +4,7 @@ namespace UniwayBackend.Models.Payloads.Core.Response.Request
 {
     public class RequestHistoryResponse
     {
-        public DateTime Month { get; set; }
-        public List<RequestsForStateResponse> StateRequests { get; set; }
+        public string Month { get; set; }
+        public List<RequestsForStateResponse> StateResponses { get; set; }
     }
 }

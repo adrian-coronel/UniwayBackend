@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
-using Newtonsoft.Json;
+using System.Globalization;
 using System.Reflection;
 using UniwayBackend.Config;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
-using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
+using UniwayBackend.Models.Payloads.Core.Response.StateRequest;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
-using static UniwayBackend.Config.Constants;
 
 namespace UniwayBackend.Services.implements
 {
@@ -23,8 +22,18 @@ namespace UniwayBackend.Services.implements
         private readonly IClientRepository _clientRepository;
         private readonly IMapper _mapper;
         private readonly UtilitariesResponse<Request> _utilitaries;
+        private readonly UtilitariesResponse<RequestHistoryResponse> _utilitariesHistory;
 
-        public RequestService(ILogger<RequestService> logger, IRequestRepository repository, IImagesProblemRequestService imagesProblemRequestService, IUserRepository userRepository, ITechnicalProfessionAvailabilityRequestRepository techProfAvaiRequestRepository, INotificationService notification, IClientRepository clientRepository, IMapper mapper, UtilitariesResponse<Request> utilitaries)
+        public RequestService(ILogger<RequestService> logger,
+                              IRequestRepository repository,
+                              IImagesProblemRequestService imagesProblemRequestService,
+                              IUserRepository userRepository,
+                              ITechnicalProfessionAvailabilityRequestRepository techProfAvaiRequestRepository,
+                              INotificationService notification,
+                              IClientRepository clientRepository,
+                              IMapper mapper,
+                              UtilitariesResponse<Request> utilitaries,
+                              UtilitariesResponse<RequestHistoryResponse> utilitariesHistory)
         {
             _logger = logger;
             _repository = repository;
@@ -35,6 +44,7 @@ namespace UniwayBackend.Services.implements
             _clientRepository = clientRepository;
             _mapper = mapper;
             _utilitaries = utilitaries;
+            _utilitariesHistory = utilitariesHistory;
         }
 
         public async Task<MessageResponse<Request>> GetAllByUser(Guid userId)
@@ -52,6 +62,46 @@ namespace UniwayBackend.Services.implements
             {
                 _logger.LogError(ex.Message);
                 response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
+
+        public async Task<MessageResponse<RequestHistoryResponse>> GetAllHistoryByUser(Guid userId)
+        {
+            MessageResponse<RequestHistoryResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                // Obteniendo todas las solicitudes pendientes por usuario
+                var requests = await _repository.FindAllByUser(userId);
+
+                // Procesando las solicitudes por mes, semana y estado
+                var history = requests
+                    .Where(x => x.StateRequestId != Constants.StateRequests.PENDING) // Excluyendo solicitudes pendientes
+                    .GroupBy(x => x.CreatedOn.Month) // Agrupando por mes
+                    .Select(monthGroup => new RequestHistoryResponse
+                    {
+                        Month = new DateTime(DateTime.Now.Year, monthGroup.Key, 1).ToString("MMMM"), // Representa el mes como un DateTime
+                        StateResponses = monthGroup
+                            .GroupBy(x => x.StateRequest) // Agrupando por estado de solicitud
+                            .Select(stateGroup => new RequestsForStateResponse
+                            {
+                                 StateRequest = new StateRequestResponse { Id = stateGroup.Key.Id, Name = stateGroup.Key.Name }, // Creando el estado con su ID
+                                 Requests = _mapper.Map<List<RequestResponse>>(stateGroup
+                                    .OrderBy(r => r.CreatedOn)) // Mapeando y ordenando las solicitudes por fecha de creación
+                            }).ToList()
+                    })
+                    .OrderByDescending(x => x.Month)
+                    .ToList();
+
+                // Generando la respuesta con el historial procesado
+                response = _utilitariesHistory.setResponseBaseForList(history);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitariesHistory.setResponseBaseForException(ex);
             }
             return response;
         }
