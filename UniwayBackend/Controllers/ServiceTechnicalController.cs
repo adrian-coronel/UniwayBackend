@@ -92,5 +92,28 @@ namespace UniwayBackend.Controllers
             return response;
         }
 
+        [HttpPut("Update")]
+        public async Task<ActionResult<MessageResponse<ServiceTechnicalResponse>>> Update([FromBody] ServiceTechnicalRequestV2 request)
+        {
+            MessageResponse<ServiceTechnicalResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var ServiceTechnical = _mapper.Map<ServiceTechnical>(request);
+
+                var result = await _service.Update(ServiceTechnical);
+
+                response = _mapper.Map<MessageResponse<ServiceTechnicalResponse>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<ServiceTechnicalResponse>()
+                    .Code(401).Message(ex.Message).Build();
+            }
+            return response;
+        }
+
     }
 }

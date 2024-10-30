@@ -8,6 +8,7 @@ namespace UniwayBackend.Services.interfaces
         Task<MessageResponse<ServiceTechnical>> GetById(int serviceTechnicalId);
         Task<MessageResponse<ServiceTechnical>> GetByTechnicaIdAndAvailabilityId(int technicalId, short availabilityId);
         Task<MessageResponse<ServiceTechnical>> Save(ServiceTechnical serviceTechnical, List<IFormFile> Files);
+        Task<MessageResponse<ServiceTechnical>> Update(ServiceTechnical serviceTechnical);
 
     }
 }

@@ -101,7 +101,35 @@ namespace UniwayBackend.Services.implements
             return response;
         }
 
+        public async Task<MessageResponse<ServiceTechnical>> Update(ServiceTechnical serviceTechnical)
+        {
+            MessageResponse<ServiceTechnical> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
+                var service = await _repository.FindById(serviceTechnical.Id);
+
+                if (service == null) return _utilitaries.setResponseBaseForNotFount();
+
+                // Actualizamos las propiedades solo si los valores son válidos
+                service.CategoryServiceId = serviceTechnical.CategoryServiceId != 0 ? serviceTechnical.CategoryServiceId : service.CategoryServiceId;
+                service.TechnicalProfessionAvailabilityId = serviceTechnical.TechnicalProfessionAvailabilityId != 0 ? serviceTechnical.TechnicalProfessionAvailabilityId : service.TechnicalProfessionAvailabilityId;
+                service.Name = !string.IsNullOrEmpty(serviceTechnical.Name) ? serviceTechnical.Name : service.Name;
+                service.Description = !string.IsNullOrEmpty(serviceTechnical.Description) ? serviceTechnical.Description : service.Description;
+
+                service = await _repository.UpdateAndReturn(service);
+
+                response = _utilitaries.setResponseBaseForObject(service);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
 
         private MessageResponse<ServiceTechnical>? ValidateImages(List<IFormFile> Files)
         {

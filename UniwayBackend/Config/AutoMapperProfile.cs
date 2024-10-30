@@ -6,6 +6,7 @@ using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Models.Payloads.Core.Request.Material;
 using UniwayBackend.Models.Payloads.Core.Request.Request;
 using UniwayBackend.Models.Payloads.Core.Request.ServiceTechnical;
+using UniwayBackend.Models.Payloads.Core.Request.ServiceTechnicalTypeCar;
 using UniwayBackend.Models.Payloads.Core.Request.TechnicalResponse;
 using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Availability;
@@ -151,6 +152,7 @@ namespace UniwayBackend.Config
             CreateMap<MessageResponse<TechnicalProfessionAvailabilityRequestResponse>, MessageResponse<TechnicalProfessionAvailabilityRequestResponseV2>>().ReverseMap();
 
             // ServiceTechnical
+            CreateMap<ServiceTechnicalRequestV2, ServiceTechnical>().ReverseMap();
             CreateMap<ServiceTechnical, ServiceTechnicalResponse>().ReverseMap();
             CreateMap<ServiceTechnical, ServiceTechnicalResponse>().ReverseMap();
             CreateMap<MessageResponse<ServiceTechnical>, MessageResponse<ServiceTechnicalResponse>>().ReverseMap();

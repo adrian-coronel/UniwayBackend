@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="Models\Payloads\Base\Request\" />
+    <Folder Include="Models\Payloads\Core\Request\ServiceTechnicalTypeCar\" />
     <Folder Include="Models\Payloads\Core\Response\TechnicalProfessionAvailability\" />
   </ItemGroup>
 

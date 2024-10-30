@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using System.Reflection;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
-using UniwayBackend.Models.Payloads.Core.Request;
-using UniwayBackend.Models.Payloads.Core.Response.ServiceTechnical;
+using UniwayBackend.Models.Payloads.Core.Request.ServiceTechnicalTypeCar;
 using UniwayBackend.Models.Payloads.Core.Response.ServiceTechnicalTypeCar;
 using UniwayBackend.Repositories.Base;
 
@@ -46,6 +45,33 @@ namespace UniwayBackend.Controllers
                 var mapresult = _mapper.Map<List<ServiceTechnicalTypeCarResponse>>(result);
 
                 response = _utilitaries.setResponseBaseForList(mapresult);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<ServiceTechnicalTypeCarResponse>()
+                    .Code(401).Message(ex.Message).Build();
+            }
+            return response;
+        }
+
+        [HttpPut("Update")]
+        public async Task<ActionResult<MessageResponse<ServiceTechnicalTypeCarResponse>>> Update([FromBody] ServiceTechnicalTypeCarRequest request)
+        {
+            MessageResponse<ServiceTechnicalTypeCarResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                if (request.Id == 0) return _utilitaries.setResponseBaseForNotFount();
+
+                var entityMap = _mapper.Map<ServiceTechnicalTypeCar>(request);
+
+                var result = await _serviceTechnicalTypeCarRepository.UpdateAndReturn(entityMap);
+
+                var mapresult = _mapper.Map<ServiceTechnicalTypeCarResponse>(result);
+
+                response = _utilitaries.setResponseBaseForObject(mapresult);
             }
             catch (Exception ex)
             {
