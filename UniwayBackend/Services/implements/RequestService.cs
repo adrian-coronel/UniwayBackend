@@ -98,9 +98,10 @@ namespace UniwayBackend.Services.implements
         {
             MessageResponse<Request> response;
             try
-            {
+            {   
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
+                request.CreatedOn= DateTime.Now;
                 if (request.Id != 0) return _utilitaries.setResponseBaseForInternalServerError();
 
                 // Validations
