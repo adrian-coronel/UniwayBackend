@@ -13,6 +13,7 @@ namespace UniwayBackend.Models.Payloads.Core.Request
         public string? FatherLastname { get; set; }
         public string? MotherLastname { get; set; }
         public DateTime? BirthDate { get; set; }
+        public string PhoneNumber { get; set; }
         public decimal? Lat { get; set; }
         public decimal? Lng { get; set; }
 

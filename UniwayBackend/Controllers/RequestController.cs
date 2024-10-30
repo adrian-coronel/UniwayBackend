@@ -146,6 +146,7 @@ namespace UniwayBackend.Controllers
                             {
                                 EntityId = requestEntity.Id.ToString(),
                                 FullName = $"{requestEntity.Client.Name} {requestEntity.Client.FatherLastname} {requestEntity.Client.MotherLastname}",
+                                PhoneNumber = requestEntity.Client.PhoneNumber,
                                 TypeEntity = Constants.EntityTypes.CLIENT
                             }
                         });
@@ -203,6 +204,7 @@ namespace UniwayBackend.Controllers
                             {
                                 EntityId = requestEntity.Id.ToString(),
                                 FullName = $"{requestEntity.Client.Name} {requestEntity.Client.FatherLastname} {requestEntity.Client.MotherLastname}",
+                                PhoneNumber  = requestEntity.Client.PhoneNumber,
                                 TypeEntity = Constants.EntityTypes.CLIENT
                             }
                         });
@@ -266,6 +268,7 @@ namespace UniwayBackend.Controllers
                         {
                             EntityId = requestEntity.Id.ToString(),
                             FullName = $"{requestEntity.Client.Name} {requestEntity.Client.FatherLastname} {requestEntity.Client.MotherLastname}",
+                            PhoneNumber = requestEntity.Client.PhoneNumber,
                             TypeEntity = Constants.EntityTypes.CLIENT
                         }
                     });
@@ -328,6 +331,7 @@ namespace UniwayBackend.Controllers
                         {
                             EntityId = requestEntity.Id.ToString(),
                             FullName = $"{requestEntity.Client.Name} {requestEntity.Client.FatherLastname} {requestEntity.Client.MotherLastname}",
+                            PhoneNumber = requestEntity.Client.PhoneNumber,
                             TypeEntity = Constants.EntityTypes.CLIENT
                         }
                     });

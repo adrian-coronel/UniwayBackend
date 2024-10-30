@@ -57,6 +57,7 @@ namespace UniwayBackend.Factories
                     MotherLastname = request.MotherLastname,
                     Dni = request.Dni,
                     BirthDate = request.BirthDate,
+                    PhoneNumber = request.PhoneNumber,
                     Enabled = Constants.State.ACTIVE_BOOL
                 };
 
@@ -87,6 +88,7 @@ namespace UniwayBackend.Factories
                 client.Name = !string.IsNullOrEmpty(request.Name) ? request.Name : client.Name;
                 client.FatherLastname = !string.IsNullOrEmpty(request.FatherLastname) ? request.FatherLastname : client.FatherLastname;
                 client.MotherLastname = !string.IsNullOrEmpty(request.MotherLastname) ? request.MotherLastname : client.MotherLastname;
+                client.PhoneNumber = !string.IsNullOrEmpty(request.PhoneNumber) ? request.PhoneNumber : client.PhoneNumber;
                 client.BirthDate = request.BirthDate.HasValue ? request.BirthDate.Value : client.BirthDate;
 
                 client = await _clientRepository.UpdateAndReturn(client);

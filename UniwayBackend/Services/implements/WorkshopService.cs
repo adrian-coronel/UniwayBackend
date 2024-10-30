@@ -78,6 +78,7 @@ namespace UniwayBackend.Services.implements
                             {
                                 EntityId = client.Id.ToString(),
                                 FullName = $"{client.Name} {client.FatherLastname} {client.MotherLastname}",
+                                PhoneNumber = client.PhoneNumber,
                                 TypeEntity = Constants.EntityTypes.CLIENT
                             }
                         }

@@ -133,6 +133,7 @@ namespace UniwayBackend.Repositories.Core.Implements
 
                     response.EntityId = technical.Id.ToString();
                     response.FullName = $"{technical.Name} {technical.FatherLastname} {technical.MotherLastname}";
+                    response.PhoneNumber = technical.PhoneNumber;
                     response.TypeEntity = Constants.EntityTypes.MECHANICAL;
                 }
                 if (techProfAvai.AvailabilityId == Constants.Availabilities.IN_WORKSHOP_ID)
@@ -144,6 +145,7 @@ namespace UniwayBackend.Repositories.Core.Implements
 
                     response.EntityId = workshop.Id.ToString();
                     response.FullName = $"{workshop.Name}";
+                    response.PhoneNumber = "N/A";
                     response.TypeEntity = Constants.EntityTypes.WORKSHOP;
                 }
                 return response;

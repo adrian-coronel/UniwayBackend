@@ -228,6 +228,7 @@ namespace UniwayBackend.Services.implements
                                     {
                                         EntityId = requestFind.Client.Id.ToString(),
                                         FullName = $"{requestFind.Client.Name} {requestFind.Client.FatherLastname} {requestFind.Client.MotherLastname}",
+                                        PhoneNumber = requestFind.Client.PhoneNumber,
                                         TypeEntity = Constants.EntityTypes.CLIENT
                                     }
                                 }
@@ -260,6 +261,7 @@ namespace UniwayBackend.Services.implements
                         {
                             EntityId = requestFind.Client.Id.ToString(),
                             FullName = $"{requestFind.Client.Name} {requestFind.Client.FatherLastname} {requestFind.Client.MotherLastname}",
+                            PhoneNumber = requestFind.Client.PhoneNumber,
                             TypeEntity = Constants.EntityTypes.CLIENT
                         }
                     }

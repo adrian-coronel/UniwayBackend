@@ -14,6 +14,7 @@ namespace UniwayBackend.Models.Entities
         public required string MotherLastname { get; set; }
         public required string Dni { get; set; }
         public required DateTime BirthDate { get; set; }
+        public string PhoneNumber { get; set; }
         public required bool Enabled { get; set; }
 
         [NotMapped]

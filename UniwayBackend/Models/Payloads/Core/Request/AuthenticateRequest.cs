@@ -51,6 +51,11 @@ namespace UniwayBackend.Models.Payloads.Core.Request
         [RegularExpression(@"^\d{8}$", ErrorMessage = "El campo Dni debe contener exactamente 8 dígitos.")]
         public required string Dni { get; set; }
 
+        [DefaultValue("xxxxxxxx")]
+        [Required(ErrorMessage = "El campo teléfono es obligatorio.")]
+        [RegularExpression(@"^\d{9}$", ErrorMessage = "El campo teléfono debe contener exactamente 8 dígitos.")]
+        public required string PhoneNumber { get; set; }
+
         [Required(ErrorMessage = "El campo BirthDate es obligatorio.")]
         [DataType(DataType.Date, ErrorMessage = "El campo BirthDate debe ser una fecha válida.")]
         public required DateTime BirthDate { get; set; }

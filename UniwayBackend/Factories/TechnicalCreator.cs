@@ -59,7 +59,7 @@ namespace UniwayBackend.Factories
                     FatherLastname = request.FatherLastname,
                     MotherLastname = request.MotherLastname,
                     Dni = request.Dni,
-                    //WorkingStatus = Constants.State.INACTIVE_BOOL,
+                    PhoneNumber = request.PhoneNumber,
                     BirthDate = request.BirthDate,
                     Enabled = Constants.State.ACTIVE_BOOL
                 };
@@ -100,6 +100,7 @@ namespace UniwayBackend.Factories
                 userTechnical.Technical.Name = !string.IsNullOrEmpty(request.Name) ? request.Name : userTechnical.Technical.Name;
                 userTechnical.Technical.FatherLastname = !string.IsNullOrEmpty(request.FatherLastname) ? request.FatherLastname : userTechnical.Technical.FatherLastname;
                 userTechnical.Technical.MotherLastname = !string.IsNullOrEmpty(request.MotherLastname) ? request.MotherLastname : userTechnical.Technical.MotherLastname;
+                userTechnical.Technical.PhoneNumber = !string.IsNullOrEmpty(request.PhoneNumber) ? request.PhoneNumber : userTechnical.Technical.PhoneNumber;
                 userTechnical.Technical.BirthDate = request.BirthDate.HasValue ? request.BirthDate.Value : userTechnical.Technical.BirthDate;
 
                 userTechnical = await _userTechnicalRepository.UpdateAndReturn(userTechnical);

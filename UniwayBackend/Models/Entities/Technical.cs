@@ -15,6 +15,7 @@ namespace UniwayBackend.Models.Entities
         public required DateTime BirthDate { get; set; }
         public Point? Location { get; set; }
         public bool WorkingStatus { get; set; }
+        public string PhoneNumber { get; set; }
         public required bool Enabled { get; set; }
 
 
