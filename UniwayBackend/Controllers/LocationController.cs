@@ -45,6 +45,25 @@ namespace UniwayBackend.Controllers
             return StatusCode(response.Code, response);
         }
 
+        [HttpPost("GetByTechnicalProfessionAvailability/{TechnicalProfessionAvailabilityId}")]
+        public async Task<ActionResult<MessageResponse<LocationResponse>>> GetByTechnicalProfessionAvailability(int TechnicalProfessionAvailabilityId)
+        {
+            MessageResponse<LocationResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                response = await _service.GetByTechnicalProfessionAvailability(TechnicalProfessionAvailabilityId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<LocationResponse>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return StatusCode(response.Code, response);
+        }
+
         [HttpPut("UpdateByTechnicalProfessionAvailability")]
         public async Task<ActionResult<MessageResponse<LocationResponse>>> UpdateByTechnicalProfessionAvailability(LocationRequestV2 request)
         {

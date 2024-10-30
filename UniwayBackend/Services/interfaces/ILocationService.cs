@@ -10,5 +10,6 @@ namespace UniwayBackend.Services.interfaces
         Task<MessageResponse<LocationResponse>> GetAllByAvailability(LocationRequest request);
         Task<MessageResponse<LocationResponse>> UpdateByTechnicalProfessionAvailability(LocationRequestV2 request);
         Task<MessageResponse<LocationResponseV2>> GetAllByAvailabilityWithServices(LocationRequest request);
+        Task<MessageResponse<LocationResponse>> GetByTechnicalProfessionAvailability(int TechnicalProfessionAvailabilityId);
     }
 }

@@ -173,6 +173,62 @@ namespace UniwayBackend.Services.implements
             return response;
         }
 
+        public async Task<MessageResponse<LocationResponse>> GetByTechnicalProfessionAvailability(int TechnicalProfessionAvailabilityId)
+        {
+            MessageResponse<LocationResponse> response;
+            LocationResponse result = new LocationResponse();
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var tpa = await _techProfAvaRepository.FindById(TechnicalProfessionAvailabilityId);
+
+                if (tpa == null) return _utilitaries.setResponseBaseForNotFount();
+
+                // Actualizar workshop
+                if (tpa.AvailabilityId == Constants.Availabilities.IN_WORKSHOP_ID)
+                {
+                    var workshops = await _workshopRepository
+                        .FindAllByTechnicalProfessionAvailability(TechnicalProfessionAvailabilityId, null);
+                    if (!workshops.Any()) return _utilitaries.setResponseBaseForNotFount();
+
+                    var workshop = workshops.First();
+
+                    result = new LocationResponse
+                    {
+                        Id = workshop.Id.ToString(),
+                        Name = workshop.Name,
+                        Location = workshop.Location,
+                        AvailabilityId = Constants.Availabilities.IN_WORKSHOP_ID,
+                        WorkingStatus = workshop.WorkingStatus,
+                    };
+                }
+                // Actualizar mecánico
+                else if (tpa.AvailabilityId == Constants.Availabilities.AT_HOME_ID)
+                {
+                    var technical = await _technicalRepository.FindByTechnicalProfessionAvailability(TechnicalProfessionAvailabilityId);
+                    if (technical == null) return _utilitaries.setResponseBaseForNotFount();
+
+                    result = new LocationResponse
+                    {
+                        Id = technical.Id.ToString(),
+                        Name = $"{technical.Name} {technical.FatherLastname} {technical.MotherLastname}",
+                        Location = technical.Location,
+                        AvailabilityId = Constants.Availabilities.AT_HOME_ID,
+                        WorkingStatus = technical.WorkingStatus,
+                    };
+                }
+
+                response = _utilitaries.setResponseBaseForObject(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
+
         public async Task<MessageResponse<LocationResponse>> UpdateByTechnicalProfessionAvailability(LocationRequestV2 request)
         {
             MessageResponse<LocationResponse> response;
