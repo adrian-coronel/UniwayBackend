@@ -11,6 +11,16 @@ namespace UniwayBackend.Repositories.Core.Implements
 {
     public class WorkshopRepository : BaseRepository<Workshop, int>, IWorkshopRepository
     {
+        public async Task<List<Workshop>> FindAllByTechnicalProfessionAvailability(int TechProfAvaId, int? WorkshopId)
+        {
+            using (var context = new DBContext())
+            {
+                return await context.Workshops
+                    .Where(x => x.TechnicalProfessionAvailabilityId == TechProfAvaId &&
+                               (WorkshopId == null || x.Id == WorkshopId)
+                    ).ToListAsync();
+            }
+        }
 
         /// <param name="referenceLocation">Punto de referencia de donde se tomará la distancia</param>
         /// <param name="distanceRadius">Distancia en metros</param>
@@ -26,6 +36,24 @@ namespace UniwayBackend.Repositories.Core.Implements
                     .ToListAsync();
             }
         }
+
+        public async Task<List<Workshop>> UpdateAll(List<Workshop> workshops)
+        {
+            using (var context = new DBContext())
+            {
+                foreach (var workshop in workshops)
+                {
+                    // Marcamos cada Workshop como modificado en el contexto
+                    context.Entry(workshop).State = EntityState.Modified;
+                }
+
+                // Guardamos todos los cambios en la base de datos
+                await context.SaveChangesAsync();
+
+                return workshops; // Devolvemos la lista actualizada
+            }
+        }
+
 
         public async Task<List<UserRequest>> UpdateWorkingStatus(int WorkshopId, bool WorkingStatus, double Lat, double Lng, int Distance = 5000)
         {

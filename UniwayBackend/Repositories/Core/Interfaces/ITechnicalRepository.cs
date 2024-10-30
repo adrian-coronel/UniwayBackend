@@ -15,6 +15,7 @@ namespace UniwayBackend.Repositories.Core.Interfaces
         Task<List<Technical>> FindDefaultLocation(Point referenceLocation, int distanceRadius);
         Task<Technical> FindTechnicalWithInformation(int TechnicalId);
         Task<Technical> FindTechnicalWithInformationByUser(Guid userId);
+        Task<Technical?> FindByTechnicalProfessionAvailability(int TechnicalProfessionAvailabilityId);
         Task<List<UserRequest>> UpdateWorkingStatus(int TechnicalId, bool WorkingStatus, double Lat, double Lng, int Distance = 5000);
     }
 }

@@ -35,8 +35,9 @@ namespace UniwayBackend.Context
         public DbSet<ImagesServiceTechnical> ImagesServiceTechnicals { get; set; }
         public DbSet<TypeCar> TypeCars { get; set; }
         public DbSet<ServiceTechnicalTypeCar> ServiceTechnicalTypeCars {  get; set; }
+        public DbSet<Workshop> Workshops { get; set; }
 
-         
+
 
         // Constructor de la clase DBContext que recibe opciones de configuración de DbContext
         public DBContext() { }

@@ -1,4 +1,4 @@
-﻿namespace UniwayBackend.Models.Payloads.Core.Request
+﻿namespace UniwayBackend.Models.Payloads.Core.Request.Location
 {
     public class LocationRequest
     {

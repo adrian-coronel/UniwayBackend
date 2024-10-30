@@ -11,6 +11,16 @@ namespace UniwayBackend.Repositories.Core.Implements
 {
     public class TechnicalRepository : BaseRepository<Technical, int>, ITechnicalRepository
     {
+        public async Task<Technical?> FindByTechnicalProfessionAvailability(int TechnicalProfessionAvailabilityId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.TechnicalProfessionAvailabilities
+                    .Where(x => x.Id == TechnicalProfessionAvailabilityId)
+                    .Select(x => x.TechnicalProfession.UserTechnical.Technical)
+                    .FirstOrDefaultAsync();
+            }
+        }
 
         /// <summary>
         /// Encuentra técnicos disponibles dentro de un radio específico y que cumplan ciertos criterios.

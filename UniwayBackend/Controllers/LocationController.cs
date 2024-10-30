@@ -2,7 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using UniwayBackend.Models.Payloads.Base.Response;
-using UniwayBackend.Models.Payloads.Core.Request;
+using UniwayBackend.Models.Payloads.Core.Request.Location;
 using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Location;
 using UniwayBackend.Services.interfaces;
@@ -37,6 +37,25 @@ namespace UniwayBackend.Controllers
                 response = await _service.GetAllByAvailability(request);
             }
             catch(Exception ex) 
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<LocationResponse>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return StatusCode(response.Code, response);
+        }
+
+        [HttpPut("UpdateByTechnicalProfessionAvailability")]
+        public async Task<ActionResult<MessageResponse<LocationResponse>>> UpdateByTechnicalProfessionAvailability(LocationRequestV2 request)
+        {
+            MessageResponse<LocationResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                response = await _service.UpdateByTechnicalProfessionAvailability(request);
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 response = new MessageResponseBuilder<LocationResponse>()

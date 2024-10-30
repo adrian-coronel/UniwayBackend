@@ -10,5 +10,7 @@ namespace UniwayBackend.Repositories.Core.Interfaces
         /// <param name="distanceRadius">Distancia en metros</param>
         Task<List<Workshop>> FindDefaultLocation(Point referenceLocation, int distanceRadius);
         Task<List<UserRequest>> UpdateWorkingStatus(int WorkshopId, bool WorkingStatus, double Lat, double Lng, int Distance = 5000);
+        Task<List<Workshop>> FindAllByTechnicalProfessionAvailability(int TechProfAvaId, int? WorkshopId);
+        Task<List<Workshop>> UpdateAll(List<Workshop> workshops);
     }
 }
