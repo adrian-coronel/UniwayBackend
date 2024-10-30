@@ -78,7 +78,7 @@ namespace UniwayBackend.Services.implements
 
                 // Procesando las solicitudes por mes, semana y estado
                 var history = requests
-                    .Where(x => x.StateRequestId != Constants.StateRequests.PENDING) // Excluyendo solicitudes pendientes
+                    //.Where(x => x.StateRequestId != Constants.StateRequests.PENDING) // Excluyendo solicitudes pendientes
                     .GroupBy(x => x.CreatedOn.Month) // Agrupando por mes
                     .Select(monthGroup => new RequestHistoryResponse
                     {
