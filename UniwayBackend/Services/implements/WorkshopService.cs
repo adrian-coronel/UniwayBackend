@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using UniwayBackend.Config;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
@@ -43,6 +44,56 @@ namespace UniwayBackend.Services.implements
             _notificationService = notificationService;
             _imagesProblemRepository = imagesProblemRepository;
             _utilitaries = utilitaries;
+        }
+
+        public async Task<MessageResponse<Workshop>> Save(Workshop workshop)
+        {
+            MessageResponse<Workshop> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                if (workshop.Id > 0) return _utilitaries.setResponseBaseForBadRequest();
+
+                workshop = await _repository.InsertAndReturn(workshop);
+
+                response = _utilitaries.setResponseBaseForObject(workshop);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
+
+        public async Task<MessageResponse<Workshop>> Update(Workshop workshop)
+        {
+            MessageResponse<Workshop> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                if (workshop.Id <= 0) return _utilitaries.setResponseBaseForBadRequest();
+
+                Workshop? WorkshopFind = await _repository.FindById(workshop.Id);
+
+                if (WorkshopFind == null) return _utilitaries.setResponseBaseNotFoundForUpdate();
+
+                WorkshopFind.Name = string.IsNullOrEmpty(workshop.Name) ? WorkshopFind.Name : workshop.Name;
+                WorkshopFind.Location = workshop.Location == null ? WorkshopFind.Location : workshop.Location;
+                WorkshopFind.WorkingStatus = workshop.WorkingStatus;
+
+                workshop = await _repository.UpdateAndReturn(WorkshopFind);
+
+                response = _utilitaries.setResponseBaseForObject(WorkshopFind);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
         }
 
         public async Task<MessageResponse<Workshop>> UpdateWorkshopStatus(WorkshopRequestV1 request)

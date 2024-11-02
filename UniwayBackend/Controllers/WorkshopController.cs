@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
@@ -48,5 +49,50 @@ namespace UniwayBackend.Controllers
             return response;
         }
 
+        [HttpPost("Save")]
+        public async Task<ActionResult<MessageResponse<WorkshopResponse>>> Save([FromBody] WorkshopRequestV2 request)
+        {
+            MessageResponse<WorkshopResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var workshop = _mapper.Map<Workshop>(request);
+
+                var result = await _service.Save(workshop);
+
+                response = _mapper.Map<MessageResponse<WorkshopResponse>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<WorkshopResponse>()
+                    .Code(401).Message(ex.Message).Build();
+            }
+            return response;
+        }
+
+        [HttpPut("Update")]
+        public async Task<ActionResult<MessageResponse<WorkshopResponse>>> Update([FromBody] WorkshopRequestV2 request)
+        {
+            MessageResponse<WorkshopResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var workshop = _mapper.Map<Workshop>(request);
+
+                var result = await _service.Update(workshop);
+
+                response = _mapper.Map<MessageResponse<WorkshopResponse>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<WorkshopResponse>()
+                    .Code(401).Message(ex.Message).Build();
+            }
+            return response;
+        }
     }
 }

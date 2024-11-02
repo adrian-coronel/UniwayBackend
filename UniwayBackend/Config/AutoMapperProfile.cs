@@ -8,6 +8,7 @@ using UniwayBackend.Models.Payloads.Core.Request.Request;
 using UniwayBackend.Models.Payloads.Core.Request.ServiceTechnical;
 using UniwayBackend.Models.Payloads.Core.Request.ServiceTechnicalTypeCar;
 using UniwayBackend.Models.Payloads.Core.Request.TechnicalResponse;
+using UniwayBackend.Models.Payloads.Core.Request.Workshop;
 using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Availability;
 using UniwayBackend.Models.Payloads.Core.Response.CategoryRequest;
@@ -96,6 +97,7 @@ namespace UniwayBackend.Config
 
             // Workshop
             CreateMap<Workshop, WorkshopResponse>().ReverseMap();
+            CreateMap<Workshop, WorkshopRequestV2>().ReverseMap();
             CreateMap<MessageResponse<Workshop>, MessageResponse<WorkshopResponse>>().ReverseMap();
 
             // Client
