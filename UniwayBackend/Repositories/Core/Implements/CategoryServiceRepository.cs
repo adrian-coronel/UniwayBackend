@@ -14,6 +14,10 @@ namespace UniwayBackend.Repositories.Core.Implements
             {
                 return await context.CategoryServices
                     .Include(x => x.ServiceTechnicals)
+                        .ThenInclude(x => x.ServiceTechnicalTypeCars)
+                            .ThenInclude(x => x.TypeCar)
+                    .Include(x => x.ServiceTechnicals)
+                        .ThenInclude(x => x.Images)
                     .Where(cs => cs.ServiceTechnicals.Any(st => st.TechnicalProfessionAvailabilityId == TechnicalProfessionAvailabilityId))
                     .ToListAsync();
             }
