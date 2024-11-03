@@ -22,6 +22,7 @@ namespace UniwayBackend.Models.Payloads.Core.Response.Request
         public DateTime? AnsweredOn { get; set; }
         public DateTime? ResolvedOn { get; set; }
         public bool IsResponse { get; set; }
+        public DateTime? CreatedOn { get; set; }
 
         public List<ImagesProblemRequestResponse> ImagesProblemRequests { get; set; }
     }

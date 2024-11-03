@@ -29,6 +29,8 @@ namespace UniwayBackend.Repositories.Core.Implements
                         ( user.RoleId == Constants.Roles.CLIENT_ID &&
                             x.Client.UserId == UserId
                         )
+                        && x.StateRequestId != Constants.StateRequests.CANCELED 
+                        && x.StateRequestId != Constants.StateRequests.PENDING
                      )
                     .ToListAsync();
             }

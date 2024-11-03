@@ -11,7 +11,7 @@ namespace UniwayBackend.Models.Entities
         public int Id { get; set; }
         public short StateRequestId { get; set; }
         public short CategoryRequestId { get; set; }
-        public short TypeCarId { get; set; }
+        public short? TypeCarId { get; set; }
         public int ClientId { get; set; }
         public int? TechnicalProfessionAvailabilityId { get; set; }
         public int? ServiceTechnicalId { get; set; }

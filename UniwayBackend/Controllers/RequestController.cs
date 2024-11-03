@@ -254,6 +254,8 @@ namespace UniwayBackend.Controllers
                 // Mapear y guardar la entidad de solicitud
                 Request requestEntity = _mapper.Map<Request>(request);
 
+                if (requestEntity.TypeCarId == 0) requestEntity.TypeCarId = null;
+
                 var result = await _service.Save(requestEntity, request.Files);
               
                 // Mapeamos la solicitud a un tipo respuesta
