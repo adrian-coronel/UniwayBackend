@@ -75,6 +75,27 @@ namespace UniwayBackend.Controllers
             return response;
         }
 
+        [HttpGet("GetScheduledRequest/{TechnicalProfessionAvailabilityId}")]
+        public async Task<ActionResult<MessageResponse<RequestResponse>>> GetScheduledRequest(int TechnicalProfessionAvailabilityId)
+        {
+            MessageResponse<RequestResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var result = await _service.GetAllScheduledRequest(TechnicalProfessionAvailabilityId);
+
+                response = _mapper.Map<MessageResponse<RequestResponse>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<RequestResponse>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return response;
+        }
+
         [HttpGet("GetHistoryRequests/{UserId}")]
         public async Task<ActionResult<MessageResponse<RequestHistoryResponse>>> GetHistoryRequests(Guid UserId)
         {

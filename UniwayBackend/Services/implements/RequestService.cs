@@ -106,6 +106,25 @@ namespace UniwayBackend.Services.implements
             return response;
         }
 
+        public async Task<MessageResponse<Request>> GetAllScheduledRequest(int TechnicalProfessionAvailabilityId)
+        {
+            MessageResponse<Request> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var requests = await _repository.FindAllScheduledRequest(TechnicalProfessionAvailabilityId);
+
+                response = _utilitaries.setResponseBaseForList(requests);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
+
         public async Task<MessageResponse<Request>> GetRequestPendingForClientAndStateRequest(int clientId, short? StateRequestId)
         {
             MessageResponse<Request> response;

@@ -7,6 +7,7 @@ namespace UniwayBackend.Services.interfaces
     public interface IRequestService
     {
         Task<MessageResponse<Request>> GetAllByUser(Guid userId);
+        Task<MessageResponse<Request>> GetAllScheduledRequest(int TechnicalProfessionAvailabilityId);
         Task<MessageResponse<RequestHistoryResponse>> GetAllHistoryByUser(Guid userId);
         Task<MessageResponse<Request>> GetRequestPendingInTrayByUserId(Guid userId);
         Task<MessageResponse<Request>> GetRequestPendingForClientAndStateRequest(int clientId, short? StateRequestId);

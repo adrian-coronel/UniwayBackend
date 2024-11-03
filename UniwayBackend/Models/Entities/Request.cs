@@ -11,6 +11,7 @@ namespace UniwayBackend.Models.Entities
         public int Id { get; set; }
         public short StateRequestId { get; set; }
         public short CategoryRequestId { get; set; }
+        public short TypeCarId { get; set; }
         public int ClientId { get; set; }
         public int? TechnicalProfessionAvailabilityId { get; set; }
         public int? ServiceTechnicalId { get; set; }
@@ -35,6 +36,9 @@ namespace UniwayBackend.Models.Entities
         public virtual CategoryRequest CategoryRequest { get; set; }
         [ForeignKey("ServiceTechnicalId")]
         public virtual ServiceTechnical ServiceTechnical { get; set; }
+        [ForeignKey("TypeCarId")]
+        public virtual TypeCar TypeCar { get; set; }
+
 
         public virtual List<Review> Reviews { get; set; }
         public virtual List<TechnicalResponse> TechnicalResponses { get; set; }

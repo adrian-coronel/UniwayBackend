@@ -4,6 +4,7 @@
     {
         public short StateRequestId { get; set; }
         public short CategoryRequestId { get; set; }
+        public short TypeCarId { get; set; }
         public int ClientId { get; set; }
         public short AvailabilityId { get; set; }
         public int TechnicalId { get; set; }

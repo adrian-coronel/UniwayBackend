@@ -97,6 +97,22 @@ namespace UniwayBackend.Repositories.Core.Implements
             }
         }
 
-
+        public async Task<List<Request>> FindAllScheduledRequest(int TechnicalProfessionAvailabilityId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.Requests
+                    .Include(x => x.StateRequest)
+                    .Include(x => x.ServiceTechnical)
+                        .ThenInclude(x => x.Images)
+                    .Where(x => 
+                                (x.TechnicalProfessionAvailabilityId == TechnicalProfessionAvailabilityId || TechnicalProfessionAvailabilityId == 0) &&
+                                x.StateRequestId == Constants.StateRequests.IN_PROCESS && // Solicitud aceptada
+                                x.FromShow != null && x.ToShow != null && // Tienen un rango de fechas a mostrarse
+                                x.TechnicalResponses.Any(x => x.ProposedAssistanceDate != null) // Si hay una fecha propuesta del mecánico
+                     )
+                    .ToListAsync();
+            }
+        }
     }
 }
