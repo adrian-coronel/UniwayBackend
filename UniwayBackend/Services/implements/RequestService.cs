@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Reflection;
 using UniwayBackend.Config;
@@ -6,6 +7,7 @@ using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Models.Payloads.Core.Response.StateRequest;
+using UniwayBackend.Repositories.Core.Implements;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
 
@@ -15,6 +17,7 @@ namespace UniwayBackend.Services.implements
     {
         private readonly ILogger<RequestService> _logger;
         private readonly IRequestRepository _repository;
+        private readonly IServiceTechnicalRepository _serviceTechnicalRepository;
         private readonly IImagesProblemRequestService _imagesProblemRequestService;
         private readonly IUserRepository _userRepository;
         private readonly ITechnicalProfessionAvailabilityRequestRepository _techProfAvaiRequestRepository;
@@ -28,6 +31,7 @@ namespace UniwayBackend.Services.implements
                               IRequestRepository repository,
                               IImagesProblemRequestService imagesProblemRequestService,
                               IUserRepository userRepository,
+                              IServiceTechnicalRepository serviceTechnicalRepository,
                               ITechnicalProfessionAvailabilityRequestRepository techProfAvaiRequestRepository,
                               INotificationService notification,
                               IClientRepository clientRepository,
@@ -39,6 +43,7 @@ namespace UniwayBackend.Services.implements
             _repository = repository;
             _imagesProblemRequestService = imagesProblemRequestService;
             _userRepository = userRepository;
+            _serviceTechnicalRepository = serviceTechnicalRepository;
             _techProfAvaiRequestRepository = techProfAvaiRequestRepository;
             _notification = notification;
             _clientRepository = clientRepository;
@@ -152,7 +157,7 @@ namespace UniwayBackend.Services.implements
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
                 var requests = await _repository.FindAllPendingByUserId(userId);
-
+                
                 response = _utilitaries.setResponseBaseForList(requests);
             }
             catch (Exception ex)
@@ -178,6 +183,12 @@ namespace UniwayBackend.Services.implements
                 if (validResult != null) return validResult;
 
                 // Insertar solicitud
+                //Buscamos el TechnicalProfessionAvailability En caso envieserviceny type car
+                if(request.ServiceTechnicalId.HasValue && request.TypeCarId.HasValue)
+                {
+                    TechnicalProfessionAvailability responseTechnicalProfessionAvailability = await _serviceTechnicalRepository.FindTechnicalProfessionAvailibiltyByServiceId(request.ServiceTechnicalId.Value);
+                    request.TechnicalProfessionAvailabilityId = responseTechnicalProfessionAvailability.Id;
+                }
                 request = await _repository.InsertAndReturn(request);
 
                 // Guardar imagenes

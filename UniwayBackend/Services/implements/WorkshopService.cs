@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using UniwayBackend.Config;
@@ -12,6 +13,7 @@ using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Repositories.Core.Implements;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
+using NetTopologySuite.Geometries;
 
 namespace UniwayBackend.Services.implements
 {
@@ -54,7 +56,7 @@ namespace UniwayBackend.Services.implements
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
                 if (workshop.Id > 0) return _utilitaries.setResponseBaseForBadRequest();
-
+                workshop.Location = new Point(workshop.Lng.Value, workshop.Lat.Value) { SRID = 4326 };
                 workshop = await _repository.InsertAndReturn(workshop);
 
                 response = _utilitaries.setResponseBaseForObject(workshop);

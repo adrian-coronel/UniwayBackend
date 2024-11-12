@@ -124,7 +124,7 @@ namespace UniwayBackend.Repositories.Core.Implements
                 DataUserResponse response = new DataUserResponse();
                 var techProfAvai = await context.TechnicalProfessionAvailabilities.FindAsync(TechProfAvaiId);
 
-                if (techProfAvai.AvailabilityId == Constants.Availabilities.BOTH_ID)
+                if (techProfAvai.AvailabilityId == Constants.Availabilities.AT_HOME_ID)
                 {
                     var technical = await context.TechnicalProfessionAvailabilities
                         .Where(x => x.Id == techProfAvai.Id)

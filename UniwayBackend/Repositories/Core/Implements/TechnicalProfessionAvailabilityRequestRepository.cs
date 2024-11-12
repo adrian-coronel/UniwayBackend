@@ -48,9 +48,11 @@ namespace UniwayBackend.Repositories.Core.Implements
                     {
                         Availability = availability,
                         Requests = await context.Requests
+                                    .Include(x=>x.ServiceTechnical)
+                                    .Include(x=>x.StateRequest)
                                     .Where(x => x.TechnicalProfessionAvailabilityId != null &&
                                                 x.TechnicalProfessionAvailability.AvailabilityId == availability.Id &&
-                                                x.StateRequestId == Constants.StateRequests.PENDING &&
+                                                x.StateRequestId == Constants.StateRequests.PENDING || x.StateRequestId==Constants.StateRequests.RESPONDING &&
                                                 x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId)
                                     .ToListAsync()
                     };
@@ -58,6 +60,11 @@ namespace UniwayBackend.Repositories.Core.Implements
                     // Agregar solcitiudes hecha a muchos agregada en bandeja
                     TechProfRequest.Requests.AddRange(
                         await context.TechnicalProfessionAvailabilityRequests
+                            .Include(x=>x.Request)
+                                .ThenInclude(s=>s.ServiceTechnical)
+                            .Include(x=>x.Request)
+                                .ThenInclude(x => x.StateRequest)
+
                             .Where(x => x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId &&
                                         x.Request.StateRequestId == Constants.StateRequests.PENDING &&
                                         x.TechnicalProfessionAvailability.AvailabilityId == availability.Id)

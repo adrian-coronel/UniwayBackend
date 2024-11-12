@@ -17,6 +17,11 @@ namespace UniwayBackend.Models.Entities
         public int TechnicalProfessionAvailabilityId { get; set; }
         public bool WorkingStatus { get; set; }
 
+        [NotMapped]
+        public double? Lat { get; set; }
+        [NotMapped]
+        public double? Lng { get; set; }
+
         [ForeignKey("TechnicalProfessionAvailabilityId")]
         public virtual TechnicalProfessionAvailability TechnicalProfessionAvailability { get; set; }
 

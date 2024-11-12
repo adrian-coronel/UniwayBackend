@@ -72,7 +72,7 @@ namespace UniwayBackend.Services.implements
                 if (technicalResponse.TechnicalProfessionAvailabilityId == 0) technicalResponse.TechnicalProfessionAvailabilityId = null;
                 if (technicalResponse.WorkshopTechnicalProfessionId == 0) technicalResponse.WorkshopTechnicalProfessionId = null;
 
-
+                technicalResponse.CreatedOn = DateTime.Now;
                 var result = await _repository.InsertAndReturn(technicalResponse);
 
                 response = _utilitaries.setResponseBaseForObject(result);

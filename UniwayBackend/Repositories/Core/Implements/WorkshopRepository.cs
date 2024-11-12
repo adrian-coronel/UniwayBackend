@@ -33,6 +33,9 @@ namespace UniwayBackend.Repositories.Core.Implements
                                 && x.WorkingStatus
                                 && !x.Location.IsEmpty && x.Location != null
                                 && x.Location.Distance(referenceLocation) <= distanceRadius)
+                    .Include(x=>x.TechnicalProfessionAvailability)
+                        .ThenInclude(x=>x.TechnicalProfession)
+                            .ThenInclude(x=>x.UserTechnical)
                     .ToListAsync();
             }
         }

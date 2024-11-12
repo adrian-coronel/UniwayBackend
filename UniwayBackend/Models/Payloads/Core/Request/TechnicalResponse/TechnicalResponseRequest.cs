@@ -10,7 +10,7 @@ namespace UniwayBackend.Models.Payloads.Core.Request.TechnicalResponse
         public string Title { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public DateTime? PropossedAssistanceDate { get; set; }
+        public DateTime? ProposedAssistanceDate { get; set; }
 
         // Relations
         public virtual List<MaterialRequest> Materials { get; set; }

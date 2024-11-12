@@ -14,13 +14,27 @@ namespace UniwayBackend.Repositories.Core.Implements
         {
             using (var context = new DBContext())
             {
-                return await context.TechnicalResponses
-                    .Where(x => x.Request.StateRequestId == Constants.StateRequests.PENDING &&
-                                x.Request.ClientId == ClientId &&
-                                x.Request.Id == RequestId)
-                    .ToListAsync();
+                var query = context.TechnicalResponses
+                    .Where(x => x.Request.ClientId == ClientId);
+
+                // Aplica la condición adicional solo si RequestId es diferente de 0
+                if (RequestId != 0)
+                {
+                    query = query.Where(x => x.Request.Id == RequestId);
+                }
+
+                // Incluye la entidad relacionada
+                query = query.Include(x => x.TechnicalProfessionAvailability)
+                                .ThenInclude(x=>x.TechnicalProfession)
+                                    .ThenInclude(x=>x.UserTechnical)
+                                        .ThenInclude(x=>x.Technical)
+                              .Include(x=>x.TechnicalProfessionAvailability)
+                                    .ThenInclude(x=>x.Workshops);
+
+                return await query.ToListAsync();
             }
         }
+
 
         public async Task<List<TechnicalResponse>> FindAllByRequestId(int RequestId)
         {

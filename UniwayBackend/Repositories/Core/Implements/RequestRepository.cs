@@ -72,6 +72,7 @@ namespace UniwayBackend.Repositories.Core.Implements
             using (DBContext context = new DBContext())
             {
                 var request = await context.TechnicalProfessionAvailabilityRequests
+                    .Include(x => x.TechnicalProfessionAvailability)
                     .Include(x => x.Request)
                         .ThenInclude(r => r.ImagesProblemRequests)
                     .Where(x => x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId
@@ -82,6 +83,7 @@ namespace UniwayBackend.Repositories.Core.Implements
                     .ToListAsync();
 
                 var request2 = await context.Requests
+                    .Include(x=>x.TechnicalProfessionAvailability)
                     .Where(x => x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId &&
                                 x.StateRequestId == Constants.StateRequests.PENDING &&
                                 !x.TechnicalResponses.Any(tr =>

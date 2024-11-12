@@ -59,6 +59,28 @@ namespace UniwayBackend.Repositories.Core.Implements
             }
         }
 
+        public async Task<TechnicalProfessionAvailability> FindTechnicalProfessionAvailibiltyByServiceId(int serviceId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                // Obtener el servicio por serviceId
+                var serviceWithTechnicalProfessionAvailability = await context.ServiceTechnicals
+                    .FirstOrDefaultAsync(x => x.Id == serviceId);
+
+                // Verifica si el servicio existe
+                if (serviceWithTechnicalProfessionAvailability == null)
+                {
+                    return null; // Devuelve null si no se encuentra el servicio
+                }
+
+                // Obtener TechnicalProfessionAvailability usando alguna propiedad del servicio (ejemplo Id)
+                var technicalProfessionAvailability = await context.TechnicalProfessionAvailabilities
+                    .FirstOrDefaultAsync(x => x.Id == serviceWithTechnicalProfessionAvailability.TechnicalProfessionAvailabilityId);
+
+                return technicalProfessionAvailability;
+            }
+        }
+
         public async Task<ServiceTechnical?> GetByIdWithInformation(int ServiceTechnicalId)
         {
             using (DBContext context = new DBContext())

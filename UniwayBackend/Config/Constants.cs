@@ -73,6 +73,7 @@
             public const short CLOSED = 3;
             public const short CANCELED = 4;
             public const short CLOSURE_REQUEST = 5;
+            public const short RESPONDING = 10;
 
             public static string GetName(short stateRequestId)
             {
