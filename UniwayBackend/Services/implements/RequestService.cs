@@ -5,6 +5,7 @@ using System.Reflection;
 using UniwayBackend.Config;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
+using UniwayBackend.Models.Payloads.Core.Response.Notification;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Models.Payloads.Core.Response.StateRequest;
 using UniwayBackend.Repositories.Core.Implements;
@@ -244,7 +245,7 @@ namespace UniwayBackend.Services.implements
                             .Select(x => x.TechnicalProfessionAvailabilityId)
                             .ToList();
                         var userIdsRechazed = await _userRepository.FindByListTechnicalProfessionAvailabilityId(techProfAvaIds);
-                        
+
                         if (userIdsRechazed.Any())
                         {
                             await _notification.SendSomeNotificationChangeStateRequestAsync(
@@ -277,25 +278,51 @@ namespace UniwayBackend.Services.implements
                 requestFind.StateRequestId = stateRequestId;
                 requestFind = await _repository.UpdateAndReturn(requestFind);
 
-                // Notificar al tecnico elegido 
-                var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(requestFind.TechnicalProfessionAvailabilityId.Value);
-                var requestMap = _mapper.Map<RequestResponse>(requestFind);
-                await _notification.SendNotificationChangeStateRequestAsync(
-                    user.Id.ToString(),
-                    new Models.Payloads.Core.Response.Notification.NotificationResponse
+                if (requestFind.StateRequestId != Constants.StateRequests.CLOSURE_REQUEST)
+                {
+                    // Notificar al tecnico elegido 
+                    var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(requestFind.TechnicalProfessionAvailabilityId.Value);
+                    var requestMap = _mapper.Map<RequestResponse>(requestFind);
+                    await _notification.SendNotificationChangeStateRequestAsync(
+                        user.Id.ToString(),
+                        new Models.Payloads.Core.Response.Notification.NotificationResponse
+                        {
+                            Type = Constants.TypesConnectionSignalR.RESPONSE,
+                            Message = $"La solicitud '{shortDescription}' cambio de estado a {Constants.StateRequests.GetName(stateRequestId)}",
+                            Data = requestMap,
+                            UserSend = new DataUserResponse
+                            {
+                                EntityId = requestFind.Client.Id.ToString(),
+                                FullName = $"{requestFind.Client.Name} {requestFind.Client.FatherLastname} {requestFind.Client.MotherLastname}",
+                                PhoneNumber = requestFind.Client.PhoneNumber,
+                                TypeEntity = Constants.EntityTypes.CLIENT
+                            }
+                        }
+                    );
+                }
+
+                if (requestFind.StateRequestId == Constants.StateRequests.CLOSURE_REQUEST)
+                {
+                    // Enviar la notificacion al cliente
+                    User? user = await _userRepository.FindByRequestId(requestFind.Id);
+                    DataUserResponse userSend = await _userRepository.FindTechnicalOrWorkshop(requestFind.TechnicalProfessionAvailabilityId.Value);
+                    var requestMap = _mapper.Map<RequestResponse>(requestFind);
+
+                    var technical = await _techProfAvaiRequestRepository.FindById(requestFind.TechnicalProfessionAvailabilityId.Value);
+                    await _notification.SendNotificationChangeStateRequestAsync(user!.Id.ToString(), new Models.Payloads.Core.Response.Notification.NotificationResponse
                     {
-                        Type = Constants.TypesConnectionSignalR.RESPONSE,
-                        Message = $"La solicitud '{shortDescription}' cambio de estado a {Constants.StateRequests.GetName(stateRequestId)}",
+                        Type = Constants.TypesConnectionSignalR.CLOSE_SOLICITUDE,
+                        Message = $"Solicitud de cierre del servicio",
                         Data = requestMap,
                         UserSend = new DataUserResponse
                         {
-                            EntityId = requestFind.Client.Id.ToString(),
-                            FullName = $"{requestFind.Client.Name} {requestFind.Client.FatherLastname} {requestFind.Client.MotherLastname}",
-                            PhoneNumber = requestFind.Client.PhoneNumber,
-                            TypeEntity = Constants.EntityTypes.CLIENT
+                            EntityId = technical.Id.ToString(),
+                            FullName = $"xd",
+                            PhoneNumber = "xd",
+                            TypeEntity = Constants.EntityTypes.MECHANICAL
                         }
-                    }
-                );
+                    });
+                }
 
                 response = _utilitaries.setResponseBaseForObject(requestFind);
             }

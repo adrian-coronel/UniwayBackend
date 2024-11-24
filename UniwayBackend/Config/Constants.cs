@@ -19,6 +19,8 @@
             public const int CANCELED = 4;
             public const int CLOSED = 3;
             public const int CLOSURE_REQUEST = 5;
+            public const int RESPONDING = 6;
+
         }
         public static class Roles
         {
@@ -73,7 +75,7 @@
             public const short CLOSED = 3;
             public const short CANCELED = 4;
             public const short CLOSURE_REQUEST = 5;
-            public const short RESPONDING = 10;
+            public const short RESPONDING = 6;
 
             public static string GetName(short stateRequestId)
             {
@@ -89,6 +91,8 @@
                         return "Culminado";
                     case CLOSURE_REQUEST:
                         return "Solicitud de culminado";
+                    case RESPONDING:
+                        return "Respondido";
                     default:
                         return "No se encontro el estado de la solicitud";
                 }
@@ -106,6 +110,8 @@
         {
             public const string SOLICITUDE = "Solicitude";
             public const string RESPONSE = "Response";
+            public const string CLOSE_SOLICITUDE = "Solicitud Cierre";
+
         }
 
         public static class EntityTypes

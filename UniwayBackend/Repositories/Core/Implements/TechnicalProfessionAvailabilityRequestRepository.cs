@@ -48,7 +48,7 @@ namespace UniwayBackend.Repositories.Core.Implements
                     {
                         Availability = availability,
                         Requests = await context.Requests
-                                    .Include(x=>x.ServiceTechnical)
+                                   .Include(x=>x.ServiceTechnical)
                                     .Include(x=>x.StateRequest)
                                     .Where(x => x.TechnicalProfessionAvailabilityId != null &&
                                                 x.TechnicalProfessionAvailability.AvailabilityId == availability.Id &&
