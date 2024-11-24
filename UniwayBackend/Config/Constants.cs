@@ -2,12 +2,19 @@
 {
     public static class Constants
     {
-        public static readonly string[] VALID_CONTENT_TYPES = new string[] { "image/jpeg", "image/png", "image/jpg" };
+        public static readonly string[] VALID_CONTENT_TYPES = new string[] 
+        { 
+            "image/jpeg", 
+            "image/png", 
+            "image/jpg",
+            "file/pdf"
+        };
         public static readonly Dictionary<string, string> VALID_TYPES = new Dictionary<string, string>
         {
             { ".jpeg", "image/jpeg" },
             { ".jpg", "image/jpeg" },
-            { ".png", "image/png" }
+            { ".png", "image/png" },
+            { ".pdf", "file/pdf"}
         };
         public static short MAX_FILES = 5;
         public static int MAX_MB = 10; // 10 MB en bytes

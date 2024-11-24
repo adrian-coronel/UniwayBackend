@@ -35,7 +35,7 @@ namespace UniwayBackend.Services.implements
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
                 // Guardamos las imagenes 
-                ImageResponse image = await _storageService.SaveFileAsync(file, currentDate.ToString("yyyy-MM-dd"));
+                ImageResponse image = await _storageService.SaveFileAsync(file, "ProblemRequest\\"+currentDate.ToString("yyyy-MM-dd"));
 
                 // Guardamos los datos y ubicación de las imgenes en BD
                 ImagesProblemRequest imagesProblemMapped = new ImagesProblemRequest
@@ -72,7 +72,7 @@ namespace UniwayBackend.Services.implements
                 //if (imagesProblemRequests.Any(x => x.Id != 0)) return _utilitaries.setResponseBaseForInternalServerError();
 
                 // Guardamos las imagenes 
-                List<ImageResponse> images = await _storageService.SaveFilesAsync(files, currentDate.ToString("yyyy-MM-dd"));
+                List<ImageResponse> images = await _storageService.SaveFilesAsync(files, "ProblemRequest\\"+currentDate.ToString("yyyy-MM-dd"));
 
                 // Guardamos los datos y ubicación de las imgenes en BD
                 List<ImagesProblemRequest> imagesProblemMapped = images.Select(x => new ImagesProblemRequest

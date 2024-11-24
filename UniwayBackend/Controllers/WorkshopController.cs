@@ -57,6 +57,8 @@ namespace UniwayBackend.Controllers
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
+                var user = User.FindFirst("Id")?.Value;
+
                 var workshop = _mapper.Map<Workshop>(request);
 
                 var result = await _service.Save(workshop);
