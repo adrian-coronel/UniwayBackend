@@ -287,6 +287,7 @@ namespace UniwayBackend.Controllers
                         Type = Constants.TypesConnectionSignalR.SOLICITUDE,
                         Message = "Notification success",
                         Data = response.Object,
+                        TypeAttentionRequest=request.TypeAttention,
                         UserSend = new DataUserResponse
                         {
                             EntityId = requestEntity.Id.ToString(),

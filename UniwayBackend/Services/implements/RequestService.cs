@@ -19,6 +19,7 @@ namespace UniwayBackend.Services.implements
         private readonly ILogger<RequestService> _logger;
         private readonly IRequestRepository _repository;
         private readonly IServiceTechnicalRepository _serviceTechnicalRepository;
+        private readonly ITechnicalProfessionAvailabilityRepository _technicalProfessionAvailabilityRepository;
         private readonly IImagesProblemRequestService _imagesProblemRequestService;
         private readonly IUserRepository _userRepository;
         private readonly ITechnicalProfessionAvailabilityRequestRepository _techProfAvaiRequestRepository;
@@ -36,6 +37,7 @@ namespace UniwayBackend.Services.implements
                               ITechnicalProfessionAvailabilityRequestRepository techProfAvaiRequestRepository,
                               INotificationService notification,
                               IClientRepository clientRepository,
+                              ITechnicalProfessionAvailabilityRepository technicalProfessionAvailabilityRepository,
                               IMapper mapper,
                               UtilitariesResponse<Request> utilitaries,
                               UtilitariesResponse<RequestHistoryResponse> utilitariesHistory)
@@ -46,6 +48,7 @@ namespace UniwayBackend.Services.implements
             _userRepository = userRepository;
             _serviceTechnicalRepository = serviceTechnicalRepository;
             _techProfAvaiRequestRepository = techProfAvaiRequestRepository;
+            _technicalProfessionAvailabilityRepository = technicalProfessionAvailabilityRepository;
             _notification = notification;
             _clientRepository = clientRepository;
             _mapper = mapper;
@@ -189,6 +192,7 @@ namespace UniwayBackend.Services.implements
                 {
                     TechnicalProfessionAvailability responseTechnicalProfessionAvailability = await _serviceTechnicalRepository.FindTechnicalProfessionAvailibiltyByServiceId(request.ServiceTechnicalId.Value);
                     request.TechnicalProfessionAvailabilityId = responseTechnicalProfessionAvailability.Id;
+                
                 }
                 request = await _repository.InsertAndReturn(request);
 
@@ -227,61 +231,102 @@ namespace UniwayBackend.Services.implements
                             ? requestFind.Description.Substring(0, 20) + "..."
                             : requestFind.Description;
 
+                #region "Notificar a los técnicos que la propuesta ya fue tomada"
                 // Si se esta aceptando una propuesta
+                //if (requestFind.StateRequestId == Constants.StateRequests.PENDING && // El estado del request esta pendiente
+                //    stateRequestId == Constants.StateRequests.IN_PROCESS && // se quiere actualizar en proceso
+                //    requestFind.TechnicalProfessionAvailabilityId == null // el tecnico elegido se encuentra en bandeja
+                //   )
+                //{
+                //    var techRequests = await _techProfAvaiRequestRepository.FindAllPendingByRequestId(requestId, Constants.StateRequests.PENDING);
+
+                //    // Notificar a los técnicos que la propuesta ya fue tomada
+                //    if (techRequests.Any())
+                //    {
+
+                //        // Obtener Ids de los usuarios que fueron rechazados
+                //        var techProfAvaIds = techRequests
+                //            .Where(x => x.TechnicalProfessionAvailabilityId != technicalProfessionAvailabilityId)
+                //            .Select(x => x.TechnicalProfessionAvailabilityId)
+                //            .ToList();
+                //        var userIdsRechazed = await _userRepository.FindByListTechnicalProfessionAvailabilityId(techProfAvaIds);
+
+                //        if (userIdsRechazed.Any())
+                //        {
+                //            await _notification.SendSomeNotificationChangeStateRequestAsync(
+                //                userIdsRechazed.Select(u => u.Id.ToString()).ToList(),
+                //                new Models.Payloads.Core.Response.Notification.NotificationResponse
+                //                {
+                //                    Type = Constants.TypesConnectionSignalR.RESPONSE,
+                //                    Message = $"Solicitud '{shortDescription}' fue tomada",
+                //                    Data = null,
+                //                    UserSend = new DataUserResponse
+                //                    {
+                //                        EntityId = requestFind.Client.Id.ToString(),
+                //                        FullName = $"{requestFind.Client.Name} {requestFind.Client.FatherLastname} {requestFind.Client.MotherLastname}",
+                //                        PhoneNumber = requestFind.Client.PhoneNumber,
+                //                        TypeEntity = Constants.EntityTypes.CLIENT
+                //                    }
+                //                }
+                //            );
+                //        }
+
+                //    }
+                //    // Asignamos el tecnico/taller a la solicitud
+                //    requestFind.TechnicalProfessionAvailabilityId = technicalProfessionAvailabilityId;
+                //    // Remover propuestas de la bandeja de pendientes
+                //    await _techProfAvaiRequestRepository.DeleteRange(techRequests);
+                //}
+
+
+                //// Actualizar state request
+                //requestFind.StateRequestId = stateRequestId;
+                //requestFind = await _repository.UpdateAndReturn(requestFind);
+                #endregion
+
+
+                #region "Taller responde solicitud"
                 if (requestFind.StateRequestId == Constants.StateRequests.PENDING && // El estado del request esta pendiente
-                    stateRequestId == Constants.StateRequests.IN_PROCESS && // se quiere actualizar en proceso
-                    requestFind.TechnicalProfessionAvailabilityId == null // el tecnico elegido se encuentra en bandeja
-                   )
+                   stateRequestId == Constants.StateRequests.RESPONDING)// el tecnico elegido se encuentra en bandeja)
                 {
-                    var techRequests = await _techProfAvaiRequestRepository.FindAllPendingByRequestId(requestId, Constants.StateRequests.PENDING);
+                    var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(technicalProfessionAvailabilityId);
 
-                    // Notificar a los técnicos que la propuesta ya fue tomada
-                    if (techRequests.Any())
-                    {
-
-                        // Obtener Ids de los usuarios que fueron rechazados
-                        var techProfAvaIds = techRequests
-                            .Where(x => x.TechnicalProfessionAvailabilityId != technicalProfessionAvailabilityId)
-                            .Select(x => x.TechnicalProfessionAvailabilityId)
-                            .ToList();
-                        var userIdsRechazed = await _userRepository.FindByListTechnicalProfessionAvailabilityId(techProfAvaIds);
-
-                        if (userIdsRechazed.Any())
-                        {
-                            await _notification.SendSomeNotificationChangeStateRequestAsync(
-                                userIdsRechazed.Select(u => u.Id.ToString()).ToList(),
-                                new Models.Payloads.Core.Response.Notification.NotificationResponse
-                                {
-                                    Type = Constants.TypesConnectionSignalR.RESPONSE,
-                                    Message = $"Solicitud '{shortDescription}' fue tomada",
-                                    Data = null,
-                                    UserSend = new DataUserResponse
-                                    {
-                                        EntityId = requestFind.Client.Id.ToString(),
-                                        FullName = $"{requestFind.Client.Name} {requestFind.Client.FatherLastname} {requestFind.Client.MotherLastname}",
-                                        PhoneNumber = requestFind.Client.PhoneNumber,
-                                        TypeEntity = Constants.EntityTypes.CLIENT
-                                    }
-                                }
-                            );
-                        }
-
-                    }
                     // Asignamos el tecnico/taller a la solicitud
                     requestFind.TechnicalProfessionAvailabilityId = technicalProfessionAvailabilityId;
-                    // Remover propuestas de la bandeja de pendientes
-                    await _techProfAvaiRequestRepository.DeleteRange(techRequests);
+                    requestFind.StateRequestId = stateRequestId;
+                    requestFind = await _repository.UpdateAndReturn(requestFind);
+
+                    var requestMap = _mapper.Map<RequestResponse>(requestFind);
+                    await _notification.SendNotificationChangeStateRequestAsync(
+                        user.Id.ToString(),
+                        new Models.Payloads.Core.Response.Notification.NotificationResponse
+                        {
+                            Type = Constants.TypesConnectionSignalR.RESPONSE,
+                            Message = "RESPUSETA DE TALLER",
+                            StateRequestId = requestFind.StateRequestId,
+                            TypeAttentionRequest = requestFind.TypeAttention,
+                            Data = requestMap,
+                            UserSend = new DataUserResponse
+                            {
+                                EntityId = "0",
+                                FullName = $"xd",
+                                PhoneNumber = "xd",
+                                TypeEntity = Constants.EntityTypes.WORKSHOP
+                            }
+                        }
+                    );
                 }
 
-
-                // Actualizar state request
-                requestFind.StateRequestId = stateRequestId;
-                requestFind = await _repository.UpdateAndReturn(requestFind);
-
-                if (requestFind.StateRequestId != Constants.StateRequests.CLOSURE_REQUEST)
+                if (requestFind.StateRequestId == Constants.StateRequests.RESPONDING && // El estado del request esta pendiente
+               stateRequestId == Constants.StateRequests.SCHEDULED_ON_HOLD && // se quiere actualizar en proceso
+               requestFind.TechnicalProfessionAvailabilityId != null)
                 {
-                    // Notificar al tecnico elegido 
-                    var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(requestFind.TechnicalProfessionAvailabilityId.Value);
+                    var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(technicalProfessionAvailabilityId);
+
+                    // Asignamos el tecnico/taller a la solicitud
+                    requestFind.StateRequestId = stateRequestId;
+                    requestFind = await _repository.UpdateAndReturn(requestFind);
+
                     var requestMap = _mapper.Map<RequestResponse>(requestFind);
                     await _notification.SendNotificationChangeStateRequestAsync(
                         user.Id.ToString(),
@@ -289,6 +334,43 @@ namespace UniwayBackend.Services.implements
                         {
                             Type = Constants.TypesConnectionSignalR.RESPONSE,
                             Message = $"La solicitud '{shortDescription}' cambio de estado a {Constants.StateRequests.GetName(stateRequestId)}",
+                            StateRequestId = requestFind.StateRequestId,
+                            Data = requestMap,
+                            TypeAttentionRequest = requestFind.TypeAttention,
+                            UserSend = new DataUserResponse
+                            {
+                                EntityId = requestFind.Client.Id.ToString(),
+                                FullName = $"{requestFind.Client.Name} {requestFind.Client.FatherLastname} {requestFind.Client.MotherLastname}",
+                                PhoneNumber = requestFind.Client.PhoneNumber,
+                                TypeEntity = Constants.EntityTypes.CLIENT
+                            }
+                        }
+                    );
+                }
+
+                #endregion
+
+
+                if (requestFind.StateRequestId == Constants.StateRequests.PENDING && // El estado del request esta pendiente
+                    stateRequestId == Constants.StateRequests.IN_PROCESS && // se quiere actualizar en proceso
+                    requestFind.TechnicalProfessionAvailabilityId == null )// el tecnico elegido se encuentra en bandeja)
+                {
+                    var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(technicalProfessionAvailabilityId);
+
+                    // Asignamos el tecnico/taller a la solicitud
+                     requestFind.TechnicalProfessionAvailabilityId = technicalProfessionAvailabilityId;
+                     requestFind.StateRequestId = stateRequestId;
+                     requestFind = await _repository.UpdateAndReturn(requestFind);
+
+                    var requestMap = _mapper.Map<RequestResponse>(requestFind);
+                    await _notification.SendNotificationChangeStateRequestAsync(
+                        user.Id.ToString(),
+                        new Models.Payloads.Core.Response.Notification.NotificationResponse
+                        {
+                            Type = Constants.TypesConnectionSignalR.RESPONSE,
+                            Message = $"La solicitud '{shortDescription}' cambio de estado a {Constants.StateRequests.GetName(stateRequestId)}",
+                            StateRequestId = requestFind.StateRequestId,
+                            TypeAttentionRequest = requestFind.TypeAttention ,
                             Data = requestMap,
                             UserSend = new DataUserResponse
                             {
@@ -301,14 +383,77 @@ namespace UniwayBackend.Services.implements
                     );
                 }
 
-                if (requestFind.StateRequestId == Constants.StateRequests.CLOSURE_REQUEST)
+                if (requestFind.StateRequestId == Constants.StateRequests.PENDING && // El estado del request esta pendiente
+                    stateRequestId == Constants.StateRequests.IN_PROCESS && // se quiere actualizar en proceso
+                    requestFind.TechnicalProfessionAvailabilityId != null)// el tecnico elegido se encuentra en bandeja)
+                {
+                    var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(technicalProfessionAvailabilityId);
+
+                    // Asignamos el tecnico/taller a la solicitud
+                    requestFind.StateRequestId = stateRequestId;
+                    requestFind = await _repository.UpdateAndReturn(requestFind);
+
+                    var requestMap = _mapper.Map<RequestResponse>(requestFind);
+                    await _notification.SendNotificationChangeStateRequestAsync(
+                        user.Id.ToString(),
+                        new Models.Payloads.Core.Response.Notification.NotificationResponse
+                        {
+                            Type = Constants.TypesConnectionSignalR.RESPONSE,
+                            Message = $"La solicitud '{shortDescription}' cambio de estado a {Constants.StateRequests.GetName(stateRequestId)}",
+                            StateRequestId = requestFind.StateRequestId,
+                            Data = requestMap,
+                            TypeAttentionRequest = requestFind.TypeAttention,
+                            UserSend = new DataUserResponse
+                            {
+                                EntityId = requestFind.Client.Id.ToString(),
+                                FullName = $"{requestFind.Client.Name} {requestFind.Client.FatherLastname} {requestFind.Client.MotherLastname}",
+                                PhoneNumber = requestFind.Client.PhoneNumber,
+                                TypeEntity = Constants.EntityTypes.CLIENT
+                            }
+                        }
+                    );
+                }
+
+
+                if (requestFind.StateRequestId == Constants.StateRequests.CLOSURE_REQUEST && // El estado del request esta en solicitu de cierre
+                    stateRequestId == Constants.StateRequests.CLOSED && // se quiere actualizar a completado
+                    requestFind.TechnicalProfessionAvailabilityId != null)// el tecnico elegido se encuentra en bandeja)
+                {
+                    var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(technicalProfessionAvailabilityId);
+
+                    requestFind.StateRequestId = stateRequestId;
+                    requestFind = await _repository.UpdateAndReturn(requestFind);
+
+                    var requestMap = _mapper.Map<RequestResponse>(requestFind);
+                    await _notification.SendNotificationChangeStateRequestAsync(
+                        user.Id.ToString(),
+                        new Models.Payloads.Core.Response.Notification.NotificationResponse
+                        {
+                            Type = Constants.TypesConnectionSignalR.RESPONSE,
+                            Message = $"El cliente ha aceptado el cierre del servicio!",
+                            Data = requestMap,
+                            StateRequestId= stateRequestId,
+                            UserSend = new DataUserResponse
+                            {
+                                EntityId = requestFind.Client.Id.ToString(),
+                                FullName = $"{requestFind.Client.Name} {requestFind.Client.FatherLastname} {requestFind.Client.MotherLastname}",
+                                PhoneNumber = requestFind.Client.PhoneNumber,
+                                TypeEntity = Constants.EntityTypes.CLIENT
+                            }
+                        }
+                    );
+                }
+
+                if (stateRequestId == Constants.StateRequests.CLOSURE_REQUEST)
                 {
                     // Enviar la notificacion al cliente
                     User? user = await _userRepository.FindByRequestId(requestFind.Id);
                     DataUserResponse userSend = await _userRepository.FindTechnicalOrWorkshop(requestFind.TechnicalProfessionAvailabilityId.Value);
+                    
                     var requestMap = _mapper.Map<RequestResponse>(requestFind);
-
-                    var technical = await _techProfAvaiRequestRepository.FindById(requestFind.TechnicalProfessionAvailabilityId.Value);
+                    requestFind.StateRequestId = stateRequestId;
+                    requestFind = await _repository.UpdateAndReturn(requestFind);
+                    var technical = await _technicalProfessionAvailabilityRepository.FindById(requestFind.TechnicalProfessionAvailabilityId.Value);
                     await _notification.SendNotificationChangeStateRequestAsync(user!.Id.ToString(), new Models.Payloads.Core.Response.Notification.NotificationResponse
                     {
                         Type = Constants.TypesConnectionSignalR.CLOSE_SOLICITUDE,

@@ -105,17 +105,29 @@ namespace UniwayBackend.Repositories.Core.Implements
         {
             using (DBContext context = new DBContext())
             {
-                return await context.Requests
+                var requests= await context.Requests
                     .Include(x => x.StateRequest)
                     .Include(x => x.ServiceTechnical)
                         .ThenInclude(x => x.Images)
                     .Where(x => 
                                 (x.TechnicalProfessionAvailabilityId == TechnicalProfessionAvailabilityId || TechnicalProfessionAvailabilityId == 0) &&
-                                x.StateRequestId == Constants.StateRequests.IN_PROCESS && // Solicitud aceptada
+                                (x.TechnicalProfessionAvailability.AvailabilityId==Constants.Availabilities.IN_WORKSHOP_ID ? 
+                                (x.StateRequestId == Constants.StateRequests.RESPONDING || x.StateRequestId == Constants.StateRequests.SCHEDULED_ON_HOLD) 
+                                : (x.StateRequestId == Constants.StateRequests.SCHEDULED_ON_HOLD))
+                                && // Solicitud aceptada
                                 x.FromShow != null && x.ToShow != null && // Tienen un rango de fechas a mostrarse
                                 x.TechnicalResponses.Any(x => x.ProposedAssistanceDate != null) // Si hay una fecha propuesta del mecánico
                      )
                     .ToListAsync();
+
+                foreach (var request in requests)
+                {
+                    
+                    TechnicalResponse technicalResponse = await context.TechnicalResponses.Where(x => x.RequestId == request.Id && x.TechnicalProfessionAvailabilityId == TechnicalProfessionAvailabilityId).FirstOrDefaultAsync();
+                    request.ProposeAssistanceByTechnicalAttended = technicalResponse.ProposedAssistanceDate;
+                }
+
+                return requests;
             }
         }
     }

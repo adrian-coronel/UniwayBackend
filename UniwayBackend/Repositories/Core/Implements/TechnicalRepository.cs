@@ -35,7 +35,7 @@ namespace UniwayBackend.Repositories.Core.Implements
                 return await context.UserTechnicals.AsNoTracking()
                     .Where(x =>
                         x.User.RoleId == Constants.Roles.TECHNICAL_ID && // Filtra por rol de técnico
-                        x.Technical.WorkingStatus && 
+                        x.Technical.WorkingStatus==true && 
                         // Verificamos que la ubicación sea válida
                         x.Technical.Location != null &&
                         !x.Technical.Location.IsEmpty &&

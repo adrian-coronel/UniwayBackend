@@ -5,6 +5,7 @@ namespace UniwayBackend.Models.Payloads.Core.Request.Request
     public class RequestManyRequestV5
     {
         public short StateRequestId { get; set; }
+        public int TypeAttention { get; set; }
         public short CategoryRequestId { get; set; }
         public short? TypeCarId { get; set; }
         public int ClientId { get; set; }

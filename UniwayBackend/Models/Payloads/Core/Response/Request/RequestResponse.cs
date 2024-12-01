@@ -11,6 +11,7 @@ namespace UniwayBackend.Models.Payloads.Core.Response.Request
     public class RequestResponse
     {
         public int Id { get; set; }
+        public int TypeAttention { get; set; }
         public short StateRequestId { get; set; }
         public short CategoryRequestId { get; set; }
         public short TypeCarId { get; set; }
@@ -30,6 +31,8 @@ namespace UniwayBackend.Models.Payloads.Core.Response.Request
         public DateTime? ResolvedOn { get; set; }
         public bool IsResponse { get; set; }
         public DateTime? CreatedOn { get; set; }
+
+        public DateTime? ProposeAssistanceByTechnicalAttended { get; set; }
 
         public List<ImagesProblemRequestResponse> ImagesProblemRequests { get; set; }
     }

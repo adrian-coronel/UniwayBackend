@@ -22,6 +22,12 @@
             public const int RESPONDING = 6;
 
         }
+        public static class TypeAttentionRequest
+        {
+            public const int URGENTE_ATTENTION = 1;
+            public const int SCHEDULE_ATTENTION = 2;
+        }
+
         public static class Roles
         {
  
@@ -76,6 +82,7 @@
             public const short CANCELED = 4;
             public const short CLOSURE_REQUEST = 5;
             public const short RESPONDING = 6;
+            public const short SCHEDULED_ON_HOLD = 7;
 
             public static string GetName(short stateRequestId)
             {
@@ -103,7 +110,7 @@
         {
             public const string RECEIVE_NOTIFICATION_REQUESTS = "ReceiveNotificationRequests";
             public const string RECEIVE_NOTIFICATION_TECH_RESP = "ReceiveNotificationTechnicalResponse";
-            public const string RECEIVE_NOTIFICATION_CHANGE_STATE_REQUEST = "ReceiveNotificationWhenChangeStateRequest";
+            public const string RECEIVE_NOTIFICATION_CHANGE_STATE_REQUEST = "NotificationChangeStateRequest";
         }
 
         public static class TypesConnectionSignalR
