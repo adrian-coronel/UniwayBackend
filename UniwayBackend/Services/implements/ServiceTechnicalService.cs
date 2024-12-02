@@ -18,16 +18,19 @@ namespace UniwayBackend.Services.implements
         private readonly UtilitariesResponse<ServiceTechnical> _utilitaries;
         private readonly IImagesServiceTechnicalService _imageServiceTechncialService;
         private readonly IServiceTechnicalRepository _repository;
-        private readonly IStorageService _storageService; 
         private readonly IMapper _mapper;
 
-        public ServiceTechnicalService(ILogger<ServiceTechnicalService> logger, UtilitariesResponse<ServiceTechnical> utilitaries, IImagesServiceTechnicalService imageServiceTechncialService, IServiceTechnicalRepository repository, IStorageService storageService, IMapper mapper)
+        public ServiceTechnicalService(
+            ILogger<ServiceTechnicalService> logger,
+            UtilitariesResponse<ServiceTechnical> utilitaries,
+            IImagesServiceTechnicalService imageServiceTechncialService,
+            IServiceTechnicalRepository repository,
+            IMapper mapper)
         {
             _logger = logger;
             _utilitaries = utilitaries;
             _imageServiceTechncialService = imageServiceTechncialService;
             _repository = repository;
-            _storageService = storageService;
             _mapper = mapper;
         }
 

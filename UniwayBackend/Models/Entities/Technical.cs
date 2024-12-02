@@ -22,6 +22,7 @@ namespace UniwayBackend.Models.Entities
 
         // Inverse Relations
         public virtual List<Review> Reviews { get; set; } = new List<Review>();
+        public virtual CertificateTechnical CertificateTechnical { get; set; }
         public virtual List<UserTechnical> UserTechnicals { get; set; } = new List<UserTechnical>();
     }
 }

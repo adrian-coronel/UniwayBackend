@@ -1,111 +1,71 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32.SafeHandles;
+using UniwayBackend.Config;
 using UniwayBackend.Models.Payloads.Core.Request;
+using UniwayBackend.Models.Payloads.Core.Request.File;
 using UniwayBackend.Services.interfaces;
 
 namespace UniwayBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UploadController : ControllerBase
     {
-        private readonly IStorageService _storageService;
+        private readonly IAws3Service _aws3Service;
 
-        public UploadController(IStorageService storageService)
+        public UploadController(IAws3Service aws3Service)
         {
-            _storageService = storageService;
+            _aws3Service = aws3Service;
         }
 
-        /// <summary>
-        /// Subir un archivo
-        /// </summary>
-        [HttpPost("upload")]
-        public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
+        [HttpGet("{fileName}")]
+        public async Task<IActionResult> GetFile(string fileName)
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("No se ha proporcionado un archivo válido.");
-
             try
             {
-                var folder = "Services\\" + DateTime.Now.ToString("yyyy-MM-dd");
+                var extension = Path.GetExtension(fileName);
 
-                var response = await _storageService.SaveFileAsync(file, folder);
+                if (string.IsNullOrEmpty(extension))
+                    return NotFound("Es requerida la extensión");
 
-                return Ok(new { Message = "Archivo subido exitosamente", FileDetails = response });
+                if (!Constants.VALID_TYPES.ContainsKey(extension))
+                    return NotFound("Extensión invalida");
+
+                var file = await _aws3Service.DownloadFileAsync(fileName);
+
+                if (!file.Any()) 
+                    return NotFound("Archivo no encontrado");
+
+                return File(file, Constants.VALID_TYPES.GetValueOrDefault(extension)!);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, $"Error al subir el archivo: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Subir múltiples archivos
-        /// </summary>
-        [HttpPost("upload-multiple")]
-        public async Task<IActionResult> UploadMultipleFiles([FromForm] List<IFormFile> files)
-        {
-            if (files == null || files.Count == 0)
-                return BadRequest("No se han proporcionado archivos.");
-
-            try
-            {
-                var folder = "Services\\" + DateTime.Now.ToString("yyyy-MM-dd");
-
-                var responses = await _storageService.SaveFilesAsync(files, folder);
-                return Ok(new { Message = "Archivos subidos exitosamente", FilesDetails = responses });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error al subir los archivos: {ex.Message}");
+                return NotFound("Archivo no encontrado");
             }
         }
 
-        /// <summary>
-        /// Obtener un archivo
-        /// </summary>
-        //[HttpPost("GetFile")]
-        //public async Task<IActionResult> GetFile([FromBody] FileRequest fileRequest)
-        //{
-        //    try
-        //    {
-        //        if (fileRequest == null || string.IsNullOrWhiteSpace(fileRequest.Path))
-        //            return BadRequest("Se requiere una solicitud válida con la ruta del archivo.");
-
-        //        // Separar el nombre del archivo y la carpeta desde fileRequest.Path
-        //        var filePath = fileRequest.Path;
-        //        var folder = Path.GetDirectoryName(filePath);
-        //        var fileName = Path.GetFileName(filePath);
-
-        //        var file = await _storageService.GetFileAsync(folder, fileName);
-        //        if (file == null)
-        //            return NotFound("El archivo solicitado no existe.");
-
-        //        return File(file.Stream, file.ContentType, fileName);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Error al obtener el archivo: {ex.Message}");
-        //    }
-        //}
-
-        /// <summary>
-        /// Eliminar un archivo
-        /// </summary>
-        [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteFile([FromQuery] string filePath, [FromQuery] string folder)
+        [HttpPost]
+        public async Task<IActionResult> UploadFile([FromForm] FileRequest request)
         {
-            if (string.IsNullOrWhiteSpace(filePath))
-                return BadRequest("Se requiere la ruta del archivo para eliminar.");
-
             try
             {
-                await _storageService.DeleteFileAsync(filePath, folder);
-                return Ok(new { Message = "Archivo eliminado exitosamente" });
+                var extension = Path.GetExtension(request.File.FileName);
+
+                if (request.File.Length == 0)
+                    return NotFound("El archivo no tiene contenido");
+
+                if (!Constants.VALID_TYPES.ContainsKey(extension))
+                    return NotFound("Extensión invalida");
+
+                var response = await _aws3Service.UploadFileAsync(request.File);
+
+                return Ok(new { Message = "Archivo subido exitosamente", FileDetails = response }); ;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return StatusCode(500, $"Error al eliminar el archivo: {ex.Message}");
+                return BadRequest("El archivo no se pudo subir correctamente");
             }
         }
     }

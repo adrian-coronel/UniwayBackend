@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using UniwayBackend.Config;
 using UniwayBackend.Factories;
+using UniwayBackend.Helpers;
 using UniwayBackend.Helpers.Filters;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
@@ -31,7 +32,7 @@ namespace UniwayBackend
         {
             // Injection Dependency
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-
+            services.Configure<AwsS3Config>(Configuration.GetSection("AwsS3Config"));
             RegisterServices(services);
         }
 
@@ -72,6 +73,7 @@ namespace UniwayBackend
             services.AddSingleton<IUser, EmployeeCreator>();
             services.AddSingleton<UserFactory>();
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
+            services.AddSingleton<AwsCredentialsManager>();
 
             services.AddScoped(typeof(UtilitariesResponse<>));
             services.AddScoped(typeof(AppSettings));
@@ -142,7 +144,11 @@ namespace UniwayBackend
             services.AddScoped<IImagesServiceTechnicalService, ImagesServiceTechnicalService>();
             services.AddScoped<IBaseRepository<ServiceTechnical, int>, BaseRepository<ServiceTechnical, int>>();
             services.AddScoped<IBaseRepository<ImagesServiceTechnical, int>, BaseRepository<ImagesServiceTechnical, int>>();
-            services.AddScoped<IBaseRepository<ServiceTechnicalTypeCar, int>, BaseRepository<ServiceTechnicalTypeCar, int>>();   
+            services.AddScoped<IBaseRepository<ServiceTechnicalTypeCar, int>, BaseRepository<ServiceTechnicalTypeCar, int>>();
+            services.AddScoped<ICertificateTechnicalRepository, CertificateTechnicalRepository>();
+
+
+            services.AddScoped<IAws3Service, Aws3Service>();
         }
 
         private static void JwtConfig(IServiceCollection services)

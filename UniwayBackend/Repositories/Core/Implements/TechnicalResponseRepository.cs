@@ -15,7 +15,7 @@ namespace UniwayBackend.Repositories.Core.Implements
             using (var context = new DBContext())
             {
                 var query = context.TechnicalResponses
-                    .Where(x => x.Request.ClientId == ClientId);
+                    .Where(x => x.Request.ClientId == ClientId && (x.Request.StateRequestId==1 || x.Request.StateRequestId==6 ) && x.ProposedAssistanceDate !=null);
 
                 // Aplica la condición adicional solo si RequestId es diferente de 0
                 if (RequestId != 0)
@@ -29,13 +29,20 @@ namespace UniwayBackend.Repositories.Core.Implements
                                     .ThenInclude(x=>x.UserTechnical)
                                         .ThenInclude(x=>x.Technical)
                               .Include(x=>x.TechnicalProfessionAvailability)
-                                    .ThenInclude(x=>x.Workshops);
+                                    .ThenInclude(x=>x.Workshops)
+                              .Include(x=>x.Request);
 
                 return await query.ToListAsync();
             }
         }
 
-
+        public async Task<TechnicalResponse> GetByRequestIdAndTechnicalProfessionAvailability(int RequestId,int TechnicalProfessionAvailabilityId)
+        {
+            using(var context=new DBContext())
+            {
+                return await context.TechnicalResponses.Where(x => x.RequestId == RequestId && x.TechnicalProfessionAvailabilityId == TechnicalProfessionAvailabilityId).FirstOrDefaultAsync();
+            }
+        }
         public async Task<List<TechnicalResponse>> FindAllByRequestId(int RequestId)
         {
             using (var context = new DBContext())

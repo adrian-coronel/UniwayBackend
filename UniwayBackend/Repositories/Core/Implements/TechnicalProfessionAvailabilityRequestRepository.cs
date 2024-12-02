@@ -48,29 +48,40 @@ namespace UniwayBackend.Repositories.Core.Implements
                     {
                         Availability = availability,
                         Requests = await context.Requests
-                                    .Include(x=>x.ServiceTechnical)
-                                    .Include(x=>x.StateRequest)
+                                    .Include(x => x.ServiceTechnical)
+                                        .ThenInclude(y => y.ServiceTechnicalTypeCars)
+                                    .Include(x => x.StateRequest)
                                     .Where(x => x.TechnicalProfessionAvailabilityId != null &&
                                                 x.TechnicalProfessionAvailability.AvailabilityId == availability.Id &&
-                                                x.StateRequestId == Constants.StateRequests.PENDING || x.StateRequestId==Constants.StateRequests.RESPONDING &&
-                                                x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId)
+                                                (x.StateRequestId == Constants.StateRequests.PENDING ||
+                                                 x.StateRequestId == Constants.StateRequests.RESPONDING) &&
+                                                x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId &&
+                                                (availability.Id != 2 || x.TypeAttention == 2)) 
+
                                     .ToListAsync()
                     };
 
-                    // Agregar solcitiudes hecha a muchos agregada en bandeja
-                    TechProfRequest.Requests.AddRange(
-                        await context.TechnicalProfessionAvailabilityRequests
-                            .Include(x=>x.Request)
-                                .ThenInclude(s=>s.ServiceTechnical)
-                            .Include(x=>x.Request)
-                                .ThenInclude(x => x.StateRequest)
 
-                            .Where(x => x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId &&
-                                        x.Request.StateRequestId == Constants.StateRequests.PENDING &&
-                                        x.TechnicalProfessionAvailability.AvailabilityId == availability.Id)
-                            .Select(x => x.Request)
-                            .ToListAsync()
-                    );
+                   //SOLICITUD A MUCHOS
+                    var additionalRequests = await context.TechnicalProfessionAvailabilityRequests
+                        .Include(x => x.Request)
+                            .ThenInclude(s => s.ServiceTechnical)
+                        .Include(x => x.Request)
+                            .ThenInclude(x => x.StateRequest)
+                        .Where(x => x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId &&
+                                    x.Request.StateRequestId == Constants.StateRequests.PENDING &&
+                                    x.TechnicalProfessionAvailability.AvailabilityId == availability.Id
+                                     && (availability.Id != 2 || x.Request.TypeAttention == 2 && x.Request.TechnicalProfessionAvailability.AvailabilityId==2)
+
+                                    )
+                        .Select(x => x.Request)
+                        .ToListAsync();
+
+                    // Eliminar duplicados utilizando DistinctBy
+                    TechProfRequest.Requests = TechProfRequest.Requests
+                        .Concat(additionalRequests)
+                        .DistinctBy(r => r.Id) // Eliminar duplicados según el Id
+                        .ToList();
 
                     result.Add(TechProfRequest);
                 }

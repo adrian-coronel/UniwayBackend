@@ -13,6 +13,7 @@ using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Availability;
 using UniwayBackend.Models.Payloads.Core.Response.CategoryRequest;
 using UniwayBackend.Models.Payloads.Core.Response.CategoryService;
+using UniwayBackend.Models.Payloads.Core.Response.CertificateTechnical;
 using UniwayBackend.Models.Payloads.Core.Response.Client;
 using UniwayBackend.Models.Payloads.Core.Response.Experience;
 using UniwayBackend.Models.Payloads.Core.Response.ImageProblem;
@@ -167,6 +168,8 @@ namespace UniwayBackend.Config
             CreateMap<ServiceTechnicalTypeCar, ServiceTechnicalTypeCarRequest>().ReverseMap();
             // TypeCar
             CreateMap<TypeCar, TypeCarResponse>().ReverseMap();
+
+            CreateMap<CertificateTechnical, CertificateTechnicalResponse>().ReverseMap();
         }
 
     }

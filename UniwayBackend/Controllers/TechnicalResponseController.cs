@@ -101,6 +101,7 @@ namespace UniwayBackend.Controllers
                         await _notificationService.SendNotificationWithTechnicalResponseAsync(user!.Id.ToString(), new NotificationResponse
                         {
                             Type = Constants.TypesConnectionSignalR.RESPONSE,
+                            TypeAttentionRequest = request.TypeAttentionRequest,
                             Message = "Notification success",
                             Data = response.Object,
                             UserSend = userSend

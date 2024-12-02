@@ -36,6 +36,7 @@ namespace UniwayBackend.Context
         public DbSet<TypeCar> TypeCars { get; set; }
         public DbSet<ServiceTechnicalTypeCar> ServiceTechnicalTypeCars {  get; set; }
         public DbSet<Workshop> Workshops { get; set; }
+        public DbSet<CertificateTechnical> CertificateTechnicals { get; set; }
 
 
 
@@ -74,6 +75,16 @@ namespace UniwayBackend.Context
                 role.Property(r => r.Name)
                     .IsRequired()
                     .HasMaxLength(50); // Correspondencia con VARCHAR(50)
+            });
+
+            modelBuilder.Entity<CertificateTechnical>(certTechnical =>
+            {
+                certTechnical.HasKey(ct => ct.Id);
+
+
+                certTechnical.HasOne(ct => ct.Technical)
+                    .WithOne(t => t.CertificateTechnical)
+                    .HasForeignKey<CertificateTechnical>(ct => ct.TechnicalId);
             });
 
             // Configuración de la entidad User
@@ -140,6 +151,11 @@ namespace UniwayBackend.Context
                     .WithOne(ut => ut.Technical)
                     .HasForeignKey(ut => ut.TechnicalId)
                     .OnDelete(DeleteBehavior.Cascade); // Si lo deseas en cascada
+
+                // Technical - CertificateTechnical (One-to-One)
+                technical.HasOne(t => t.CertificateTechnical)
+                    .WithOne(ct => ct.Technical)
+                    .HasForeignKey<CertificateTechnical>(ct => ct.TechnicalId);
 
                 // Technical - Reviews (One-to-Many)
                 technical.HasMany(t => t.Reviews)
@@ -384,6 +400,7 @@ namespace UniwayBackend.Context
             modelBuilder.Entity<Technical>().HasQueryFilter(x => x.Enabled);
             modelBuilder.Entity<UserTechnical>().HasQueryFilter(x => x.Enabled);
             modelBuilder.Entity<WorkshopTechnicalProfession>().HasQueryFilter(x => x.Enabled);
+            modelBuilder.Entity<Technical>().Navigation(t => t.CertificateTechnical).AutoInclude();
 
 
             base.OnModelCreating(modelBuilder);

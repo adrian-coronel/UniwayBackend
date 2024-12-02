@@ -9,6 +9,7 @@ namespace UniwayBackend.Models.Payloads.Core.Request.TechnicalResponse
         public int? WorkshopTechnicalProfessionId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public int? TypeAttentionRequest { get; set; }
         public decimal Price { get; set; }
         public DateTime? ProposedAssistanceDate { get; set; }
 

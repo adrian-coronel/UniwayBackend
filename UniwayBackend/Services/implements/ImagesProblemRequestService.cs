@@ -12,18 +12,18 @@ namespace UniwayBackend.Services.implements
     {
         private readonly IImagesProblemRequestRepository _repository;
         private readonly ILogger<ImagesProblemRequestService> _logger;
-        private readonly IStorageService _storageService;
         private readonly UtilitariesResponse<ImagesProblemRequest> _utilitaries;
+        private readonly IAws3Service _aws3Service;
 
         public ImagesProblemRequestService(IImagesProblemRequestRepository repository,
                                            ILogger<ImagesProblemRequestService> logger,
-                                           IStorageService storageService,
-                                           UtilitariesResponse<ImagesProblemRequest> utilitaries)
+                                           UtilitariesResponse<ImagesProblemRequest> utilitaries,
+                                           IAws3Service aws3Service)
         {
             _repository = repository;
             _logger = logger;
-            _storageService = storageService;
             _utilitaries = utilitaries;
+            _aws3Service = aws3Service;
         }
 
         public async Task<MessageResponse<ImagesProblemRequest>> Save(int RequestId, IFormFile file)
@@ -35,7 +35,7 @@ namespace UniwayBackend.Services.implements
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
                 // Guardamos las imagenes 
-                ImageResponse image = await _storageService.SaveFileAsync(file, "ProblemRequest\\"+currentDate.ToString("yyyy-MM-dd"));
+                var image = await _aws3Service.UploadFileAsync(file);
 
                 // Guardamos los datos y ubicación de las imgenes en BD
                 ImagesProblemRequest imagesProblemMapped = new ImagesProblemRequest
@@ -72,7 +72,7 @@ namespace UniwayBackend.Services.implements
                 //if (imagesProblemRequests.Any(x => x.Id != 0)) return _utilitaries.setResponseBaseForInternalServerError();
 
                 // Guardamos las imagenes 
-                List<ImageResponse> images = await _storageService.SaveFilesAsync(files, "ProblemRequest\\"+currentDate.ToString("yyyy-MM-dd"));
+                var images = await _aws3Service.UploadFilesAsync(files);
 
                 // Guardamos los datos y ubicación de las imgenes en BD
                 List<ImagesProblemRequest> imagesProblemMapped = images.Select(x => new ImagesProblemRequest

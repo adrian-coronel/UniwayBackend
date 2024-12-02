@@ -1,6 +1,7 @@
 ﻿using NetTopologySuite.Geometries;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace UniwayBackend.Models.Entities
 {
@@ -9,6 +10,7 @@ namespace UniwayBackend.Models.Entities
     {
         [Key]
         public int Id { get; set; }
+        public int? TypeAttention { get; set; }
         public short StateRequestId { get; set; }
         public short CategoryRequestId { get; set; }
         public short? TypeCarId { get; set; }
@@ -20,6 +22,9 @@ namespace UniwayBackend.Models.Entities
         public Point Location { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? ProposedAssistanceDate { get; set; }
+        [NotMapped]
+        [JsonIgnore]
+        public DateTime? ProposeAssistanceByTechnicalAttended { get; set; }
         public DateTime? AnsweredOn { get; set; }
         public DateTime? ResolvedOn { get; set; }
         public DateTime? FromShow { get; set; }

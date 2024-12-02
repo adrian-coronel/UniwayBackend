@@ -7,14 +7,14 @@
             "image/jpeg", 
             "image/png", 
             "image/jpg",
-            "file/pdf"
+            "application/pdf"
         };
         public static readonly Dictionary<string, string> VALID_TYPES = new Dictionary<string, string>
         {
             { ".jpeg", "image/jpeg" },
             { ".jpg", "image/jpeg" },
             { ".png", "image/png" },
-            { ".pdf", "file/pdf"}
+            { ".pdf", "application/pdf"}
         };
         public static short MAX_FILES = 5;
         public static int MAX_MB = 10; // 10 MB en bytes
@@ -26,7 +26,15 @@
             public const int CANCELED = 4;
             public const int CLOSED = 3;
             public const int CLOSURE_REQUEST = 5;
+            public const int RESPONDING = 6;
+
         }
+        public static class TypeAttentionRequest
+        {
+            public const int URGENTE_ATTENTION = 1;
+            public const int SCHEDULE_ATTENTION = 2;
+        }
+
         public static class Roles
         {
  
@@ -80,7 +88,8 @@
             public const short CLOSED = 3;
             public const short CANCELED = 4;
             public const short CLOSURE_REQUEST = 5;
-            public const short RESPONDING = 10;
+            public const short RESPONDING = 6;
+            public const short SCHEDULED_ON_HOLD = 7;
 
             public static string GetName(short stateRequestId)
             {
@@ -96,6 +105,8 @@
                         return "Culminado";
                     case CLOSURE_REQUEST:
                         return "Solicitud de culminado";
+                    case RESPONDING:
+                        return "Respondido";
                     default:
                         return "No se encontro el estado de la solicitud";
                 }
@@ -106,13 +117,15 @@
         {
             public const string RECEIVE_NOTIFICATION_REQUESTS = "ReceiveNotificationRequests";
             public const string RECEIVE_NOTIFICATION_TECH_RESP = "ReceiveNotificationTechnicalResponse";
-            public const string RECEIVE_NOTIFICATION_CHANGE_STATE_REQUEST = "ReceiveNotificationWhenChangeStateRequest";
+            public const string RECEIVE_NOTIFICATION_CHANGE_STATE_REQUEST = "NotificationChangeStateRequest";
         }
 
         public static class TypesConnectionSignalR
         {
             public const string SOLICITUDE = "Solicitude";
             public const string RESPONSE = "Response";
+            public const string CLOSE_SOLICITUDE = "Solicitud Cierre";
+
         }
 
         public static class EntityTypes

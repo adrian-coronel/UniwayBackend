@@ -15,7 +15,7 @@ namespace UniwayBackend.Repositories.Core.Implements
         {
             using (DBContext context = new DBContext())
             {
-                return await context.TechnicalProfessionAvailabilities
+                return await context.TechnicalProfessionAvailabilities                    
                     .Where(x => x.Id == TechnicalProfessionAvailabilityId)
                     .Select(x => x.TechnicalProfession.UserTechnical.Technical)
                     .FirstOrDefaultAsync();
@@ -35,7 +35,7 @@ namespace UniwayBackend.Repositories.Core.Implements
                 return await context.UserTechnicals.AsNoTracking()
                     .Where(x =>
                         x.User.RoleId == Constants.Roles.TECHNICAL_ID && // Filtra por rol de técnico
-                        x.Technical.WorkingStatus && 
+                        x.Technical.WorkingStatus==true && 
                         // Verificamos que la ubicación sea válida
                         x.Technical.Location != null &&
                         !x.Technical.Location.IsEmpty &&
@@ -49,8 +49,8 @@ namespace UniwayBackend.Repositories.Core.Implements
                             .Any(r => r.StateRequestId == Constants.StateRequests.IN_PROCESS &&
                                       r.TechnicalProfessionAvailability.TechnicalProfession.UserTechnicalId == x.Id))
                     )
-                   .Include(x => x.TechnicalProfessions)
-                        .ThenInclude(x => x.UserTechnical)
+                    .Include(x=>x.TechnicalProfessions)
+                        .ThenInclude(x=>x.UserTechnical)
                     .Select(x => x.Technical)
                     .ToListAsync();
             }

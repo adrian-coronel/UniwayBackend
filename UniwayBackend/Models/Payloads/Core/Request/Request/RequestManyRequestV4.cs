@@ -2,6 +2,7 @@
 {
     public class RequestManyRequestV4
     {
+        public int TypeAttention { get; set; }
         public short StateRequestId { get; set; }
         public short CategoryRequestId { get; set; }
         public short? TypeCarId { get; set; }

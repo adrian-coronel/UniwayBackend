@@ -6,6 +6,7 @@
         public short CategoryRequestId { get; set; }
         public short? TypeCarId { get; set; }
         public int ClientId { get; set; }
+        public int? TypeAttention { get; set; }
         public int TechnicalProfessionAvailabilityId { get; set; }
         public int? ServiceTechnicalId { get; set; }
         public string Title { get; set; }
