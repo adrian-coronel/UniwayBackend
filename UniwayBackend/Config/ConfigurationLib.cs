@@ -47,11 +47,9 @@
         public string ServiceUnavailableMessage => "Servicio no disponible";
 
         public int GatewayTimeoutCode => 504;
-        public string GatewayTimeoutMessage => "Tiempo de espera de la puerta de enlace agotado";
+        public string GatewayTimeoutMessage => "Tiempo de espera de la puerta de enlace agotado";        
 
 
-        //public int UnspecifiedErrorCode => -200;
-        //public string UnspecifiedErrorMessage => throw new NotImplementedException();
     }
 
 }

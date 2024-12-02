@@ -26,7 +26,7 @@ namespace UniwayBackend.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<ActionResult<AuthenticateResponse<User>>> Register([FromBody] RegisterRequest request)
+        public async Task<ActionResult<AuthenticateResponse<User>>> Register([FromForm] RegisterRequest request)
         {
             AuthenticateResponse<User> response;
             try

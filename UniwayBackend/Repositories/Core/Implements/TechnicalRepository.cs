@@ -15,7 +15,7 @@ namespace UniwayBackend.Repositories.Core.Implements
         {
             using (DBContext context = new DBContext())
             {
-                return await context.TechnicalProfessionAvailabilities
+                return await context.TechnicalProfessionAvailabilities                    
                     .Where(x => x.Id == TechnicalProfessionAvailabilityId)
                     .Select(x => x.TechnicalProfession.UserTechnical.Technical)
                     .FirstOrDefaultAsync();

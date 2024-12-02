@@ -60,7 +60,7 @@ namespace UniwayBackend.Models.Payloads.Core.Request
         [DataType(DataType.Date, ErrorMessage = "El campo BirthDate debe ser una fecha válida.")]
         public required DateTime BirthDate { get; set; }
 
-
+        public IFormFile? File { get; set; }
         public decimal? Lat { get; set; }
         public decimal? Lng { get; set; }
     }

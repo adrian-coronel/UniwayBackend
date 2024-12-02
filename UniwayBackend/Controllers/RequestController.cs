@@ -26,7 +26,7 @@ namespace UniwayBackend.Controllers
         private readonly IRequestService _service;
         private readonly IImagesProblemRequestService _imagesService;
         private readonly ITechnicalProfessionAvailabilityService _techProfAvailabilityService;
-        private readonly IStorageService _storageService;
+        //private readonly IStorageService _storageService;
         private readonly IClientRepository _clientRepository;
         private readonly IUserRepository _userRepository;
         private readonly INotificationService _notificationService;
@@ -37,7 +37,7 @@ namespace UniwayBackend.Controllers
                                  IRequestService service,
                                  IImagesProblemRequestService imagesService,
                                  ITechnicalProfessionAvailabilityService techProfAvailabilityService,
-                                 IStorageService storageService,
+                                 //IStorageService storageService,
                                  IUserRepository userRepository,
                                  INotificationService notificationService,
                                  ITechnicalProfessionAvailabilityRequestRepository techProfAvaiRequestRepostiory,
@@ -47,7 +47,7 @@ namespace UniwayBackend.Controllers
             _service = service;
             _imagesService = imagesService;
             _techProfAvailabilityService = techProfAvailabilityService;
-            _storageService = storageService;
+            //_storageService = storageService;
             _userRepository = userRepository;
             _notificationService = notificationService;
             _techProfAvaiRequestRepostiory = techProfAvaiRequestRepostiory;

@@ -12,16 +12,21 @@ namespace UniwayBackend.Services.implements
     public class ImagesServiceTechnicalService : IImagesServiceTechnicalService
     {
         private readonly IBaseRepository<ImagesServiceTechnical, int> _repository;
-        private readonly IStorageService _storageService;
+        //private readonly IStorageService _storageService;
         private readonly ILogger<ImagesServiceTechnicalService> _logger;
         private readonly UtilitariesResponse<ImagesServiceTechnical> _utilitaries;
+        private readonly IAws3Service _aws3Service;
 
-        public ImagesServiceTechnicalService(IBaseRepository<ImagesServiceTechnical, int> repository, IStorageService storageService, ILogger<ImagesServiceTechnicalService> logger, UtilitariesResponse<ImagesServiceTechnical> utilitaries)
+        public ImagesServiceTechnicalService(
+            IBaseRepository<ImagesServiceTechnical, int> repository,
+            ILogger<ImagesServiceTechnicalService> logger,
+            UtilitariesResponse<ImagesServiceTechnical> utilitaries,
+            IAws3Service aws3Service)
         {
             _repository = repository;
-            _storageService = storageService;
             _logger = logger;
             _utilitaries = utilitaries;
+            _aws3Service = aws3Service;
         }
 
         public async Task<MessageResponse<ImagesServiceTechnical>> SaveAll(int ServiceTechnicalId, List<IFormFile> Files)
@@ -33,7 +38,7 @@ namespace UniwayBackend.Services.implements
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
                 // Guardamos las imagenes 
-                List<ImageResponse> images = await _storageService.SaveFilesAsync(Files, "Services\\"+currentDate.ToString("yyyy-MM-dd"));
+                var images = await _aws3Service.UploadFilesAsync(Files);
 
                 // Guardamos los datos y ubicación de las imgenes en BD
                 var ImagesServiceTechnicals = images.Select(image => new ImagesServiceTechnical

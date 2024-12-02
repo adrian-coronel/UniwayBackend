@@ -23,7 +23,6 @@ namespace UniwayBackend.Services.implements
         private readonly IClientRepository _clientRepository;
         private readonly IUserRepository _userRepository;
         private readonly INotificationService _notificationService;
-        private readonly IStorageService _storageService;
         private readonly IMapper _mapper;
         private readonly UtilitariesResponse<Technical> _utilitaries;
 
@@ -33,7 +32,6 @@ namespace UniwayBackend.Services.implements
                                 IClientRepository clientRepository,
                                 IUserRepository userRepository,
                                 INotificationService notificationService,
-                                IStorageService storageService,
                                 IMapper mapper,
                                 UtilitariesResponse<Technical> utilitaries)
         {
@@ -43,7 +41,6 @@ namespace UniwayBackend.Services.implements
             _clientRepository = clientRepository;
             _userRepository = userRepository;
             _notificationService = notificationService;
-            _storageService = storageService;
             _mapper = mapper;
             _utilitaries = utilitaries;
         }

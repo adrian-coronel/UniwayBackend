@@ -1,13 +1,17 @@
 ﻿using Azure.Core;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Options;
 using System.Reflection;
 using UniwayBackend.Config;
 using UniwayBackend.Exceptions;
+using UniwayBackend.Helpers;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Repositories.Base;
 using UniwayBackend.Repositories.Core.Implements;
 using UniwayBackend.Repositories.Core.Interfaces;
+using UniwayBackend.Services.implements;
+using UniwayBackend.Services.interfaces;
 
 namespace UniwayBackend.Factories
 {
@@ -19,12 +23,19 @@ namespace UniwayBackend.Factories
         private readonly IUserRepository _userRepository;
         private readonly ITechnicalRepository _technicalRepository;
         private readonly IUserTechnicalRepository _userTechnicalRepository;
-        public TechnicalCreator(ILoggerFactory loggerFactory)
+        private readonly ICertificateTechnicalRepository _certificateTechnicalRepository;
+        //private readonly IStorageService _storageService;
+        private readonly IAws3Service _aws3Service;
+
+        public TechnicalCreator(ILoggerFactory loggerFactory, IConfiguration configuration, AwsCredentialsManager credentialsManager)
         {
             _logger = loggerFactory.CreateLogger<TechnicalCreator>();
             _userRepository = new UserRepository();
             _technicalRepository = new TechnicalRepository();
             _userTechnicalRepository = new UserTechnicalRepository();
+            _certificateTechnicalRepository = new CertificateTechnicalRepository();
+            //_storageService = new StorageService(configuration);
+            _aws3Service = new Aws3Service(credentialsManager);
         }
 
 
@@ -38,6 +49,8 @@ namespace UniwayBackend.Factories
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+                
+                if (request.File == null) throw new BadHttpRequestException("El archivo PDF es requerido para el mecánico");
 
                 // Creación del User
                 User user = new User
@@ -74,6 +87,23 @@ namespace UniwayBackend.Factories
                 };
 
                 await _userTechnicalRepository.Insert(userTechnical);
+
+                var folder = "certificates\\" + DateTime.Now.ToString("yyyy-MM-dd");
+
+                // Implementar logica de S3
+                var result = await _aws3Service.UploadFileAsync(request.File);
+
+                await _certificateTechnicalRepository.Insert(new CertificateTechnical
+                {
+                    Id = 0,
+                    TechnicalId = technical.Id,
+                    Url = result.Url,
+                    OriginalName = result.OriginalName,
+                    ExtensionType = result.ExtensionType,
+                    ContentType = result.ContentType,
+                    CreatedOn = DateTime.Now,
+                    UpdatedOn = null
+                });
 
                 return user;
             }

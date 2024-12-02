@@ -53,7 +53,6 @@
         //int UnspecifiedErrorCode { get; }
         //string UnspecifiedErrorMessage { get; }
 
-        // Puedes agregar más según sea necesario...
     }
 
 }
