@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
+using UniwayBackend.Models.Payloads.Core.Request.Review;
 using UniwayBackend.Models.Payloads.Core.Response;
 using UniwayBackend.Models.Payloads.Core.Response.Review;
 using UniwayBackend.Services.interfaces;
@@ -67,6 +68,29 @@ namespace UniwayBackend.Controllers
                     .Code(500).Message(ex.Message).Build();
             }
             return StatusCode(response.Code, response);
+        }
+
+        [HttpPost("Save")]
+        public async Task<ActionResult<MessageResponse<ReviewResponse>>> Save([FromBody] ReviewRequest request)
+        {
+            MessageResponse<ReviewResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var mapped = _mapper.Map<ReviewRequest, Review>(request);
+
+                var resultSaved = await _service.Save(mapped);
+
+                response = _mapper.Map<MessageResponse<Review>, MessageResponse<ReviewResponse>>(resultSaved);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<ReviewResponse>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return response;            
         }
     }
 }

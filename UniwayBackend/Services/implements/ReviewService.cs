@@ -83,5 +83,24 @@ namespace UniwayBackend.Services.implements
             }
             return response;
         }
+
+        public async Task<MessageResponse<Review>> Save(Review model)
+        {
+            MessageResponse<Review> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var review = await _repository.InsertAndReturn(model);
+
+                response = _utilitaries.setResponseBaseForObject(review);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
     }
 }

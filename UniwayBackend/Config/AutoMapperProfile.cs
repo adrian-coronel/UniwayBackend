@@ -5,6 +5,7 @@ using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Models.Payloads.Core.Request.Material;
 using UniwayBackend.Models.Payloads.Core.Request.Request;
+using UniwayBackend.Models.Payloads.Core.Request.Review;
 using UniwayBackend.Models.Payloads.Core.Request.ServiceTechnical;
 using UniwayBackend.Models.Payloads.Core.Request.ServiceTechnicalTypeCar;
 using UniwayBackend.Models.Payloads.Core.Request.TechnicalResponse;
@@ -170,6 +171,8 @@ namespace UniwayBackend.Config
             CreateMap<TypeCar, TypeCarResponse>().ReverseMap();
 
             CreateMap<CertificateTechnical, CertificateTechnicalResponse>().ReverseMap();
+
+            CreateMap<ReviewRequest, Review>().ReverseMap();
         }
 
     }

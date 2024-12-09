@@ -11,5 +11,7 @@ namespace UniwayBackend.Services.interfaces
         Task<MessageResponse<Review>> GetAllByTechnical(int TechnicalId);
         //Debe poder ver la cantidad de estrellas y porcentajes en base a estadisticas en base a clausulas de atención al cliente.
         Task<MessageResponse<ReviewSummaryResponse>> GetSummaryByTechnical(int TechnicalId);
+        //
+        Task<MessageResponse<Review>> Save(Review mapped);
     }
 }
