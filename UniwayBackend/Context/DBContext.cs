@@ -37,6 +37,7 @@ namespace UniwayBackend.Context
         public DbSet<ServiceTechnicalTypeCar> ServiceTechnicalTypeCars {  get; set; }
         public DbSet<Workshop> Workshops { get; set; }
         public DbSet<CertificateTechnical> CertificateTechnicals { get; set; }
+        public DbSet<PhotoUser> PhotoUsers { get; set; }
 
 
 
@@ -115,6 +116,12 @@ namespace UniwayBackend.Context
                     .WithOne(ut => ut.User)
                     .HasForeignKey(ut => ut.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+                user.HasOne(u => u.PhotoUser)
+                    .WithOne(pu => pu.User)
+                    .HasForeignKey<PhotoUser>(pu => pu.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                    
             });
 
            

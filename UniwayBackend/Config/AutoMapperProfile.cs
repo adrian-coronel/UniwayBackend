@@ -20,6 +20,7 @@ using UniwayBackend.Models.Payloads.Core.Response.Experience;
 using UniwayBackend.Models.Payloads.Core.Response.ImageProblem;
 using UniwayBackend.Models.Payloads.Core.Response.ImagesServiceTechnical;
 using UniwayBackend.Models.Payloads.Core.Response.Material;
+using UniwayBackend.Models.Payloads.Core.Response.PhotoUser;
 using UniwayBackend.Models.Payloads.Core.Response.Profession;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Models.Payloads.Core.Response.Review;
@@ -173,6 +174,11 @@ namespace UniwayBackend.Config
             CreateMap<CertificateTechnical, CertificateTechnicalResponse>().ReverseMap();
 
             CreateMap<ReviewRequest, Review>().ReverseMap();
+
+            #region PhotoUser
+            CreateMap<PhotoUser, PhotoUserResponse>().ReverseMap();
+            CreateMap<MessageResponse<PhotoUser>, MessageResponse<PhotoUserResponse>>().ReverseMap();
+            #endregion
         }
 
     }

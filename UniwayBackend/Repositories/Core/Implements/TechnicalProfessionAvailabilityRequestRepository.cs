@@ -48,6 +48,8 @@ namespace UniwayBackend.Repositories.Core.Implements
                     {
                         Availability = availability,
                         Requests = await context.Requests
+                                    .Include(x=>x.Client)
+                                    .Include(x => x.ImagesProblemRequests)
                                     .Include(x => x.ServiceTechnical)
                                         .ThenInclude(y => y.ServiceTechnicalTypeCars)
                                     .Include(x => x.StateRequest)
@@ -66,6 +68,11 @@ namespace UniwayBackend.Repositories.Core.Implements
                     var additionalRequests = await context.TechnicalProfessionAvailabilityRequests
                         .Include(x => x.Request)
                             .ThenInclude(s => s.ServiceTechnical)
+                        .Include(x => x.Request)
+                            .ThenInclude(s => s.Client)
+
+                        .Include(x=>x.Request)
+                            .ThenInclude(x=>x.ImagesProblemRequests)
                         .Include(x => x.Request)
                             .ThenInclude(x => x.StateRequest)
                         .Where(x => x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId &&

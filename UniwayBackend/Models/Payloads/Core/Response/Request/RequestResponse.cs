@@ -1,6 +1,7 @@
 ﻿using NetTopologySuite.Geometries;
 using System.Text.Json.Serialization;
 using UniwayBackend.Config;
+using UniwayBackend.Models.Payloads.Core.Response.Client;
 using UniwayBackend.Models.Payloads.Core.Response.ImageProblem;
 using UniwayBackend.Models.Payloads.Core.Response.ServiceTechnical;
 using UniwayBackend.Models.Payloads.Core.Response.StateRequest;
@@ -16,6 +17,7 @@ namespace UniwayBackend.Models.Payloads.Core.Response.Request
         public short CategoryRequestId { get; set; }
         public short TypeCarId { get; set; }
         public int ClientId { get; set; }
+        public ClientResponseV2 Client { get; set; }
         public int? TechnicalProfessionAvailabilityId { get; set; }
         public TechnicalProfessionAvailabilityResponse TechnicalProfessionAvailability { get; set; }
         public ServiceTechnicalResponse ServiceTechnical { get; set; }

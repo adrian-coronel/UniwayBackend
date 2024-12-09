@@ -147,8 +147,14 @@ namespace UniwayBackend
             services.AddScoped<IBaseRepository<ServiceTechnicalTypeCar, int>, BaseRepository<ServiceTechnicalTypeCar, int>>();
             services.AddScoped<ICertificateTechnicalRepository, CertificateTechnicalRepository>();
 
-
+            #region Aws
             services.AddScoped<IAws3Service, Aws3Service>();
+            #endregion
+
+            #region PhotoUser
+            services.AddScoped<IPhotoUserService, PhotoUserService>();
+            services.AddScoped<IPhotoUserRepository, PhotoUserRepository>();
+            #endregion
         }
 
         private static void JwtConfig(IServiceCollection services)

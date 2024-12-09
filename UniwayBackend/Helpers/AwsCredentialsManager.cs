@@ -27,7 +27,7 @@ namespace UniwayBackend.Helpers
                 await RenewCredentialsAsync();
             }
 
-            // Retornar el cliente S3 y el nombre del bucket
+            //Retornar el cliente S3 y el nombre del bucket
             return
             (
                 new AmazonS3Client(
