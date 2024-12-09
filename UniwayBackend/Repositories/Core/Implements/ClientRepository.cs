@@ -14,6 +14,7 @@ namespace UniwayBackend.Repositories.Core.Implements
             {
                 return await context.Set<Client>()
                     .Include(x => x.User)
+                        .ThenInclude(u => u.PhotoUser)
                     .SingleOrDefaultAsync(x => x.UserId == UserId);
             }
         }

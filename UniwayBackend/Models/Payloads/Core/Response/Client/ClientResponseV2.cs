@@ -10,5 +10,7 @@
         public required string Dni { get; set; }
         public required DateTime BirthDate { get; set; }
         public required bool Enabled { get; set; }
+
+        public virtual UserResponse User { get; set; }
     }
 }

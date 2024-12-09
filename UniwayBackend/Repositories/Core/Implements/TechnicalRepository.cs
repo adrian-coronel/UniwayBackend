@@ -111,6 +111,9 @@ namespace UniwayBackend.Repositories.Core.Implements
                     .Include(t => t.UserTechnicals)
                         .ThenInclude(ut => ut.User)
                             .ThenInclude(u => u.Role) // Incluir Role
+                    .Include(t => t.UserTechnicals)
+                        .ThenInclude(ut => ut.User)
+                            .ThenInclude(u => u.PhotoUser) // Incluir Photo
                     .FirstOrDefaultAsync(t => t.UserTechnicals.Any(ut => ut.UserId == userId));
 
                 return technical;
