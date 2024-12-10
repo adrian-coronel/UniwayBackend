@@ -10,6 +10,7 @@ namespace UniwayBackend.Models.Payloads.Core.Request.Workshop
         public int TechnicalProfessionAvailabilityId { get; set; }
         [Required(ErrorMessage = "El nombre es requerido")]
         public string Name { get; set; }
+        public string Description { get; set; }
         [Required(ErrorMessage = "La coordenada Latitud es requerida")]
         public double Lat { get; set; }
         [Required(ErrorMessage = "La coordenada Longitud es requerida")]

@@ -84,6 +84,7 @@ namespace UniwayBackend.Services.implements
 
                 WorkshopFind.Name = string.IsNullOrEmpty(workshop.Name) ? WorkshopFind.Name : workshop.Name;
                 WorkshopFind.Location = workshop.Location == null ? WorkshopFind.Location : workshop.Location;
+                WorkshopFind.Description = workshop.Description;
                 WorkshopFind.WorkingStatus = workshop.WorkingStatus;
 
                 workshop = await _repository.UpdateAndReturn(WorkshopFind);

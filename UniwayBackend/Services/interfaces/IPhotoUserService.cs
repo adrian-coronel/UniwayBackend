@@ -6,6 +6,6 @@ namespace UniwayBackend.Services.interfaces
 {
     public interface IPhotoUserService
     {
-        Task<MessageResponse<PhotoUser>> Save(PhotoUserRequest photo);
+        Task<MessageResponse<PhotoUser>> Save(PhotoWorkshopRequest photo);
     }
 }

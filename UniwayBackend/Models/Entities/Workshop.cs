@@ -14,6 +14,7 @@ namespace UniwayBackend.Models.Entities
         public string Name { get; set; }
         [JsonConverter(typeof(PointConverter))]
         public Point? Location { get; set; }
+        public string Description { get; set; }
         public int TechnicalProfessionAvailabilityId { get; set; }
         public bool WorkingStatus { get; set; }
 
@@ -24,6 +25,7 @@ namespace UniwayBackend.Models.Entities
 
         [ForeignKey("TechnicalProfessionAvailabilityId")]
         public virtual TechnicalProfessionAvailability TechnicalProfessionAvailability { get; set; }
+        public virtual PhotoWorkshop? PhotoWorkshop { get; set; }
 
     }
 }

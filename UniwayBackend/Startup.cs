@@ -155,6 +155,11 @@ namespace UniwayBackend
             services.AddScoped<IPhotoUserService, PhotoUserService>();
             services.AddScoped<IPhotoUserRepository, PhotoUserRepository>();
             #endregion
+
+            #region PhotoWorkshop
+            services.AddScoped<IPhotoWorkshopService, PhotoWorkshopService>();
+            services.AddScoped<IPhotoWorkshopRepository, PhotoWorkshopRepository>();
+            #endregion
         }
 
         private static void JwtConfig(IServiceCollection services)

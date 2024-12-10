@@ -16,6 +16,7 @@ namespace UniwayBackend.Repositories.Core.Implements
             using (var context = new DBContext())
             {
                 return await context.Workshops
+                    .Include(w => w.PhotoWorkshop)
                     .Where(x => x.TechnicalProfessionAvailabilityId == TechProfAvaId &&
                                (WorkshopId == null || x.Id == WorkshopId)
                     ).ToListAsync();
@@ -29,6 +30,7 @@ namespace UniwayBackend.Repositories.Core.Implements
             using (var context = new DBContext())
             {
                 return await context.Set<Workshop>()
+                    .Include(w => w.PhotoWorkshop)
                     .Where(x => x.TechnicalProfessionAvailability.AvailabilityId == Constants.Availabilities.IN_WORKSHOP_ID
                                 && x.WorkingStatus
                                 && !x.Location.IsEmpty && x.Location != null

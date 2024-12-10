@@ -8,6 +8,7 @@ namespace UniwayBackend.Models.Payloads.Core.Response
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
 
         [JsonConverter(typeof(PointConverter))]
         public Point? Location { get; set; }

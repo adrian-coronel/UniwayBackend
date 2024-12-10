@@ -21,6 +21,7 @@ using UniwayBackend.Models.Payloads.Core.Response.ImageProblem;
 using UniwayBackend.Models.Payloads.Core.Response.ImagesServiceTechnical;
 using UniwayBackend.Models.Payloads.Core.Response.Material;
 using UniwayBackend.Models.Payloads.Core.Response.PhotoUser;
+using UniwayBackend.Models.Payloads.Core.Response.PhotoWorkshop;
 using UniwayBackend.Models.Payloads.Core.Response.Profession;
 using UniwayBackend.Models.Payloads.Core.Response.Request;
 using UniwayBackend.Models.Payloads.Core.Response.Review;
@@ -178,6 +179,11 @@ namespace UniwayBackend.Config
             #region PhotoUser
             CreateMap<PhotoUser, PhotoUserResponse>().ReverseMap();
             CreateMap<MessageResponse<PhotoUser>, MessageResponse<PhotoUserResponse>>().ReverseMap();
+            #endregion
+
+            #region PhotoWorkshop
+            CreateMap<PhotoWorkshop, PhotoWorkshopResponse>().ReverseMap();
+            CreateMap<MessageResponse<PhotoWorkshop>, MessageResponse<PhotoWorkshopResponse>>().ReverseMap();
             #endregion
         }
 

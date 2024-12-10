@@ -38,7 +38,7 @@ namespace UniwayBackend.Context
         public DbSet<Workshop> Workshops { get; set; }
         public DbSet<CertificateTechnical> CertificateTechnicals { get; set; }
         public DbSet<PhotoUser> PhotoUsers { get; set; }
-
+        public DbSet<PhotoWorkshop> PhotoWorkshops { get; set; }
 
 
         // Constructor de la clase DBContext que recibe opciones de configuración de DbContext
@@ -382,6 +382,11 @@ namespace UniwayBackend.Context
                 .WithMany(w => w.Workshops) // Importante especificar la relación inversa si la hemos definido
                 .HasForeignKey(w => w.TechnicalProfessionAvailabilityId);
 
+            modelBuilder.Entity<Workshop>()
+                .HasOne(w => w.PhotoWorkshop)
+                .WithOne(pw => pw.Workshop)
+                .HasForeignKey<PhotoWorkshop>(pw => pw.WorkshopId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // CategoryService
             modelBuilder.Entity<CategoryService>()
