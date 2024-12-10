@@ -107,6 +107,7 @@ namespace UniwayBackend.Repositories.Core.Implements
             {
                 var requests= await context.Requests
                     .Include(x => x.StateRequest)
+                    .Include(x=>x.ImagesProblemRequests)
                     .Include(x => x.ServiceTechnical)
                         .ThenInclude(x => x.Images)
                     .Where(x => 

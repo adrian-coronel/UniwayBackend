@@ -466,6 +466,7 @@ namespace UniwayBackend.Services.implements
                             FullName = $"xd",
                             PhoneNumber = "xd",
                             TypeEntity = Constants.EntityTypes.MECHANICAL
+
                         }
                     });
                 }

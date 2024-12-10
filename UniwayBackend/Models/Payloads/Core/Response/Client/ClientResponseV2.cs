@@ -1,4 +1,6 @@
-﻿namespace UniwayBackend.Models.Payloads.Core.Response.Client
+﻿using UniwayBackend.Models.Payloads.Core.Request.Request;
+
+namespace UniwayBackend.Models.Payloads.Core.Response.Client
 {
     public class ClientResponseV2
     {
@@ -8,9 +10,9 @@
         public required string FatherLastname { get; set; }
         public required string MotherLastname { get; set; }
         public required string Dni { get; set; }
+        public string PhoneNumber { get; set; }
         public required DateTime BirthDate { get; set; }
         public required bool Enabled { get; set; }
-
         public virtual UserResponse User { get; set; }
     }
 }

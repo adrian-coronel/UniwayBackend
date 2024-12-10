@@ -30,7 +30,10 @@ namespace UniwayBackend.Repositories.Core.Implements
                                         .ThenInclude(x=>x.Technical)
                               .Include(x=>x.TechnicalProfessionAvailability)
                                     .ThenInclude(x=>x.Workshops)
-                              .Include(x=>x.Request);
+                              .Include(x=>x.Request)
+                              .Include(x=>x.Request)
+                                .ThenInclude(y=>y.ImagesProblemRequests)
+                              ;
 
                 return await query.ToListAsync();
             }
