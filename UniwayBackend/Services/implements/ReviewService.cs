@@ -90,6 +90,7 @@ namespace UniwayBackend.Services.implements
             try
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+                model.ReviewDate = DateTime.Now;
 
                 var review = await _repository.InsertAndReturn(model);
 

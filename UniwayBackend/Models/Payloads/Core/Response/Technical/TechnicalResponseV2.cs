@@ -11,6 +11,7 @@ namespace UniwayBackend.Models.Payloads.Core.Response.Technical
         public string FatherLastname { get; set; }
         public string MotherLastname { get; set; }
         public string Dni { get; set; }
+        public string PhoneNumber { get; set; }
         public DateTime BirthDate { get; set; }
         public double Lat { get; set; }
         public double Lng { get; set; }
