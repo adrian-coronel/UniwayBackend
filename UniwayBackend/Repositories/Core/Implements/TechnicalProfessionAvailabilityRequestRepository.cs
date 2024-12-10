@@ -36,19 +36,21 @@ namespace UniwayBackend.Repositories.Core.Implements
         {
             using (DBContext context = new DBContext())
             {
-
                 var result = new List<TechnicalProfessionAvailabilityRequestResponse>();
 
+                // Cargar todas las disponibilidades
                 var availabilities = await context.Availabilities.ToListAsync();
 
-                // Agremos las disponibilidades y solicitudes directas
+                // Recorrer todas las disponibilidades
                 foreach (var availability in availabilities)
                 {
-                    var TechProfRequest = new TechnicalProfessionAvailabilityRequestResponse
+                    var techProfRequest = new TechnicalProfessionAvailabilityRequestResponse
                     {
                         Availability = availability,
                         Requests = await context.Requests
-                                    .Include(x=>x.Client)
+                                    .Include(x => x.Client)
+                                        .ThenInclude(y => y.User)
+                                            .ThenInclude(d => d.PhotoUser)
                                     .Include(x => x.ImagesProblemRequests)
                                     .Include(x => x.ServiceTechnical)
                                         .ThenInclude(y => y.ServiceTechnicalTypeCars)
@@ -58,44 +60,42 @@ namespace UniwayBackend.Repositories.Core.Implements
                                                 (x.StateRequestId == Constants.StateRequests.PENDING ||
                                                  x.StateRequestId == Constants.StateRequests.RESPONDING) &&
                                                 x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId &&
-                                                (availability.Id != 2 || x.TypeAttention == 2)) 
-
+                                                (availability.Id != 2 || x.TypeAttention == 2))
                                     .ToListAsync()
                     };
 
-
-                   //SOLICITUD A MUCHOS
+                    // Cargar solicitudes adicionales (solicitudes a muchos)
                     var additionalRequests = await context.TechnicalProfessionAvailabilityRequests
                         .Include(x => x.Request)
                             .ThenInclude(s => s.ServiceTechnical)
                         .Include(x => x.Request)
                             .ThenInclude(s => s.Client)
-
-                        .Include(x=>x.Request)
-                            .ThenInclude(x=>x.ImagesProblemRequests)
+                                .ThenInclude(y => y.User)
+                                    .ThenInclude(d => d.PhotoUser)
+                        .Include(x => x.Request)
+                            .ThenInclude(x => x.ImagesProblemRequests)
                         .Include(x => x.Request)
                             .ThenInclude(x => x.StateRequest)
                         .Where(x => x.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.UserId == UserId &&
                                     x.Request.StateRequestId == Constants.StateRequests.PENDING &&
-                                    x.TechnicalProfessionAvailability.AvailabilityId == availability.Id
-                                     && (availability.Id != 2 || x.Request.TypeAttention == 2 && x.Request.TechnicalProfessionAvailability.AvailabilityId==2)
-
-                                    )
+                                    x.TechnicalProfessionAvailability.AvailabilityId == availability.Id &&
+                                    (availability.Id != 2 || (x.Request.TypeAttention == 2 && x.Request.TechnicalProfessionAvailability.AvailabilityId == 2)))
                         .Select(x => x.Request)
                         .ToListAsync();
 
                     // Eliminar duplicados utilizando DistinctBy
-                    TechProfRequest.Requests = TechProfRequest.Requests
+                    techProfRequest.Requests = techProfRequest.Requests
                         .Concat(additionalRequests)
                         .DistinctBy(r => r.Id) // Eliminar duplicados según el Id
                         .ToList();
 
-                    result.Add(TechProfRequest);
+                    result.Add(techProfRequest);
                 }
 
                 return result;
             }
         }
+
 
 
     }

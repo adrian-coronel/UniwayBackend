@@ -420,7 +420,7 @@ namespace UniwayBackend.Services.implements
                     requestFind.TechnicalProfessionAvailabilityId != null)// el tecnico elegido se encuentra en bandeja)
                 {
                     var user = await _userRepository.FindByTechnicalProfessionAvailabilityId(technicalProfessionAvailabilityId);
-
+                    var technical = await _technicalProfessionAvailabilityRepository.FindTechnicalInformationByTechnicalProfeessionAvailabilityId(technicalProfessionAvailabilityId);
                     requestFind.StateRequestId = stateRequestId;
                     requestFind = await _repository.UpdateAndReturn(requestFind);
 
@@ -432,13 +432,14 @@ namespace UniwayBackend.Services.implements
                             Type = Constants.TypesConnectionSignalR.RESPONSE,
                             Message = $"El cliente ha aceptado el cierre del servicio!",
                             Data = requestMap,
-                            StateRequestId= stateRequestId,
+                            StateRequestId = stateRequestId,
                             UserSend = new DataUserResponse
                             {
                                 EntityId = requestFind.Client.Id.ToString(),
                                 FullName = $"{requestFind.Client.Name} {requestFind.Client.FatherLastname} {requestFind.Client.MotherLastname}",
                                 PhoneNumber = requestFind.Client.PhoneNumber,
-                                TypeEntity = Constants.EntityTypes.CLIENT
+                                TypeEntity = Constants.EntityTypes.CLIENT,
+                                TechnicalId = technical.TechnicalProfession.UserTechnical.TechnicalId.ToString()
                             }
                         }
                     );

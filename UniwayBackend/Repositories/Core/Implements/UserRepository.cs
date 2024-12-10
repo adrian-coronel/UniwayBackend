@@ -95,16 +95,18 @@ namespace UniwayBackend.Repositories.Core.Implements
             }
         }
 
-        public async Task<User?> FindByRequestId(int RequestId)
+        public async Task<User?> FindByRequestId(int requestId)
         {
             using (DBContext context = new DBContext())
             {
                 return await context.Set<Request>()
-                    .Where(x => x.Id == RequestId)
+                    .Where(x => x.Id == requestId)
+                    .Include(x => x.Client.User.PhotoUser) // Incluye las relaciones necesarias
                     .Select(x => x.Client.User)
                     .FirstOrDefaultAsync();
             }
         }
+
 
         public async Task<User?> FindByClientId(int ClientId)
         {

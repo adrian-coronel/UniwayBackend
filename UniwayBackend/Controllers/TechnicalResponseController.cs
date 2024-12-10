@@ -104,7 +104,8 @@ namespace UniwayBackend.Controllers
                             TypeAttentionRequest = request.TypeAttentionRequest,
                             Message = "Notification success",
                             Data = response.Object,
-                            UserSend = userSend
+                            UserSend = userSend,
+                            ImageUser = user.PhotoUser?.Url ?? "default_image.png"
                         });
                 }
             }
