@@ -18,6 +18,7 @@ namespace UniwayBackend.Services.implements
     public class LocationService : ILocationService
     {
         private readonly ITechnicalRepository _technicalRepository;
+        private readonly IPhotoUserRepository _photoUserRepository;
         private readonly IWorkshopRepository _workshopRepository;
         private readonly IServiceTechnicalRepository _serviceTechnicalRepository;
         private readonly ITechnicalProfessionAvailabilityRepository _techProfAvaRepository;
@@ -25,15 +26,18 @@ namespace UniwayBackend.Services.implements
         private readonly UtilitariesResponse<LocationResponse> _utilitaries;
         private readonly UtilitariesResponse<LocationResponseV2> _utilitariesV2;
 
-        public LocationService(ITechnicalRepository technicalRepository,
-                               IWorkshopRepository workshopRepository,
-                               IServiceTechnicalRepository serviceTechnicalRepository,
-                               ITechnicalProfessionAvailabilityRepository techProfAvaRepository,
-                               ILogger<LocationService> logger,
-                               UtilitariesResponse<LocationResponse> utilitaries,
-                               UtilitariesResponse<LocationResponseV2> utilitariesV2)
+        public LocationService(
+            ITechnicalRepository technicalRepository,
+            IPhotoUserRepository photoUserRepository,
+            IWorkshopRepository workshopRepository,
+            IServiceTechnicalRepository serviceTechnicalRepository,
+            ITechnicalProfessionAvailabilityRepository techProfAvaRepository,
+            ILogger<LocationService> logger,
+            UtilitariesResponse<LocationResponse> utilitaries,
+            UtilitariesResponse<LocationResponseV2> utilitariesV2)
         {
             _technicalRepository = technicalRepository;
+            _photoUserRepository = photoUserRepository;
             _workshopRepository = workshopRepository;
             _serviceTechnicalRepository = serviceTechnicalRepository;
             _techProfAvaRepository = techProfAvaRepository;
@@ -41,6 +45,7 @@ namespace UniwayBackend.Services.implements
             _utilitaries = utilitaries;
             _utilitariesV2 = utilitariesV2;
         }
+
 
 
 
@@ -58,18 +63,24 @@ namespace UniwayBackend.Services.implements
                 if (request.AvailabilityId == Constants.Availabilities.AT_HOME_ID || request.AvailabilityId == Constants.Availabilities.BOTH_ID)
                 {
                     var technicals = await _technicalRepository.FindDefaultLocation(referenceLocation, request.Distance);
-                    results.AddRange(
-                        technicals.Select(tech => new LocationResponse
+
+                    foreach (var technical in technicals)
+                    {
+                        var photo = await _photoUserRepository.FindByTechnicalId(technical.Id);
+                        results.Add(new LocationResponse
                         {
-                            Id = tech.Id.ToString(),
-                            Name = $"{tech.Name} {tech.FatherLastname}",
-                            Location = tech.Location,
-                            TechnicalId = tech.Id,
-                            WorkingStatus = tech.WorkingStatus,
+                            Id = technical.Id.ToString(),
+                            Name = $"{technical.Name}   {technical.FatherLastname}",
+                            UrlPhoto = photo?.Url ?? "",
+                            Location = technical.Location,
+                            TechnicalId = technical.Id,
+                            WorkingStatus = technical.WorkingStatus,
                             AvailabilityId = Constants.Availabilities.AT_HOME_ID,
                             IsWorkshop = false,
-                        }).ToList()
-                    );
+                        });
+
+                    }
+
                 }
                 if (request.AvailabilityId == Constants.Availabilities.IN_WORKSHOP_ID || request.AvailabilityId == Constants.Availabilities.BOTH_ID)
                 {
@@ -79,6 +90,7 @@ namespace UniwayBackend.Services.implements
                         {
                             Id = wor.Id.ToString(),
                             Name = wor.Name,
+                            UrlPhoto = wor.PhotoWorkshop?.Url ?? "",
                             Location = wor.Location,
                             TechnicalId = wor.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.TechnicalId,
                             WorkingStatus = wor.WorkingStatus,

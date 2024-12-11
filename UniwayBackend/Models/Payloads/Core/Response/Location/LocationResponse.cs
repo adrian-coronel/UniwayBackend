@@ -12,6 +12,7 @@ namespace UniwayBackend.Models.Payloads.Core.Response
 
         [JsonConverter(typeof(PointConverter))]
         public Point? Location { get; set; }
+        public string UrlPhoto { get; set; }
         public bool WorkingStatus { get; set; }
         public int? TechnicalId { get; set; }
         public short AvailabilityId { get; set; }

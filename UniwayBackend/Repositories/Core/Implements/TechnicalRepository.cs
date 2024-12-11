@@ -49,8 +49,10 @@ namespace UniwayBackend.Repositories.Core.Implements
                             .Any(r => r.StateRequestId == Constants.StateRequests.IN_PROCESS &&
                                       r.TechnicalProfessionAvailability.TechnicalProfession.UserTechnicalId == x.Id))
                     )
-                    .Include(x=>x.TechnicalProfessions)
-                        .ThenInclude(x=>x.UserTechnical)
+                    .Include(x => x.TechnicalProfessions)
+                        .ThenInclude(x => x.UserTechnical)
+                            .ThenInclude(ut => ut.User)
+                                .ThenInclude(u => u.PhotoUser)
                     .Select(x => x.Technical)
                     .ToListAsync();
             }
