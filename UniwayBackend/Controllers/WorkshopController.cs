@@ -59,9 +59,7 @@ namespace UniwayBackend.Controllers
 
                 var user = User.FindFirst("Id")?.Value;
 
-                var workshop = _mapper.Map<Workshop>(request);
-
-                var result = await _service.Save(workshop);
+                var result = await _service.Save(request);
 
                 response = _mapper.Map<MessageResponse<WorkshopResponse>>(result);
             }

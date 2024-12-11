@@ -134,5 +134,19 @@
             public const string WORKSHOP = "Taller";
             public const string CLIENT = "Cliente";
         }
+
+        public static class Professions
+        {
+            public const short Electricista = 1;
+            public const short Plomero = 2;
+            public const short Carpintero = 3;
+        }
+        public static class Experiences
+        {
+            public const short Principiante = 1;
+            public const short Intermedio = 2;
+            public const short Experto = 3;
+        }
+
     }
 }

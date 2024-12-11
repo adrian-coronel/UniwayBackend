@@ -160,6 +160,8 @@ namespace UniwayBackend
             services.AddScoped<IPhotoWorkshopService, PhotoWorkshopService>();
             services.AddScoped<IPhotoWorkshopRepository, PhotoWorkshopRepository>();
             #endregion
+
+            services.AddScoped<ITechnicalProfessionRepository, TechnicalProfessionRepository>();
         }
 
         private static void JwtConfig(IServiceCollection services)

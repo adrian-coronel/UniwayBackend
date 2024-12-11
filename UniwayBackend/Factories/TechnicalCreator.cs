@@ -24,6 +24,7 @@ namespace UniwayBackend.Factories
         private readonly ITechnicalRepository _technicalRepository;
         private readonly IUserTechnicalRepository _userTechnicalRepository;
         private readonly ICertificateTechnicalRepository _certificateTechnicalRepository;
+        private readonly ITechnicalProfessionAvailabilityRepository _technicalProfessionAvailabilityRepository;
         //private readonly IStorageService _storageService;
         private readonly IAws3Service _aws3Service;
 
@@ -34,6 +35,7 @@ namespace UniwayBackend.Factories
             _technicalRepository = new TechnicalRepository();
             _userTechnicalRepository = new UserTechnicalRepository();
             _certificateTechnicalRepository = new CertificateTechnicalRepository();
+            _technicalProfessionAvailabilityRepository = new TechnicalProfessionAvailabilityRepository();
             //_storageService = new StorageService(configuration);
             _aws3Service = new Aws3Service(credentialsManager);
         }

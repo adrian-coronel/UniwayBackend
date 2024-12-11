@@ -27,16 +27,21 @@ namespace UniwayBackend.Services.implements
         private readonly IUserRepository _userRepository;
         private readonly INotificationService _notificationService;
         private readonly IImagesProblemRequestRepository _imagesProblemRepository;
+        private readonly ITechnicalProfessionRepository _technicalProfessionRepository;
+        private readonly ITechnicalProfessionAvailabilityRepository _technicalProfessionAvailabilityRepository;
         private readonly UtilitariesResponse<Workshop> _utilitaries;
 
-        public WorkshopService(ILogger<WorkshopService> logger,
-                               IMapper mapper,
-                               IWorkshopRepository repository,
-                               IClientRepository clientRepository,
-                               IUserRepository userRepository,
-                               INotificationService notificationService,
-                               IImagesProblemRequestRepository imagesProblemRepository,
-                               UtilitariesResponse<Workshop> utilitaries)
+        public WorkshopService(
+            ILogger<WorkshopService> logger,
+            IMapper mapper,
+            IWorkshopRepository repository,
+            IClientRepository clientRepository,
+            IUserRepository userRepository,
+            INotificationService notificationService,
+            IImagesProblemRequestRepository imagesProblemRepository,
+            ITechnicalProfessionRepository technicalProfessionRepository,
+            ITechnicalProfessionAvailabilityRepository technicalProfessionAvailabilityRepository,
+            UtilitariesResponse<Workshop> utilitaries)
         {
             _logger = logger;
             _mapper = mapper;
@@ -45,10 +50,12 @@ namespace UniwayBackend.Services.implements
             _userRepository = userRepository;
             _notificationService = notificationService;
             _imagesProblemRepository = imagesProblemRepository;
+            _technicalProfessionRepository = technicalProfessionRepository;
+            _technicalProfessionAvailabilityRepository = technicalProfessionAvailabilityRepository;
             _utilitaries = utilitaries;
         }
 
-        public async Task<MessageResponse<Workshop>> Save(Workshop workshop)
+        public async Task<MessageResponse<Workshop>> Save(WorkshopRequestV2 workshop)
         {
             MessageResponse<Workshop> response;
             try
@@ -56,10 +63,33 @@ namespace UniwayBackend.Services.implements
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
                 if (workshop.Id > 0) return _utilitaries.setResponseBaseForBadRequest();
-                workshop.Location = new Point(workshop.Lng.Value, workshop.Lat.Value) { SRID = 4326 };
-                workshop = await _repository.InsertAndReturn(workshop);
 
-                response = _utilitaries.setResponseBaseForObject(workshop);
+                var tpa = await _technicalProfessionAvailabilityRepository
+                                        .FindByTechnicalAndAvailability(workshop.TechnicalId, Constants.Availabilities.IN_WORKSHOP_ID);
+
+                if (tpa == null)
+                {
+                    var technicalProfession = await _technicalProfessionRepository.FindByTechnicalId(workshop.TechnicalId); 
+
+                    tpa = await _technicalProfessionAvailabilityRepository.InsertAndReturn(new TechnicalProfessionAvailability
+                    {
+                        TechnicalProfessionId = technicalProfession.Id,
+                        AvailabilityId = Constants.Availabilities.IN_WORKSHOP_ID,
+                    });
+                }
+
+
+                var workshopSaved = await _repository.InsertAndReturn(new Workshop
+                {
+                    Id = 0,
+                    Name = workshop.Name,
+                    Description = workshop.Description,
+                    Location = new Point(workshop.Lng, workshop.Lat) { SRID = 4326 },
+                    TechnicalProfessionAvailabilityId = tpa.Id,
+                    WorkingStatus = false,
+                });
+
+                response = _utilitaries.setResponseBaseForObject(workshopSaved);
             }
             catch (Exception ex)
             {
