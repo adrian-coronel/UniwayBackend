@@ -8,6 +8,16 @@ namespace UniwayBackend.Repositories.Core.Implements
 {
     public class PhotoUserRepository : BaseRepository<PhotoUser, int>, IPhotoUserRepository
     {
+        public async Task<PhotoUser?> FindByTechnicalId(int TechnicalId)
+        {
+            using (DBContext context = new DBContext())
+            {
+                return await context.PhotoUsers
+                    .Where(x => x.User.UserTechnicals.Any(ut => ut.TechnicalId == TechnicalId))
+                    .FirstOrDefaultAsync();
+            }
+        }
+
         public async Task<PhotoUser?> FindByUserId(Guid UserId)
         {
             using (DBContext context = new DBContext())
