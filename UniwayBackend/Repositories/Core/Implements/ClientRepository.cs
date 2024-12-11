@@ -8,6 +8,17 @@ namespace UniwayBackend.Repositories.Core.Implements
 {
     public class ClientRepository : BaseRepository<Client, int>, IClientRepository
     {
+        public async Task<Client> FindByIdIncludeData(int id)
+        {
+            using (var context = new DBContext())
+            {
+                return await context.Set<Client>()
+                    .Include(x => x.User)
+                        .ThenInclude(u => u.PhotoUser)
+                    .Where(x => x.Id == id).FirstOrDefaultAsync();
+            }
+        }
+
         public async Task<Client?> FindByUserId(Guid UserId)
         {
             using (var context = new DBContext())

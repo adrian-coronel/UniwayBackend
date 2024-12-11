@@ -16,7 +16,7 @@ namespace UniwayBackend.Repositories.Base
             }
         }
 
-        public async Task<TEntity?> FindById(Key Id)
+        public virtual async Task<TEntity?> FindById(Key Id)
         {
             using (DBContext context = new DBContext())
             {

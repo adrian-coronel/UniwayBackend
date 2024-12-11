@@ -94,6 +94,8 @@ namespace UniwayBackend.Controllers
                 if (response.Code == 200) 
                 {
                     User? user = await _userRepository.FindByRequestId(response.Object!.RequestId);
+                    User? userTechnical = await _userRepository.FindByTechnicalProfessionAvailabilityId(resultMapped.TechnicalProfessionAvailabilityId.Value);
+
                     DataUserResponse userSend = await _userRepository.FindTechnicalOrWorkshop(request.TechnicalProfessionAvailabilityId.Value);
 
                     // Enviar la notificacion al cliente

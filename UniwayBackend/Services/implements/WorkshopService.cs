@@ -88,7 +88,7 @@ namespace UniwayBackend.Services.implements
                     TechnicalProfessionAvailabilityId = tpa.Id,
                     WorkingStatus = false,
                 });
-
+                workshopSaved.TechnicalProfessionAvailability = tpa;
                 response = _utilitaries.setResponseBaseForObject(workshopSaved);
             }
             catch (Exception ex)

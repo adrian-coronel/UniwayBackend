@@ -71,6 +71,9 @@ namespace UniwayBackend.Repositories.Core.Implements
                         .ThenInclude(ut => ut.User)
                             .ThenInclude(u => u.Role)
                     .Include(x => x.UserTechnicals)
+                        .ThenInclude(ut => ut.User)
+                            .ThenInclude(u => u.PhotoUser)
+                    .Include(x => x.UserTechnicals)
                         .ThenInclude(x => x.TechnicalProfessions)
                             .ThenInclude(tp => tp.Experience) // Incluir Experience
                     .Include(x => x.UserTechnicals)

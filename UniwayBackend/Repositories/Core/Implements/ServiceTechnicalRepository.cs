@@ -27,6 +27,7 @@ namespace UniwayBackend.Repositories.Core.Implements
                 return await context.ServiceTechnicals
                     .Include(x => x.ServiceTechnicalTypeCars)
                         .ThenInclude(x => x.TypeCar)
+                    .Include(x=>x.Images)
                     .Where(st => st.TechnicalProfessionAvailability.TechnicalProfession.UserTechnical.TechnicalId == TechnicalId &&
                                  (AvailabilityId == 0 || st.TechnicalProfessionAvailability.AvailabilityId == AvailabilityId)
                           )
@@ -86,6 +87,7 @@ namespace UniwayBackend.Repositories.Core.Implements
             using (DBContext context = new DBContext())
             {
                 return await context.ServiceTechnicals
+                    .Include(x=>x.Images)
                     .Include(x => x.ServiceTechnicalTypeCars)
                         .ThenInclude(sttc => sttc.TypeCar)
                     .Include(x => x.TechnicalProfessionAvailability)

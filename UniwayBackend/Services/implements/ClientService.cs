@@ -26,7 +26,7 @@ namespace UniwayBackend.Services.implements
             {
                 _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
 
-                var client = await _repository.FindById(Id);
+                var client = await _repository.FindByIdIncludeData(Id);
 
                 if (client == null) return _utilitaries.setResponseBaseForNotFount();
 

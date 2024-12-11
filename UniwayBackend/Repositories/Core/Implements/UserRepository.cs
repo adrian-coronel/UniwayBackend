@@ -72,10 +72,10 @@ namespace UniwayBackend.Repositories.Core.Implements
         {
             using (var context = new DBContext())
             {
-                var query = from user in context.Users
-                            join userTechnical in context.UserTechnicals 
+                var query = from user in context.Users.Include(u => u.PhotoUser) // Incluir la relación PhotoUser
+                            join userTechnical in context.UserTechnicals
                                 on user.Id equals userTechnical.UserId
-                            join technicalProfession in context.TechnicalProfessions 
+                            join technicalProfession in context.TechnicalProfessions
                                 on userTechnical.Id equals technicalProfession.UserTechnicalId
                             join technicalProfessionAvailability in context.TechnicalProfessionAvailabilities
                                 on technicalProfession.Id equals technicalProfessionAvailability.TechnicalProfessionId
@@ -85,6 +85,7 @@ namespace UniwayBackend.Repositories.Core.Implements
                 return await query.FirstOrDefaultAsync();
             }
         }
+
 
         public async Task<User?> FindByUsernameAndPassword(string Email, string Password)
         {
