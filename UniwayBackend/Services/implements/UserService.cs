@@ -1,9 +1,11 @@
 ﻿using Azure.Core;
 using System.Reflection;
+using UniwayBackend.Config;
 using UniwayBackend.Factories;
 using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
+using UniwayBackend.Models.Payloads.Core.Request.Users;
 using UniwayBackend.Repositories.Core.Interfaces;
 using UniwayBackend.Services.interfaces;
 
@@ -86,6 +88,36 @@ namespace UniwayBackend.Services.implements
                 if (user is null) return _utilitaries.setResponseBaseForInternalServerError();
 
                 return _utilitaries.setResponseBaseForObject(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = _utilitaries.setResponseBaseForException(ex);
+            }
+            return response;
+        }
+
+        public async Task<MessageResponse<User>> SaveAll(List<UserInsertRequest> users)
+        {
+            MessageResponse<User> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                List<User> entities = users.Select(x => new User
+                {
+                    Id = Guid.NewGuid(),
+                    RoleId = x.RoleId,
+                    Email = x.Email,
+                    Password = x.Password,
+                    Enabled = Constants.State.ACTIVE_BOOL,
+                    CreatedOn = DateTime.UtcNow,
+                    UpdatedOn = DateTime.UtcNow
+                }).ToList();
+
+                var result = await _repository.InsertAll(entities);
+
+                response = _utilitaries.setResponseBaseForList(result);
             }
             catch (Exception ex)
             {
