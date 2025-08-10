@@ -6,6 +6,7 @@ using UniwayBackend.Models.Entities;
 using UniwayBackend.Models.Payloads.Base.Response;
 using UniwayBackend.Models.Payloads.Core.Request;
 using UniwayBackend.Models.Payloads.Core.Response;
+using UniwayBackend.Models.Payloads.Core.Request.Users;
 using UniwayBackend.Services.interfaces;
 
 namespace UniwayBackend.Controllers
@@ -23,6 +24,27 @@ namespace UniwayBackend.Controllers
             _service = service;
             _mapper = mapper;
             _logger = logger;
+        }
+
+        [HttpPost("SaveAll")]
+        public async Task<ActionResult<MessageResponse<UserResponse>>> SaveAll([FromBody] List<UserInsertRequest> users)
+        {
+            MessageResponse<UserResponse> response;
+            try
+            {
+                _logger.LogInformation(MethodBase.GetCurrentMethod().Name);
+
+                var result = await _service.SaveAll(users);
+
+                response = _mapper.Map<MessageResponse<User>, MessageResponse<UserResponse>>(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                response = new MessageResponseBuilder<UserResponse>()
+                    .Code(500).Message(ex.Message).Build();
+            }
+            return StatusCode(response.Code, response);
         }
 
         [HttpPut("EditProfile")]
